@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import 'typeface-roboto';
 import Typography from 'material-ui/Typography';
+import AccessAlarmIcon from 'material-ui-icons/AccessAlarm';
 import logo from './logo.svg';
 import './App.css';
 
@@ -30,6 +31,7 @@ class App extends Component {
           <div key={user.id}>{user.username}</div>
         )}
         <Typography> Hi this is Typography </Typography>
+        <AccessAlarmIcon/>
       </div>
     );
   }
