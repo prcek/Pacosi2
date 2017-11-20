@@ -1,4 +1,6 @@
 import React, { Component } from 'react';
+import 'typeface-roboto';
+import Typography from 'material-ui/Typography';
 import logo from './logo.svg';
 import './App.css';
 
@@ -27,6 +29,7 @@ class App extends Component {
         {this.state.users.map(user =>
           <div key={user.id}>{user.username}</div>
         )}
+        <Typography> Hi this is Typography </Typography>
       </div>
     );
   }
