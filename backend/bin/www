@@ -8,11 +8,18 @@ var app = require('../app');
 var debug = require('debug')('backend:server');
 var http = require('http');
 
+const config = require('../config');
+const mongoose = require('mongoose');
+
 /**
  * Get port from environment and store in Express.
  */
 
-var port = normalizePort(process.env.PORT || '4000');
+
+mongoose.Promise = require('bluebird');
+mongoose.connect( config.database.HOST, {useMongoClient: true});
+
+var port = normalizePort(config.server.PORT);
 app.set('port', port);
 
 /**

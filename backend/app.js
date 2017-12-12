@@ -7,7 +7,7 @@ var bodyParser = require('body-parser');
 
 
 var qraphql_se = require('graphql-server-express');
-var schema = require('./api/schema');
+const GraphQLSchema = require('./graphql');
 
 //var index = require('./routes/index');
 var users = require('./routes/users');
@@ -35,8 +35,7 @@ app.use(
     endpointURL: '/graphql'
   })
 );
-app.use('/graphql', bodyParser.json(), qraphql_se.graphqlExpress({ schema: schema }));
-
+app.use('/graphql', bodyParser.json(), qraphql_se.graphqlExpress({ schema: GraphQLSchema }));
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {
