@@ -5,6 +5,10 @@ var logger = require('morgan');
 var cookieParser = require('cookie-parser');
 var bodyParser = require('body-parser');
 
+
+var qraphql_se = require('graphql-server-express');
+var schema = require('./api/schema');
+
 //var index = require('./routes/index');
 var users = require('./routes/users');
 
@@ -24,6 +28,15 @@ app.use(express.static(path.join(__dirname, 'client/build')));
 
 //app.use('/', index);
 app.use('/users', users);
+
+app.use(
+  '/graphiql',
+  qraphql_se.graphiqlExpress({
+    endpointURL: '/graphql'
+  })
+);
+app.use('/graphql', bodyParser.json(), qraphql_se.graphqlExpress({ schema: schema }));
+
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {

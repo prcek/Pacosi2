@@ -14,6 +14,7 @@ RUN yarn run build
 
 WORKDIR /usr/src/app
 
-EXPOSE 3000
+EXPOSE 4000
+ENV PORT=4000
 ENV DEBUG="backend:*"
 CMD ["node","bin/www"]
