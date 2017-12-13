@@ -10,10 +10,12 @@ const {
 // import the user query file we created
 const UserQuery = require('./queries/User');
 const OrderItemQuery = require('./queries/OrderItem');
+const OrderQuery = require('./queries/Order');
 
 // import the user mutation file we created
 const UserMutation = require('./mutations/User');
 const OrderItemMutation = require('./mutations/OrderItem');
+const OrderMutation = require('./mutations/Order');
 
 
 // lets define our root query
@@ -23,6 +25,8 @@ const RootQuery = new GraphQLObjectType({
     fields: {
         users: UserQuery.index(),
         user: UserQuery.single(),
+        orders: OrderQuery.index(),
+        order: OrderQuery.single(),
         orderItems: OrderItemQuery.index(),
         orderItem: OrderItemQuery.single(),
     },
@@ -40,6 +44,9 @@ const RootMutation = new GraphQLObjectType({
         addOrderItem: OrderItemMutation.create(),
         updateOrderItem: OrderItemMutation.update(),
         deleteOrderItem: OrderItemMutation.delete(),
+        addOrder: OrderMutation.create(),
+        updateOrder: OrderMutation.update(),
+        deleteOrder: OrderMutation.delete(),
     },
 });
 
