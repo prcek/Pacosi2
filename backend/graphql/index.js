@@ -13,6 +13,7 @@ const ClientQuery = require('./queries/Client');
 const OrderItemQuery = require('./queries/OrderItem');
 const OrderQuery = require('./queries/Order');
 const LessonTypeQuery = require('./queries/LessonType');
+const MassageTypeQuery = require('./queries/MassageType');
 
 // import the user mutation file we created
 const UserMutation = require('./mutations/User');
@@ -20,6 +21,7 @@ const ClientMutation = require('./mutations/Client');
 const OrderItemMutation = require('./mutations/OrderItem');
 const OrderMutation = require('./mutations/Order');
 const LessonTypeMutation = require('./mutations/LessonType');
+const MassageTypeMutation = require('./mutations/MassageType');
 
 
 // lets define our root query
@@ -37,6 +39,8 @@ const RootQuery = new GraphQLObjectType({
         client: ClientQuery.single(),
         lessonTypes: LessonTypeQuery.index(),
         lessonType: LessonTypeQuery.single(),
+        massageTypes: MassageTypeQuery.index(),
+        massageType: MassageTypeQuery.single(),
     },
 });
 
@@ -61,6 +65,9 @@ const RootMutation = new GraphQLObjectType({
         addLessonType: LessonTypeMutation.create(),
         updateLessonType: LessonTypeMutation.update(),
         deleteLessonType: LessonTypeMutation.delete(),
+        addMassageType: MassageTypeMutation.create(),
+        updateMassageType: MassageTypeMutation.update(),
+        deleteMassageType: MassageTypeMutation.delete(),
     },
 });
 
