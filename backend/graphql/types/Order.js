@@ -9,6 +9,13 @@ const {
     GraphQLBoolean,
 } = GraphQL;
 
+const GraphQLIsoDate = require('graphql-iso-date');
+const {
+    GraphQLDate,
+    GraphQLTime,
+    GraphQLDateTime
+} = GraphQLIsoDate;
+
 const OrderItemType = require('./OrderItem');
 const UserType = require('./User');
 const OrderItemResolver = require('../resolvers/OrderItem');
@@ -73,11 +80,11 @@ const OrderType = new GraphQL.GraphQLObjectType({
         },
         
         created_at: {
-            type: GraphQLString,
+            type: GraphQLDateTime,
             description: 'Date and time when this order was created',
         },
         updated_at: {
-            type: GraphQLString,
+            type: GraphQLDateTime,
             description: 'Date and time when this order was last updated',
         }
 

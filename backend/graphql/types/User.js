@@ -8,6 +8,13 @@ const {
     GraphQLInt,
 } = GraphQL;
 
+const GraphQLIsoDate = require('graphql-iso-date');
+const {
+    GraphQLDate,
+    GraphQLTime,
+    GraphQLDateTime
+} = GraphQLIsoDate;
+
 
 const UserType = new GraphQL.GraphQLObjectType({
     name: 'User',
@@ -37,11 +44,11 @@ const UserType = new GraphQL.GraphQLObjectType({
             description: 'Status of the user, whether active or disabled',
         },
         created_at: {
-            type: GraphQLString,
+            type: GraphQLDateTime,
             description: 'Date and time when this users account was created',
         },
         updated_at: {
-            type: GraphQLString,
+            type: GraphQLDateTime,
             description: 'Date and time when this users account was last updated',
         }
 
