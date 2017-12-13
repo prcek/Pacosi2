@@ -12,12 +12,14 @@ const UserQuery = require('./queries/User');
 const ClientQuery = require('./queries/Client');
 const OrderItemQuery = require('./queries/OrderItem');
 const OrderQuery = require('./queries/Order');
+const LessonTypeQuery = require('./queries/LessonType');
 
 // import the user mutation file we created
 const UserMutation = require('./mutations/User');
 const ClientMutation = require('./mutations/Client');
 const OrderItemMutation = require('./mutations/OrderItem');
 const OrderMutation = require('./mutations/Order');
+const LessonTypeMutation = require('./mutations/LessonType');
 
 
 // lets define our root query
@@ -33,6 +35,8 @@ const RootQuery = new GraphQLObjectType({
         orderItem: OrderItemQuery.single(),
         clients: ClientQuery.index(),
         client: ClientQuery.single(),
+        lessonTypes: LessonTypeQuery.index(),
+        lessonType: LessonTypeQuery.single(),
     },
 });
 
@@ -54,6 +58,9 @@ const RootMutation = new GraphQLObjectType({
         addOrder: OrderMutation.create(),
         updateOrder: OrderMutation.update(),
         deleteOrder: OrderMutation.delete(),
+        addLessonType: LessonTypeMutation.create(),
+        updateLessonType: LessonTypeMutation.update(),
+        deleteLessonType: LessonTypeMutation.delete(),
     },
 });
 
