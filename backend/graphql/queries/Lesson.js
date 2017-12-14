@@ -7,6 +7,14 @@ const {
     GraphQLNonNull,
 } = GraphQL;
 
+const GraphQLIsoDate = require('graphql-iso-date');
+const {
+    GraphQLDate,
+    GraphQLTime,
+    GraphQLDateTime
+} = GraphQLIsoDate;
+
+
 // import the user type we created
 const LessonType = require('../types/Lesson');
 const LessonInfoType = require('../types/LessonInfo');
@@ -62,8 +70,25 @@ module.exports = {
         return {
             type: new GraphQLList(LessonInfoType),
             description: 'This will return all the items present in the database',
+            args: {
+                lesson_type_id: {
+                    type: GraphQLID,
+                    description: 'Please enter lesson type id',
+                },
+                date: {
+                    type: GraphQLDate,
+                    description: 'Please enter lesson date',
+                }
+            },
             resolve(parent, args, context, info) {
-                return LessonResolver.index({  });
+                let srch = {};
+                if (args.lesson_type_id) {
+                    srch.lesson_type_id=args.lesson_type_id
+                }
+                if (args.date) {
+                    srch.datetime={"$gte":args.date,"$lt":new Date(args.date.getTime()+ (24 * 60 * 60 * 1000))}
+                }
+                return LessonResolver.search(srch);
             }
         }
     },

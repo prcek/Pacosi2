@@ -49,12 +49,19 @@ const LessonInfoType = new GraphQL.GraphQLObjectType({
         
         members: {
             type: new GraphQLList(LessonMemberType),
-            description: 'This will return all the massage rooms present in the location',
+            description: 'This will return all the members present in the lesson',
             resolve(parent, args, context, info) {
                 return LessonMemberResolver.search({lesson_id:parent.id});
             }
         },
 
+        members_count: {
+            type: GraphQLInt,
+            description: 'This will return all the count of members present in the lesson',
+            resolve(parent, args, context, info) {
+                return LessonMemberResolver.count({lesson_id:parent.id});
+            }
+        },
 
         capacity: {
             type: GraphQLInt,

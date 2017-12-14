@@ -33,6 +33,18 @@ class LessonMemberController {
                 return error;
             });
     }
+
+    count(options) {
+        console.log("LessonMember.count",options)        
+        return this.model.find(options).count()
+            .exec()
+            .then( count => {
+                return count;
+            })
+            .catch( error => {
+                return error;
+            });
+    }
     
     // this will find a single record based on id and return it.
     single( options ) {
