@@ -57,6 +57,8 @@ const RootQuery = new GraphQLObjectType({
         lessonMember: LessonMemberQuery.single(),
         locations: LocationQuery.index(),
         location: LocationQuery.single(),
+        locationInfo: LocationQuery.info(),
+        locationsInfo: LocationQuery.infos(),
     },
 });
 
