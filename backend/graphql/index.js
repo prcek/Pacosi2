@@ -16,6 +16,7 @@ const LessonTypeQuery = require('./queries/LessonType');
 const MassageTypeQuery = require('./queries/MassageType');
 const LessonQuery = require('./queries/Lesson');
 const LessonMemberQuery = require('./queries/LessonMember');
+const LocationQuery = require('./queries/Location');
 
 // import the user mutation file we created
 const UserMutation = require('./mutations/User');
@@ -26,6 +27,7 @@ const LessonTypeMutation = require('./mutations/LessonType');
 const MassageTypeMutation = require('./mutations/MassageType');
 const LessonMutation = require('./mutations/Lesson');
 const LessonMemberMutation = require('./mutations/LessonMember');
+const LocationMutation = require('./mutations/Location');
 
 
 // lets define our root query
@@ -49,6 +51,8 @@ const RootQuery = new GraphQLObjectType({
         lesson: LessonQuery.single(),
         lessonMembers: LessonMemberQuery.index(),
         lessonMember: LessonMemberQuery.single(),
+        locations: LocationQuery.index(),
+        location: LocationQuery.single(),
     },
 });
 
@@ -82,6 +86,9 @@ const RootMutation = new GraphQLObjectType({
         addLessonMember: LessonMemberMutation.create(),
         updateLessonMember: LessonMemberMutation.update(),
         deleteLessonMember: LessonMemberMutation.delete(),
+        addLocation: LocationMutation.create(),
+        updateLocation: LocationMutation.update(),
+        deleteLocation: LocationMutation.delete(),
 
     },
 });
