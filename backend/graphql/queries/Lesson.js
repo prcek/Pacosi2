@@ -9,6 +9,7 @@ const {
 
 // import the user type we created
 const LessonType = require('../types/Lesson');
+const LessonInfoType = require('../types/LessonInfo');
 
 // import the user resolver we created
 const LessonResolver = require('../resolvers/Lesson');
@@ -38,6 +39,31 @@ module.exports = {
             },
             resolve(parent, args, context, info) {
                 return LessonResolver.single({ id: args.id });
+            }
+        }
+    },
+    info() {
+        return {
+            type: LessonInfoType,
+            description: 'This will return data of a single item based on the id provided',
+            args: {
+                id: {
+                    type: new GraphQLNonNull(GraphQLID),
+                    description: 'Please enter item id',
+                }
+            },
+            resolve(parent, args, context, info) {
+                return LessonResolver.single({ id: args.id });
+            }
+        }
+    },
+    
+    infos() {
+        return {
+            type: new GraphQLList(LessonInfoType),
+            description: 'This will return all the items present in the database',
+            resolve(parent, args, context, info) {
+                return LessonResolver.index({  });
             }
         }
     },
