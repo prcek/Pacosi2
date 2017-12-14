@@ -21,6 +21,19 @@ class MassageRoomController {
             });
     }
 
+    search(options) {
+        console.log("MassageRoom.search",options)
+        return this.model.find(options)
+            .sort('created_at')
+            .exec()
+            .then( records => {
+                return records;
+            })
+            .catch( error => {
+                return error;
+            });
+    }
+
     // this will find a single record based on id and return it.
     single( options ) {
         return this.model.findOne({ _id: options.id })
