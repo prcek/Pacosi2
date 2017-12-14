@@ -14,6 +14,7 @@ const OrderItemQuery = require('./queries/OrderItem');
 const OrderQuery = require('./queries/Order');
 const LessonTypeQuery = require('./queries/LessonType');
 const MassageTypeQuery = require('./queries/MassageType');
+const MassageRoomQuery = require('./queries/MassageRoom');
 const LessonQuery = require('./queries/Lesson');
 const LessonMemberQuery = require('./queries/LessonMember');
 const LocationQuery = require('./queries/Location');
@@ -25,6 +26,7 @@ const OrderItemMutation = require('./mutations/OrderItem');
 const OrderMutation = require('./mutations/Order');
 const LessonTypeMutation = require('./mutations/LessonType');
 const MassageTypeMutation = require('./mutations/MassageType');
+const MassageRoomMutation = require('./mutations/MassageRoom');
 const LessonMutation = require('./mutations/Lesson');
 const LessonMemberMutation = require('./mutations/LessonMember');
 const LocationMutation = require('./mutations/Location');
@@ -47,6 +49,8 @@ const RootQuery = new GraphQLObjectType({
         lessonType: LessonTypeQuery.single(),
         massageTypes: MassageTypeQuery.index(),
         massageType: MassageTypeQuery.single(),
+        massageRooms: MassageRoomQuery.index(),
+        massageRoom: MassageRoomQuery.single(),
         lessons: LessonQuery.index(),
         lesson: LessonQuery.single(),
         lessonMembers: LessonMemberQuery.index(),
@@ -80,6 +84,9 @@ const RootMutation = new GraphQLObjectType({
         addMassageType: MassageTypeMutation.create(),
         updateMassageType: MassageTypeMutation.update(),
         deleteMassageType: MassageTypeMutation.delete(),
+        addMassageRoom: MassageRoomMutation.create(),
+        updateMassageRoom: MassageRoomMutation.update(),
+        deleteMassageRoom: MassageRoomMutation.delete(),
         addLesson: LessonMutation.create(),
         updateLesson: LessonMutation.update(),
         deleteLesson: LessonMutation.delete(),
