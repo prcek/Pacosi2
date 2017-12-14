@@ -24,7 +24,6 @@ class ClientController {
     }
 
     lookup(text,limit=0) {
-        console.log("limit",limit)
         const srchtxt = "^"+escapeStringRegexp(removeDiacritics(text).toLowerCase().trim());
         return this.model.find({ $or: [{'search.surname': {$regex: srchtxt }},{'search.name':{$regex: srchtxt } }]}).limit(limit)
             .sort('created_at')
