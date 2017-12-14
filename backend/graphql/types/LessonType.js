@@ -16,6 +16,9 @@ const {
     GraphQLDateTime
 } = GraphQLIsoDate;
 
+const LocationType = require('./Location');
+const LocationResolver = require('../resolvers/Location');
+
 
 const LessonTypeType = new GraphQL.GraphQLObjectType({
     name: 'LessonType',
@@ -26,6 +29,20 @@ const LessonTypeType = new GraphQL.GraphQLObjectType({
             type: GraphQLID,
             description: 'ID of the lesson type, Generated automatically by MongoDB',
         },
+
+        location_id: {
+            type: GraphQLID,
+            description: 'location id',
+        },
+        
+        location: {
+            type: LocationType,
+            description: 'location',
+            resolve(parent, args, context, info) {
+                return LocationResolver.single({ id: parent.location_id });
+            }
+        },
+
         name: {
             type: GraphQLString,
             description: 'Name of the lesson type',

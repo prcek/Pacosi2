@@ -2,12 +2,18 @@
 
 const mongoose = require('mongoose');
 mongoose.Promise = require('bluebird');
+const Schema = mongoose.Schema;
 
 
 const LessonTypeSchema = mongoose.Schema(
     {
         name: {
             type: String,
+            required: true
+        },
+        location_id: {
+            type: Schema.Types.ObjectId,
+            ref: "Location",
             required: true
         },
         active: {

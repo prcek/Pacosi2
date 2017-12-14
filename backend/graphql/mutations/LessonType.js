@@ -28,6 +28,10 @@ module.exports = {
                     type: new GraphQLNonNull(GraphQLString),
                     description: 'Enter lesson type name, Cannot be left empty',
                 },
+                location_id: {
+                    type: new GraphQLNonNull(GraphQLID),
+                    description: 'Enter location id, Cannot be left empty',
+                },
                 active: {
                     type: GraphQLBoolean,
                     description: 'Enters lesson type status, by default its set to active. true: active, false: disabled',
@@ -53,6 +57,10 @@ module.exports = {
                 name: {
                     type: GraphQLString,
                     description: 'Enter lesson type name, Cannot be left empty',
+                },
+                location_id: {
+                    type: GraphQLID,
+                    description: 'Enter location id',
                 },
                 active: {
                     type: GraphQLBoolean,
