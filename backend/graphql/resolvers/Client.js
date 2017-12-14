@@ -1,6 +1,8 @@
 'use strict';
 
 const Client = require('../../services/models/Client');
+const escapeStringRegexp = require('escape-string-regexp');
+const removeDiacritics = require('diacritics').remove;
 
 class ClientController {
 
@@ -20,6 +22,21 @@ class ClientController {
                 return error;
             });
     }
+
+    lookup(text,limit=0) {
+        console.log("limit",limit)
+        const srchtxt = "^"+escapeStringRegexp(removeDiacritics(text).toLowerCase().trim());
+        return this.model.find({ $or: [{'search.surname': {$regex: srchtxt }},{'search.name':{$regex: srchtxt } }]}).limit(limit)
+            .sort('created_at')
+            .exec()
+            .then( records => {
+                return records;
+            })
+            .catch( error => {
+                return error;
+            });
+    }
+
 
     // this will find a single record based on id and return it.
     single( options ) {

@@ -5,6 +5,8 @@ const {
     GraphQLList,
     GraphQLID,
     GraphQLNonNull,
+    GraphQLString,
+    GraphQLInt
 } = GraphQL;
 
 // import the user type we created
@@ -41,5 +43,26 @@ module.exports = {
             }
         }
     },
+
+    lookup() {
+        return {
+            type: new GraphQLList(ClientType),
+            description: 'This will return data of a single client based on the id provided',
+            args: {
+                text: {
+                    type: new GraphQLNonNull(GraphQLString),
+                    description: 'Please enter text',
+                },
+                limit: {
+                    type: GraphQLInt,
+                    description: 'Please max limit',
+                }
+
+            },
+            resolve(parent, args, context, info) {
+                return ClientResolver.lookup(args.text,args.limit);
+            }
+        }
+    }
 
 };

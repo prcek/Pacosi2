@@ -29,6 +29,11 @@ const ClientSchema = mongoose.Schema(
             type: Boolean,
             default: true
         },
+
+        search: {
+            name: String,
+            surname: String
+        }
     },
     {
         timestamps: { createdAt: 'created_at', updatedAt: 'updated_at' },
@@ -36,7 +41,27 @@ const ClientSchema = mongoose.Schema(
     }
 );
 
+const removeDiacritics = require('diacritics').remove;
 
+
+
+ClientSchema.pre('save', function(next) {
+    if ( this.isModified('surname') ) {
+        if (this.surname) {
+            this.search.surname = removeDiacritics(this.surname).toLowerCase().trim();
+        } else {
+            this.search.surname = "";
+        }
+    } 
+    if ( this.isModified('name') ) {
+        if (this.name) {
+            this.search.name = removeDiacritics(this.name).toLowerCase().trim();
+        } else {
+            this.search.name = "";
+        }
+    } 
+    next();
+});
 
 
 module.exports = mongoose.model( 'Client', ClientSchema );
