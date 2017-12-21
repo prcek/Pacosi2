@@ -15,7 +15,7 @@ const CurrentUsers = gql`
       name
       email
     }
-    mista: locations {
+    locations {
       id,name
     }
   }
@@ -32,7 +32,6 @@ class App extends Component {
   }
   
   renderUsers(users) {
-    return "";
     return users.map(user=> (
       <div key={user.id}> {user.name} {user.email} </div>
     ));

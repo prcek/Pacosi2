@@ -8,7 +8,28 @@ import Button from 'material-ui/Button';
 import IconButton from 'material-ui/IconButton';
 import MenuIcon from 'material-ui-icons/Menu';
 
-//import { compose } from 'react-apollo'
+import { compose } from 'react-apollo'
+
+import { graphql } from 'react-apollo';
+import gql from 'graphql-tag';
+
+const CurrentLocations = gql`
+  query CurrentLocations {
+    locations {
+      id,name
+    }
+  }
+`;
+
+
+const addUser = gql`
+  mutation addUser {
+    addUser(name:"new",email:"xxxx",password:"xxx") {
+      id
+    }
+  }
+`;
+
 
 const styles = theme => ({
   root: {
@@ -28,7 +49,10 @@ class MenuBar extends React.Component {
     //constructor(props) {
     //  super(props);
    // }
-
+    onClick() {
+      console.log("CLICK");
+      this.props.mutateAddUser({}).then(console.log("done"));
+    }
     render() {
         const { classes } = this.props;
         return (
@@ -42,7 +66,7 @@ class MenuBar extends React.Component {
                    xxx
                 </Typography>
                 <Button color="contrast">Button1</Button>
-                <Button color="contrast">Button2</Button>
+                <Button color="contrast" onClick={(x)=>{this.onClick(x)}}>Button2</Button>
                 <Typography color="inherit" className={classes.flex}>
                 &nbsp;
                 </Typography>
@@ -58,4 +82,8 @@ MenuBar.propTypes = {
   classes: PropTypes.object.isRequired,
 };
 
-export default withStyles(styles)(MenuBar);
+export default compose(
+  withStyles(styles),
+  graphql(CurrentLocations,{name: "locations"}),
+  graphql(addUser,{name:"mutateAddUser",options: {refetchQueries:['CurrentUsers']}}),
+)(MenuBar);
