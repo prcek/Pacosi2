@@ -8,6 +8,8 @@ import Button from 'material-ui/Button';
 import IconButton from 'material-ui/IconButton';
 import MenuIcon from 'material-ui-icons/Menu';
 
+//import { compose } from 'react-apollo'
+
 const styles = theme => ({
   root: {
     marginTop: theme.spacing.unit * 3,
@@ -42,6 +44,7 @@ class MenuBar extends React.Component {
                 <Button color="contrast">Button1</Button>
                 <Button color="contrast">Button2</Button>
                 <Typography color="inherit" className={classes.flex}>
+                &nbsp;
                 </Typography>
                 <Button color="contrast">Login</Button>
                 </Toolbar>

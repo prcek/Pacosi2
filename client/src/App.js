@@ -4,17 +4,41 @@ import Typography from 'material-ui/Typography';
 import AccessAlarmIcon from 'material-ui-icons/AccessAlarm';
 import MenuBar from './MenuBar';
 
+import { graphql } from 'react-apollo';
+import gql from 'graphql-tag';
+
+
+const CurrentUsers = gql`
+  query CurrentUsers {
+    users {
+      id
+      name
+      email
+    }
+    mista: locations {
+      id,name
+    }
+  }
+`;
+
+
 
 class App extends Component {
 
   state = {users: []}
   
   componentDidMount() {
-    fetch('/users')
-      .then(res => res.json())
-      .then(users => this.setState({ users }));
+
   }
   
+  renderUsers(users) {
+    return "";
+    return users.map(user=> (
+      <div key={user.id}> {user.name} {user.email} </div>
+    ));
+
+    
+  }
 
   render() {
     return (
@@ -26,9 +50,8 @@ class App extends Component {
           To get started, edit <code>src/App.js</code> and save to reload.
         </p>
         <h1>Users</h1>
-        {this.state.users.map(user =>
-          <div key={user.id}>{user.username}</div>
-        )}
+        {this.props.data.loading ? <div> loading </div>: this.renderUsers(this.props.data.users) }
+        
         <Typography> Hi this is Typography </Typography>
         <AccessAlarmIcon/>
       </div>
@@ -36,4 +59,4 @@ class App extends Component {
   }
 }
 
-export default App;
+export default graphql(CurrentUsers)(App);
