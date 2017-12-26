@@ -3,10 +3,10 @@ import 'typeface-roboto';
 import Typography from 'material-ui/Typography';
 import AccessAlarmIcon from 'material-ui-icons/AccessAlarm';
 import MenuBar from './MenuBar';
-
+import { compose } from 'react-apollo'
 import { graphql } from 'react-apollo';
 import gql from 'graphql-tag';
-
+import { connect } from 'react-redux'
 
 const CurrentUsers = gql`
   query CurrentUsers {
@@ -53,9 +53,18 @@ class App extends Component {
         
         <Typography> Hi this is Typography </Typography>
         <AccessAlarmIcon/>
+        {this.props.current_location_id ? <div> current location is {this.props.current_location_id} </div> : <div> no current location </div> }
       </div>
     );
   }
 }
 
-export default graphql(CurrentUsers)(App);
+function mapStateToProps(state) {
+  return { current_location_id: state.location }
+}
+
+
+export default compose(
+  graphql(CurrentUsers),
+  connect(mapStateToProps)
+)(App);

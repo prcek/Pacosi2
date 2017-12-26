@@ -7,11 +7,17 @@ import Typography from 'material-ui/Typography';
 import Button from 'material-ui/Button';
 import IconButton from 'material-ui/IconButton';
 import MenuIcon from 'material-ui-icons/Menu';
+import Select from 'material-ui/Select';
+import { MenuItem } from 'material-ui/Menu'
+
 
 import { compose } from 'react-apollo'
+import { connect } from 'react-redux'
 
 import { graphql } from 'react-apollo';
 import gql from 'graphql-tag';
+
+import { setLocation } from './actions'
 
 const CurrentLocations = gql`
   query CurrentLocations {
@@ -51,8 +57,14 @@ class MenuBar extends React.Component {
    // }
     onClick() {
       console.log("CLICK");
-      this.props.mutateAddUser({}).then(console.log("done"));
     }
+
+    renderLocations(locations) {
+      return locations.map(location=> (
+        <MenuItem key={location.id} value={location.id}> {location.name} </MenuItem>
+      ));
+    }
+
     render() {
         const { classes } = this.props;
         return (
@@ -71,6 +83,10 @@ class MenuBar extends React.Component {
                 &nbsp;
                 </Typography>
                 <Button color="contrast">Login</Button>
+                <Select value={this.props.current_location_id?this.props.current_location_id:""} onChange={(e)=>this.props.onSelectLocation(e.target.value)}>
+                  <MenuItem value="">None</MenuItem>
+                  {!this.props.locations.loading && this.renderLocations(this.props.locations.locations) }
+                </Select>
                 </Toolbar>
             </AppBar>
             </div>
@@ -82,8 +98,22 @@ MenuBar.propTypes = {
   classes: PropTypes.object.isRequired,
 };
 
+
+function mapStateToProps(state) {
+  return { current_location_id: state.location }
+}
+
+const mapDispatchToProps = dispatch => {
+  return {
+    onSelectLocation: id => {
+      dispatch(setLocation(id))
+    }
+  }
+}
+
 export default compose(
   withStyles(styles),
+  connect(mapStateToProps,mapDispatchToProps),
   graphql(CurrentLocations,{name: "locations"}),
   graphql(addUser,{name:"mutateAddUser",options: {refetchQueries:['CurrentUsers']}}),
 )(MenuBar);
