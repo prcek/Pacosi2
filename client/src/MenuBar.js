@@ -10,6 +10,7 @@ import MenuIcon from 'material-ui-icons/Menu';
 import Select from 'material-ui/Select';
 import { MenuItem } from 'material-ui/Menu'
 
+import { Link } from 'react-router-dom';
 
 import { compose } from 'react-apollo'
 import { connect } from 'react-redux'
@@ -77,8 +78,8 @@ class MenuBar extends React.Component {
                 <Typography type="headline" color="inherit">
                    xxx
                 </Typography>
-                <Button color="contrast">Button1</Button>
-                <Button color="contrast" onClick={(x)=>{this.onClick(x)}}>Button2</Button>
+                <Button color="contrast" component={Link} to="/page1">Button1</Button>
+                <Button color="contrast" component={Link} to="/page2">Button2</Button>
                 <Typography color="inherit" className={classes.flex}>
                 &nbsp;
                 </Typography>

@@ -7,9 +7,10 @@ import { compose } from 'react-apollo'
 import { graphql } from 'react-apollo';
 import gql from 'graphql-tag';
 import { connect } from 'react-redux'
-
+import { Route , Switch} from 'react-router-dom';
 import { SnackbarContent } from 'material-ui/Snackbar';
 
+import { withRouter } from 'react-router'
 
 const CurrentUsers = gql`
   query CurrentUsers {
@@ -20,6 +21,13 @@ const CurrentUsers = gql`
     }
   }
 `;
+
+
+const Child = ({ match }) => (
+  <div>
+    <h3>ID: {match.params.id}</h3>
+  </div>
+)
 
 
 
@@ -40,6 +48,7 @@ class App extends Component {
   }
 
   render() {
+    console.log(this.props)
     return (
       <div className="App">
         <header className="App-header">
@@ -47,7 +56,7 @@ class App extends Component {
         </header>
 
         {! this.props.current_location_id && <SnackbarContent message="neni zvolena lokalita"/>}
-
+        <Route path="/:id" component={Child}/>
 
         <p className="App-intro">
           To get started, edit <code>src/App.js</code> and save to reload.
@@ -67,7 +76,8 @@ function mapStateToProps(state) {
 }
 
 
-export default compose(
+export default withRouter(compose(
+  
   graphql(CurrentUsers),
-  connect(mapStateToProps)
-)(App);
+  connect(mapStateToProps),
+)(App));
