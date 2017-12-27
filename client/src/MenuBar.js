@@ -107,7 +107,7 @@ class MenuBar extends React.Component {
                 </Typography>
 
                 <Button color="contrast" component={Link} to="/users">Users</Button>
-                <Button color="contrast" component={Link} to="/page2">Button2</Button>
+                <Button color="contrast" component={Link} to="/clients">Klienti</Button>
 
                 <Select value={this.props.current_location_id?this.props.current_location_id:""} onChange={(e)=>this.onNewLocation(e.target.value)}>
                   <MenuItem value="">None</MenuItem>

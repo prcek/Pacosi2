@@ -14,9 +14,9 @@ const styles = theme => ({
     },
 });
   
-const CurrentUsers = gql`
-  query CurrentUsers {
-    users {
+const CurrentClients = gql`
+  query Clients {
+    clients {
       id
       name
       email
@@ -25,10 +25,10 @@ const CurrentUsers = gql`
 `;
 
 
-class Users extends React.Component {
+class Clients extends React.Component {
 
-    renderUsers(users) {
-        return users.map(user=> (
+    renderClients(clients) {
+        return clients.map(user=> (
           <div key={user.id}> {user.id} {user.name} {user.email} </div>
         ));
     }
@@ -37,20 +37,20 @@ class Users extends React.Component {
     render() {
         return (
             <div>
-            <Typography> I Am Users page </Typography>
-            {this.props.data.loading ? <div> loading </div>: this.renderUsers(this.props.data.users) }
+            <Typography> I Am Clients page </Typography>
+            {this.props.data.loading ? <div> loading </div>: this.renderClients(this.props.data.clients) }
             </div>
         )
     }
 }
 
 
-Users.propTypes = {
+Clients.propTypes = {
     classes: PropTypes.object.isRequired,
 };
   
 
 export default compose(
     withStyles(styles),
-    graphql(CurrentUsers),
-)(Users)
+    graphql(CurrentClients),
+)(Clients)

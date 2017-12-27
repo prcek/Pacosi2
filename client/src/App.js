@@ -12,6 +12,7 @@ import { withRouter } from 'react-router'
 import MassageRoom from './components/MassageRoom';
 import LessonType from './components/LessonType';
 import Users from './components/Users';
+import Clients from './components/Clients';
 
 
 
@@ -33,6 +34,13 @@ const PageUsers = ({ match }) => (
   <div>
     <h3>Users</h3>
     <Users />
+  </div>
+)
+
+const PageClients = ({ match }) => (
+  <div>
+    <h3>Clients</h3>
+    <Clients />
   </div>
 )
 
@@ -59,6 +67,7 @@ class App extends Component {
           <Route path="/lessons/:id" component={PageLessons}/>
           <Route path="/massages/:id" component={PageMassages}/>
           <Route path="/users" component={PageUsers}/>
+          <Route path="/clients" component={PageClients}/>
           <Route component={PageNoMatch}/>
         </Switch>
 
