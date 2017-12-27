@@ -11,7 +11,7 @@ import Select from 'material-ui/Select';
 import { MenuItem } from 'material-ui/Menu'
 
 import { Link } from 'react-router-dom';
-
+import { withRouter } from 'react-router';
 import { compose } from 'react-apollo'
 import { connect } from 'react-redux'
 
@@ -24,6 +24,20 @@ const CurrentLocations = gql`
   query CurrentLocations {
     locations {
       id,name
+    }
+  }
+`;
+
+
+const LocationInfo = gql`
+  query LocationInfo($location_id:ID!) {
+    locationInfo(id:$location_id) {
+      id,name,massageRooms {
+        id,name
+      },
+      lessonTypes {
+        id,name
+      }
     }
   }
 `;
@@ -56,10 +70,27 @@ class MenuBar extends React.Component {
     //constructor(props) {
     //  super(props);
    // }
+    onNewLocation(location_id) {
+      this.props.onSelectLocation(location_id);
+      this.props.history.replace('/');
+    }
+
     onClick() {
       console.log("CLICK");
     }
 
+    renderMenu() {
+      const lessons = this.props.locationInfo.locationInfo.lessonTypes.map(lt=> (
+        <Button color="contrast" key={lt.id} component={Link} to={"/lessons/"+lt.id}>{lt.name}</Button>
+      ));
+      const massages = this.props.locationInfo.locationInfo.massageRooms.map(mr=> (
+        <Button color="contrast" key={mr.id} component={Link} to={"/massages/"+mr.id}>{mr.name}</Button>
+      ));
+      return [
+        ...lessons,
+        ...massages
+      ]
+    }
     renderLocations(locations) {
       return locations.map(location=> (
         <MenuItem key={location.id} value={location.id}> {location.name} </MenuItem>
@@ -75,18 +106,18 @@ class MenuBar extends React.Component {
                 <IconButton className={classes.menuButton} color="contrast" aria-label="Menu">
                     <MenuIcon />
                 </IconButton>
-                <Typography type="headline" color="inherit">
-                   xxx
-                </Typography>
+
+                {this.props.locationInfo.locationInfo && this.renderMenu()} 
+
                 <Button color="contrast" component={Link} to="/page1">Button1</Button>
                 <Button color="contrast" component={Link} to="/page2">Button2</Button>
+
                 <Typography color="inherit" className={classes.flex}>
                 &nbsp;
                 </Typography>
-                <Button color="contrast">Login</Button>
-                <Select value={this.props.current_location_id?this.props.current_location_id:""} onChange={(e)=>this.props.onSelectLocation(e.target.value)}>
+                <Select value={this.props.current_location_id?this.props.current_location_id:""} onChange={(e)=>this.onNewLocation(e.target.value)}>
                   <MenuItem value="">None</MenuItem>
-                  {!this.props.locations.loading && this.renderLocations(this.props.locations.locations) }
+                  {this.props.locations.locations && this.renderLocations(this.props.locations.locations) }
                 </Select>
                 </Toolbar>
             </AppBar>
@@ -112,9 +143,10 @@ const mapDispatchToProps = dispatch => {
   }
 }
 
-export default compose(
+export default withRouter(compose(
   withStyles(styles),
   connect(mapStateToProps,mapDispatchToProps),
   graphql(CurrentLocations,{name: "locations"}),
+  graphql(LocationInfo,{name: "locationInfo",skip: (ownProps) =>  !ownProps.current_location_id, options: ({current_location_id})=>({variables:{location_id:current_location_id}})}),
   graphql(addUser,{name:"mutateAddUser",options: {refetchQueries:['CurrentUsers']}}),
-)(MenuBar);
+)(MenuBar));

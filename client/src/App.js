@@ -7,7 +7,7 @@ import { compose } from 'react-apollo'
 import { graphql } from 'react-apollo';
 import gql from 'graphql-tag';
 import { connect } from 'react-redux'
-import { Route , Switch} from 'react-router-dom';
+import { Route, Switch } from 'react-router-dom';
 import { SnackbarContent } from 'material-ui/Snackbar';
 
 import { withRouter } from 'react-router'
@@ -23,12 +23,17 @@ const CurrentUsers = gql`
 `;
 
 
-const Child = ({ match }) => (
+const ChildLessons = ({ match }) => (
   <div>
-    <h3>ID: {match.params.id}</h3>
+    <h3>LessonType ID: {match.params.id}</h3>
   </div>
 )
 
+const ChildMassages = ({ match }) => (
+  <div>
+    <h3>MassageRoom ID: {match.params.id}</h3>
+  </div>
+)
 
 
 class App extends Component {
@@ -48,15 +53,18 @@ class App extends Component {
   }
 
   render() {
-    console.log(this.props)
     return (
       <div className="App">
         <header className="App-header">
           <MenuBar />
         </header>
 
-        {! this.props.current_location_id && <SnackbarContent message="neni zvolena lokalita"/>}
-        <Route path="/:id" component={Child}/>
+        {! this.props.current_location_id && <SnackbarContent message="není zvolena lokalita"/>}
+
+        <Switch>
+          <Route path="/lessons/:id" component={ChildLessons}/>
+          <Route path="/massages/:id" component={ChildMassages}/>
+        </Switch>
 
         <p className="App-intro">
           To get started, edit <code>src/App.js</code> and save to reload.
