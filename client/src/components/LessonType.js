@@ -81,8 +81,6 @@ class LessonType extends React.Component {
         const lessons = this.renderLessons();
         return (
             <div>
-            <Typography> I Am LessonType (id:{this.props.lessonTypeId}) </Typography>
-            {this.state.currentDate && <div> {moment(this.state.currentDate).format('LL')} </div>}
             <Grid container>
                 <Grid item xs={12} sm={5} md={4} lg={3}>
                     <Paper>
@@ -93,6 +91,8 @@ class LessonType extends React.Component {
                 {lessons}
                 </Grid>
             </Grid>
+            <Typography> I Am LessonType (id:{this.props.lessonTypeId}) </Typography>
+            {this.state.currentDate && <div> {moment(this.state.currentDate).format('LL')} </div>}
             </div>
         )
     }
