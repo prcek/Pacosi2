@@ -32,7 +32,19 @@ class LessonType extends React.Component {
                         long: "Dnes",
                         short: "Dnes"
                     }
-                }}/>
+                }}
+                theme={{
+                    todayColor: '#3f51b5',
+                    weekdayColor: '#3f51b5',
+                    selectionColor: '#3f51b5',
+                    floatingNav: {
+                        background: '#3f51b5',
+                        color: '#FFF',
+                        chevron: '#FFF'
+                      }
+                }}
+                
+                />
         );
     }
 
