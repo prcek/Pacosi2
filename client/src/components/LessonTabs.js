@@ -65,14 +65,16 @@ class LessonTabs extends React.Component {
         const tabs = this.props.lessonsInfo.lessonsInfo.map(li=> (
             <Tab key={li.id} value={li.id} label={this.lessonTitle(li)}/>
           ));
-        return tabs;
+        return [
+            ...tabs,
+            <Tab value="new" icon={<AddIcon/>} />
+        ];
     }
 
     render() {
         return (
             <Tabs value={this.state.currentTab} scrollable scrollButtons="auto" onChange={(e,v)=>this.handleTabChange(v)}>
                 {(this.props.lessonsInfo && this.props.lessonsInfo.lessonsInfo) && this.renderTabs()} 
-                <Tab value="new" icon={<AddIcon/>} />
             </Tabs>
         )
     }

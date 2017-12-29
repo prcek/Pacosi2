@@ -90,7 +90,7 @@ class LessonType extends React.Component {
                     {cal}
                 </Grid>
                 <Grid item xs={12} sm={7} md={8} lg={9}>
-                    {lessons} 
+                {lessons}
                 </Grid>
             </Grid>
             </div>
