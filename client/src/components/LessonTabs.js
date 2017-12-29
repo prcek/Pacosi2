@@ -2,12 +2,12 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { withStyles } from 'material-ui/styles';
 import { compose } from 'react-apollo'
-import 'react-infinite-calendar/styles.css';
 import Tabs, { Tab } from 'material-ui/Tabs';
 import AddIcon from 'material-ui-icons/Add';
 import { graphql } from 'react-apollo';
 import gql from 'graphql-tag';
-
+import LessonTab from './LessonTab';
+import Paper from 'material-ui/Paper';
 
 var moment = require('moment');
 require("moment/min/locales.min");
@@ -43,7 +43,6 @@ class LessonTabs extends React.Component {
     }
 
     handleTabChange(value) {
-        console.log(value);
         this.setState({currentTab:value})
     };
     
@@ -67,15 +66,18 @@ class LessonTabs extends React.Component {
           ));
         return [
             ...tabs,
-            <Tab value="new" icon={<AddIcon/>} />
+            <Tab key="new" value="new" icon={<AddIcon/>} />
         ];
     }
 
     render() {
         return (
-            <Tabs value={this.state.currentTab} scrollable scrollButtons="auto" onChange={(e,v)=>this.handleTabChange(v)}>
-                {(this.props.lessonsInfo && this.props.lessonsInfo.lessonsInfo) && this.renderTabs()} 
-            </Tabs>
+            <Paper>
+                <Tabs value={this.state.currentTab} scrollable scrollButtons="auto" onChange={(e,v)=>this.handleTabChange(v)}>
+                    {(this.props.lessonsInfo && this.props.lessonsInfo.lessonsInfo) && this.renderTabs()} 
+                </Tabs>
+                {(this.state.currentTab && this.state.currentTab!=="new") && <LessonTab lessonId={this.state.currentTab}/>}
+            </Paper>
         )
     }
 }

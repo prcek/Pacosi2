@@ -5,9 +5,9 @@ import Typography from 'material-ui/Typography';
 import { compose } from 'react-apollo'
 import InfiniteCalendar from 'react-infinite-calendar';
 import 'react-infinite-calendar/styles.css';
-import Paper from 'material-ui/Paper';
 import Grid from 'material-ui/Grid';
 import LessonTabs from './LessonTabs';
+import Paper from 'material-ui/Paper';
 
 var moment = require('moment');
 require("moment/min/locales.min");
@@ -70,9 +70,7 @@ class LessonType extends React.Component {
 
     renderLessons() {
         return (
-            <Paper>
-                <LessonTabs lessonTypeId={this.props.lessonTypeId} lessonDate={this.state.currentDate}/>
-            </Paper>
+            <LessonTabs lessonTypeId={this.props.lessonTypeId} lessonDate={this.state.currentDate}/>
         )
     }
 
@@ -87,7 +85,9 @@ class LessonType extends React.Component {
             {this.state.currentDate && <div> {moment(this.state.currentDate).format('LL')} </div>}
             <Grid container>
                 <Grid item xs={12} sm={5} md={4} lg={3}>
+                    <Paper>
                     {cal}
+                    </Paper>
                 </Grid>
                 <Grid item xs={12} sm={7} md={8} lg={9}>
                 {lessons}
