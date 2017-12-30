@@ -10,6 +10,8 @@ import Typography from 'material-ui/Typography';
 import Button from 'material-ui/Button';
 import DeleteIcon from 'material-ui-icons/Delete';
 import DateTimeView from './DateTimeView';
+import Checkbox from 'material-ui/Checkbox';
+
 var moment = require('moment');
 require("moment/min/locales.min");
 moment.locale('cs');
@@ -85,7 +87,9 @@ class LessonTab extends React.Component {
                 <TableCell padding={"dense"} classes={{root:classes.cell}}>{m.client.name}</TableCell>
                 <TableCell padding={"dense"} classes={{root:classes.cell}}>{m.client.phone}</TableCell>
                 <TableCell padding={"dense"} classes={{root:classes.cell}}><DateTimeView date={new Date()} format="LLL"/></TableCell>
-                <TableCell padding={"dense"} classes={{root:classes.cell}}>checkbox</TableCell>
+                <TableCell padding={"checkbox"} classes={{root:classes.cell}}>
+                    <Checkbox checked={m.presence} disabled />
+                </TableCell>
                 <TableCell padding={"dense"} classes={{root:classes.cell}}>
                     <Toolbar disableGutters={true} classes={{root:classes.toolbar}} >
                         <Button raised style={{minWidth:"38px"}}> <DeleteIcon/>  </Button>
