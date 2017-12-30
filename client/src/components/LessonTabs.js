@@ -7,6 +7,7 @@ import AddIcon from 'material-ui-icons/Add';
 import { graphql } from 'react-apollo';
 import gql from 'graphql-tag';
 import LessonTab from './LessonTab';
+import LessonTabAdd from './LessonTabAdd';
 import Paper from 'material-ui/Paper';
 
 var moment = require('moment');
@@ -77,6 +78,7 @@ class LessonTabs extends React.Component {
                     {(this.props.lessonsInfo && this.props.lessonsInfo.lessonsInfo) && this.renderTabs()} 
                 </Tabs>
                 {(this.state.currentTab && this.state.currentTab!=="new") && <LessonTab lessonId={this.state.currentTab}/>}
+                {(this.state.currentTab && this.state.currentTab==="new") && <LessonTabAdd lessonTypeId={this.props.lessonTypeId} date={this.props.lessonDate}/>}
             </Paper>
         )
     }
