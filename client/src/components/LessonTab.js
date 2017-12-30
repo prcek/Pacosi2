@@ -131,9 +131,8 @@ class LessonTab extends React.Component {
                 <TableBody>{members}</TableBody>
                 <TableFooter>
                 </TableFooter>
-                
             </Table>
-          
+            <Typography type="caption"> Lesson Id: {this.props.lessonId} </Typography>
             </div>
         );
         

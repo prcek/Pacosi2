@@ -17,10 +17,9 @@ import Clients from './components/Clients';
 
 
 const PageLessons = ({ match }) => (
-  <div>
-    <h3>LessonType ID: {match.params.id}</h3>
-    <LessonType lessonTypeId={match.params.id}/>
-  </div>
+ 
+  <LessonType lessonTypeId={match.params.id}/>
+  
 )
 
 const PageMassages = ({ match }) => (

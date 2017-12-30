@@ -52,6 +52,9 @@ const styles = theme => ({
   flex: {
     flex: 1,
   },
+  toolbar: {
+    minHeight:50
+  },
   menuButton: {
     marginLeft: -12,
     marginRight: 20,
@@ -97,7 +100,7 @@ class MenuBar extends React.Component {
         return (
             <div className={classes.root}>
             <AppBar position="static">
-                <Toolbar>
+                <Toolbar classes={{root:classes.toolbar}}>
          
                 {this.props.locationInfo && this.renderMenu()} 
 
@@ -106,7 +109,7 @@ class MenuBar extends React.Component {
                 &nbsp;
                 </Typography>
 
-                <Button color="contrast" component={Link} to="/users">Users</Button>
+                <Button color="accent" component={Link} to="/users">Users</Button>
                 <Button color="contrast" component={Link} to="/clients">Klienti</Button>
 
                 <Select value={this.props.current_location_id?this.props.current_location_id:""} onChange={(e)=>this.onNewLocation(e.target.value)}>
