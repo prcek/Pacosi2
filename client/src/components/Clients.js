@@ -19,7 +19,9 @@ const CurrentClients = gql`
     clients {
       id
       name
+      surname
       email
+      phone
     }
   }
 `;
@@ -29,7 +31,7 @@ class Clients extends React.Component {
 
     renderClients(clients) {
         return clients.map(user=> (
-          <div key={user.id}> {user.id} {user.name} {user.email} </div>
+          <div key={user.id}> {user.id} {user.name} {user.surname} {user.phone} {user.email} </div>
         ));
     }
     

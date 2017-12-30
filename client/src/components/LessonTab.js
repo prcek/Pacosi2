@@ -8,7 +8,8 @@ import Table, { TableBody, TableCell, TableHead, TableRow, TableFooter } from 'm
 import Toolbar from 'material-ui/Toolbar';
 import Typography from 'material-ui/Typography';
 import Button from 'material-ui/Button';
-
+import DeleteIcon from 'material-ui-icons/Delete';
+import DateTimeView from './DateTimeView';
 var moment = require('moment');
 require("moment/min/locales.min");
 moment.locale('cs');
@@ -20,7 +21,13 @@ const LessonInfo = gql`
     lessonInfo(id:$lesson_id) {
         id,datetime,capacity,members {
             id,presence,client {
-              id,name,surname
+              id,name,surname,phone
+            }
+        }
+        lesson_type {
+            name
+            location {
+              name
             }
         }
     }
@@ -34,11 +41,32 @@ const styles = theme => ({
     root: {
       marginTop: theme.spacing.unit * 3,
       width: '100%',
+      overflowX: 'auto',
+    },
+    flex: {
+        flex: 1,
     },
     table: {
-        minWidth: 500,
-        margin: theme.spacing.unit*3
+       
     },
+    button: {
+        margin: theme.spacing.unit,
+    },
+    cell: {
+        xheight:"28px",
+        xcolor:"red"
+    },
+    row: {
+        xheight:"28px"
+    },
+    celltb: {
+        margin:0,
+        padding:0
+    },
+    toolbar: {
+        minHeight:0
+    }
+    
 });
   
 
@@ -47,17 +75,23 @@ class LessonTab extends React.Component {
 
     
     renderMembers(members) {
+        const { classes } = this.props;
         console.log(members)
         return members.map((m,i)=>(
-            <TableRow key={m.id}>
-                <TableCell>{i+1}</TableCell>
-                <TableCell>12345</TableCell>
-                <TableCell>{m.client.surname}</TableCell>
-                <TableCell>{m.client.name}</TableCell>
-                <TableCell>{m.client.phone}</TableCell>
-                <TableCell>2017-12-12 13:34</TableCell>
-                <TableCell>checkbox</TableCell>
-
+            <TableRow hover key={m.id} classes={{root:classes.row}}>
+                <TableCell padding={"dense"} classes={{root:classes.cell}}>{i+1}</TableCell>
+                <TableCell padding={"dense"} classes={{root:classes.cell}}>12345</TableCell>
+                <TableCell padding={"dense"} classes={{root:classes.cell}}>{m.client.surname}</TableCell>
+                <TableCell padding={"dense"} classes={{root:classes.cell}}>{m.client.name}</TableCell>
+                <TableCell padding={"dense"} classes={{root:classes.cell}}>{m.client.phone}</TableCell>
+                <TableCell padding={"dense"} classes={{root:classes.cell}}><DateTimeView date={new Date()} format="LLL"/></TableCell>
+                <TableCell padding={"dense"} classes={{root:classes.cell}}>checkbox</TableCell>
+                <TableCell padding={"dense"} classes={{root:classes.cell}}>
+                    <Toolbar disableGutters={true} classes={{root:classes.toolbar}} >
+                        <Button raised style={{minWidth:"38px"}}> <DeleteIcon/>  </Button>
+                        
+                    </Toolbar>
+                </TableCell>
             </TableRow>
         ));  
     }
@@ -68,22 +102,26 @@ class LessonTab extends React.Component {
             return null;
         } 
         const members = this.renderMembers(this.props.lessonInfo.lessonInfo.members)
+        const lessonInfo = this.props.lessonInfo.lessonInfo;
         return (
-            <div>
+            <div className={classes.root}>
             <Toolbar>
-                <Typography> lekce xyz </Typography>
-                <Button > zapsat </Button>
+                <Typography type="title" className={classes.flex} noWrap> Lekce {lessonInfo.lesson_type.name} - {lessonInfo.lesson_type.location.name}, <DateTimeView date={lessonInfo.datetime} format="LLLL"/> </Typography>
+                <Button raised className={classes.button} > zapsat </Button>
+                <Button raised className={classes.button} > dochazka </Button>
+                <Button raised className={classes.button} > nastaveni lekce </Button>
             </Toolbar>
             <Table className={classes.table}>
                 <TableHead>
-                    <TableRow>
-                        <TableCell>#</TableCell>
-                        <TableCell>Číslo</TableCell>
-                        <TableCell>Přijmení</TableCell>
-                        <TableCell>Jméno</TableCell>
-                        <TableCell>Telefon</TableCell>
-                        <TableCell>Zapsán</TableCell>
-                        <TableCell>Účast</TableCell>
+                    <TableRow classes={{root:classes.row}}>
+                        <TableCell padding={"dense"} className={classes.cell}>#</TableCell>
+                        <TableCell padding={"dense"} className={classes.cell}>Číslo</TableCell>
+                        <TableCell padding={"dense"} className={classes.cell}>Přijmení</TableCell>
+                        <TableCell padding={"dense"} className={classes.cell}>Jméno</TableCell>
+                        <TableCell padding={"dense"} className={classes.cell}>Telefon</TableCell>
+                        <TableCell padding={"dense"} className={classes.cell}>Zapsán</TableCell>
+                        <TableCell padding={"dense"} className={classes.cell}>Účast</TableCell>
+                        <TableCell padding={"dense"} className={classes.cell}></TableCell>
                     </TableRow>
                 </TableHead>
                 <TableBody>{members}</TableBody>
