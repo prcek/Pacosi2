@@ -27,6 +27,14 @@ const LessonTypeInfo = gql`
 `;
 
 
+const SubmitNewLesson = gql`
+    mutation SubmitNewLesson($lesson_type_id: ID!, $capacity: Int!, $datetime: DateTime!) {
+        addLesson(lesson_type_id:$lesson_type_id,capacity:$capacity,datetime:$datetime) {
+            id
+        }
+    }
+`;
+
 const styles = theme => ({
     root: {
       marginTop: theme.spacing.unit * 3,
@@ -62,11 +70,20 @@ class LessonTabAdd extends React.Component {
         });
     }
 
-    submit() {
-        console.log("submit")
+    submitNew() {
+        console.log("submitNew")
         const datetime_str = moment(this.props.date).format("YYYY-MM-DD")+" "+this.state.timestr;
         const resdt = moment_tz.tz(datetime_str,"Europe/Prague").tz("UTC").format();
         console.log(resdt);
+        this.props.submitNew({variables:{
+            lesson_type_id: this.props.lessonTypeId,
+            capacity: this.state.capacitystr,
+            datetime:resdt 
+        }}).then(({ data }) => {
+            console.log('got data', data);
+        }).catch((error) => {
+            console.log('there was an error sending the query', error);
+        });
     }
 
 
@@ -102,7 +119,7 @@ class LessonTabAdd extends React.Component {
                     helperText="maximální počet účastníků lekce, např. 10"
                 />
                 </div>
-                <Button raised disabled={!capacityvalid || !timevalid} onClick={()=>this.submit()}> Přidat lekci</Button>
+                <Button raised disabled={!capacityvalid || !timevalid} onClick={()=>this.submitNew()}> Přidat lekci</Button>
                 <Typography type="caption"> LessonType Id: {this.props.lessonTypeId} </Typography>
             </div>
         );
@@ -123,4 +140,12 @@ export default compose(
         name: "lessonType",
         options: ({lessonTypeId})=>({variables:{lesson_type_id:lessonTypeId}})
     }),
+    graphql(SubmitNewLesson,{
+        name:"submitNew",
+        options: {
+            refetchQueries: [
+                'LessonsInfo',
+              ],
+        }
+    })
 )(LessonTabAdd)

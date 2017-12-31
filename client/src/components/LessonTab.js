@@ -78,7 +78,6 @@ class LessonTab extends React.Component {
     
     renderMembers(members) {
         const { classes } = this.props;
-        console.log(members)
         return members.map((m,i)=>(
             <TableRow hover key={m.id} classes={{root:classes.row}}>
                 <TableCell padding={"dense"} classes={{root:classes.cell}}>{i+1}</TableCell>
