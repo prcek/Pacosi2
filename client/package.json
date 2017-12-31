@@ -10,6 +10,7 @@
     "material-ui": "^1.0.0-beta.21",
     "material-ui-icons": "^1.0.0-beta.17",
     "moment": "^2.20.1",
+    "moment-timezone": "^0.5.14",
     "prop-types": "^15.6.0",
     "react": "^16.1.1",
     "react-addons-css-transition-group": "^15.6.2",
