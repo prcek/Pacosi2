@@ -112,7 +112,6 @@ class LessonTab extends React.Component {
                 <Typography type="title" className={classes.flex} noWrap> Lekce {lessonInfo.lesson_type.name} - {lessonInfo.lesson_type.location.name}, <DateTimeView date={lessonInfo.datetime} format="LLLL"/> </Typography>
                 <Button raised className={classes.button} > přihlásit </Button>
                 <Button raised className={classes.button} > docházka </Button>
-                <Button raised className={classes.button} > nastavení </Button>
             </Toolbar>
             <Table className={classes.table}>
                 <TableHead>

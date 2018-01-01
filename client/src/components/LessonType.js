@@ -8,6 +8,8 @@ import 'react-infinite-calendar/styles.css';
 import Grid from 'material-ui/Grid';
 import LessonTabs from './LessonTabs';
 import Paper from 'material-ui/Paper';
+import Switch from 'material-ui/Switch';
+import { FormGroup, FormControlLabel } from 'material-ui/Form';
 
 var moment = require('moment');
 require("moment/min/locales.min");
@@ -26,11 +28,16 @@ const styles = theme => ({
 class LessonType extends React.Component {
 
     state = {
-        currentDate:null
+        currentDate:null,
+        editMode: false
     }
 
     calSelected(d) {
         this.setState({currentDate:d});
+    }
+
+    onEditMode(val) {
+        this.setState({editMode:val});
     }
 
     renderCal() {
@@ -70,7 +77,18 @@ class LessonType extends React.Component {
 
     renderLessons() {
         return (
-            <LessonTabs lessonTypeId={this.props.lessonTypeId} lessonDate={this.state.currentDate}/>
+            <LessonTabs lessonTypeId={this.props.lessonTypeId} lessonDate={this.state.currentDate} editMode={this.state.editMode}/>
+        )
+    }
+
+    renderSettings() {
+        return (
+            <FormGroup row>
+                <FormControlLabel
+                    control={<Switch checked={this.state.editMode} onChange={(e,c)=>this.onEditMode(c)}/>}
+                    label="Editace lekcí"
+                />
+            </FormGroup>
         )
     }
 
@@ -79,6 +97,7 @@ class LessonType extends React.Component {
         const { classes } = this.props;
         const cal = this.renderCal();
         const lessons = this.renderLessons();
+        const sets = this.renderSettings();
         return (
             <div className={classes.root}>
             <Grid container>
@@ -92,6 +111,7 @@ class LessonType extends React.Component {
                 </Grid>
             </Grid>
             <Typography type="caption"> 
+                {sets}
                 LessonType id:{this.props.lessonTypeId}
                 {this.state.currentDate && ", selected date: "+ moment(this.state.currentDate).format()} 
             </Typography>

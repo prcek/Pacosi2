@@ -7,6 +7,7 @@ import AddIcon from 'material-ui-icons/Add';
 import { graphql } from 'react-apollo';
 import gql from 'graphql-tag';
 import LessonTab from './LessonTab';
+import LessonTabEdit from './LessonTabEdit';
 import LessonTabAdd from './LessonTabAdd';
 import Paper from 'material-ui/Paper';
 
@@ -65,10 +66,24 @@ class LessonTabs extends React.Component {
         const tabs = this.props.lessonsInfo.lessonsInfo.map(li=> (
             <Tab key={li.id} value={li.id} label={this.lessonTitle(li)}/>
           ));
-        return [
-            ...tabs,
-            <Tab key="new" value="new" icon={<AddIcon/>} />
-        ];
+        return tabs;
+      
+    }
+
+    renderTab() {
+        if (this.state.currentTab==="new") {
+            if (this.props.lessonDate) {
+                return (<LessonTabAdd lessonTypeId={this.props.lessonTypeId} date={this.props.lessonDate}/>)
+            } else {
+                return null;
+            }
+        } else { 
+            if (this.props.editMode) {
+                return (<LessonTabEdit lessonId={this.state.currentTab}/>);
+            } else {
+                return (<LessonTab lessonId={this.state.currentTab}/>);
+            }
+        }
     }
 
     render() {
@@ -76,9 +91,9 @@ class LessonTabs extends React.Component {
             <Paper>
                 <Tabs value={this.state.currentTab} scrollable scrollButtons="auto" onChange={(e,v)=>this.handleTabChange(v)}>
                     {(this.props.lessonsInfo && this.props.lessonsInfo.lessonsInfo) && this.renderTabs()} 
+                    {this.props.editMode && this.props.lessonDate && <Tab key="new" value="new" icon={<AddIcon/>} />}
                 </Tabs>
-                {(this.state.currentTab && this.state.currentTab!=="new") && <LessonTab lessonId={this.state.currentTab}/>}
-                {(this.state.currentTab && this.state.currentTab==="new") && <LessonTabAdd lessonTypeId={this.props.lessonTypeId} date={this.props.lessonDate}/>}
+                {this.state.currentTab && this.renderTab() }
             </Paper>
         )
     }
@@ -87,6 +102,7 @@ class LessonTabs extends React.Component {
 LessonTabs.propTypes = {
     classes: PropTypes.object.isRequired,
     lessonTypeId: PropTypes.string.isRequired,
+    editMode: PropTypes.bool,
     lessonDate: PropTypes.object
 };
   
