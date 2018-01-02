@@ -8,10 +8,7 @@ const {
     GraphQLID,
 } = GraphQL;
 
-// lets import our user type
 const UserType = require('../types/User');
-
-// lets import our user resolver
 const UserResolver = require('../resolvers/User');
 const BaseMutation = require('./BaseMutation');
 
