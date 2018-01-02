@@ -23,84 +23,54 @@ const LessonType = require('../types/Lesson');
 // lets import our user resolver
 const LessonResolver = require('../resolvers/Lesson');
 
+const BaseMutation = require('./BaseMutation');
 
-module.exports = {
 
-    create() {
-        return {
-            type: LessonType,
-            description: 'Add new lesson',
+class LessonMutation extends BaseMutation {
+    constructor() {
+        super(LessonType,LessonResolver);
+    }
 
-            args: {
-                lesson_type_id: {
-                    type: new GraphQLNonNull(GraphQLID),
-                    description: 'Enter lesson type id, Cannot be left empty',
-                },
-                capacity: {
-                    type: new GraphQLNonNull(GraphQLInt),
-                    description: 'Enter lesson capacity, Cannot be left empty',
-                },
-                datetime: {
-                    type: new GraphQLNonNull(GraphQLDateTime),
-                    description: 'Enter lesson datetime, Cannot be left empty',
-                },
-                
+
+    create_args() {
+        return  {
+            lesson_type_id: {
+                type: new GraphQLNonNull(GraphQLID),
+                description: 'Enter lesson type id, Cannot be left empty',
             },
-            resolve(parent, fields) {
-                return LessonResolver.create(fields);
-            }
-        }
-    },
-
-
-    update() {
-        return {
-            type: LessonType,
-            description: 'Update lesson details',
-
-            args: {
-                id: {
-                    type: new GraphQLNonNull(GraphQLID),
-                    description: 'Enter lesson id',
-                },
-                lesson_type_id: {
-                    type: GraphQLID,
-                    description: 'Enter lesson type id',
-                },
-                capacity: {
-                    type: GraphQLInt,
-                    description: 'Enter lesson capacity',
-                },
-                datetime: {
-                    type: GraphQLDateTime,
-                    description: 'Enter lesson datetime',
-                },
-                
+            capacity: {
+                type: new GraphQLNonNull(GraphQLInt),
+                description: 'Enter lesson capacity, Cannot be left empty',
             },
-            resolve(parent, fields) {
-                return LessonResolver.update(fields);
-            }
-
-        }
-    },
-
-
-    delete() {
-        return {
-            type: LessonType,
-            description: 'Delete existing lesson',
-
-            args: {
-                id: {
-                    type: new GraphQLNonNull(GraphQLID),
-                    description: 'Enter lesson id',
-                },
+            datetime: {
+                type: new GraphQLNonNull(GraphQLDateTime),
+                description: 'Enter lesson datetime, Cannot be left empty',
             },
-            resolve(parent, fields) {
-                return LessonResolver.delete(fields);
-            }
+            
         }
-    },
+    }
 
+    update_args() {
+        return {
+            id: {
+                type: new GraphQLNonNull(GraphQLID),
+                description: 'Enter lesson id',
+            },
+            lesson_type_id: {
+                type: GraphQLID,
+                description: 'Enter lesson type id',
+            },
+            capacity: {
+                type: GraphQLInt,
+                description: 'Enter lesson capacity',
+            },
+            datetime: {
+                type: GraphQLDateTime,
+                description: 'Enter lesson datetime',
+            },
+            
+        };
+    }
+}
 
-};
+module.exports = new LessonMutation();
