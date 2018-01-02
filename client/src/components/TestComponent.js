@@ -2,7 +2,7 @@ import React from 'react';
 import { withStyles } from 'material-ui/styles';
 import Typography from 'material-ui/Typography';
 import { compose } from 'react-apollo'
-
+import ClientLookup from './ClientLookup';
 
 const styles = theme => ({
     root: {
@@ -18,6 +18,7 @@ class TestComponent extends React.Component {
         return (
             <div>
             <Typography> I Am TestComponent </Typography>
+            <ClientLookup/>
             </div>
         )
     }

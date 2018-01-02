@@ -1,7 +1,7 @@
 import React from 'react';
 import { withStyles } from 'material-ui/styles';
 import PropTypes from 'prop-types';
-import Typography from 'material-ui/Typography';
+//import Typography from 'material-ui/Typography';
 import { compose } from 'react-apollo'
 //import { graphql } from 'react-apollo';
 import gql from 'graphql-tag';
@@ -135,8 +135,8 @@ class ClientLookup extends React.Component {
     render() {
         const { classes } = this.props;
         return (
-            <div>
-            <Typography> I Am TestComponent </Typography>
+            
+
             <Autosuggest 
                 theme={{
                     container: classes.container,
@@ -160,7 +160,7 @@ class ClientLookup extends React.Component {
                 getSuggestionValue={(s)=>this.getSuggestionValue(s)}
                 renderSuggestion={(s,op)=>this.renderSuggestion(s,op)}
             />
-            </div>
+            
         )
     }
 }
