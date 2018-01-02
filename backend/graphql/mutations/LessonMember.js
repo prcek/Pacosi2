@@ -17,98 +17,64 @@ const {
 } = GraphQLIsoDate;
 
 
-// lets import our user type
 const LessonMemberType = require('../types/LessonMember');
-
-// lets import our user resolver
 const LessonMemberResolver = require('../resolvers/LessonMember');
+const BaseMutation = require('./BaseMutation');
 
 
-module.exports = {
+class LessonMemberMutation extends BaseMutation {
+    constructor() {
+        super(LessonMemberType,LessonMemberResolver);
+    }
 
-    create() {
+    create_args() {
         return {
-            type: LessonMemberType,
-            description: 'Add new lesson member',
-
-            args: {
-                lesson_id: {
-                    type: new GraphQLNonNull(GraphQLID),
-                    description: 'Enter lesson id, Cannot be left empty',
-                },
-                client_id: {
-                    type: new GraphQLNonNull(GraphQLID),
-                    description: 'Enter client id, Cannot be left empty',
-                },
-                presence: {
-                    type: GraphQLBoolean,
-                    description: 'Enter lesson  member presence',
-                },
-                reg_datetime: {
-                    type: GraphQLDateTime,
-                    description: 'Enter lesson registration datetime',
-                },
-                
+            lesson_id: {
+                type: new GraphQLNonNull(GraphQLID),
+                description: 'Enter lesson id, Cannot be left empty',
             },
-            resolve(parent, fields) {
-                return LessonMemberResolver.create(fields);
-            }
+            client_id: {
+                type: new GraphQLNonNull(GraphQLID),
+                description: 'Enter client id, Cannot be left empty',
+            },
+            presence: {
+                type: GraphQLBoolean,
+                description: 'Enter lesson  member presence',
+            },
+            reg_datetime: {
+                type: GraphQLDateTime,
+                description: 'Enter lesson registration datetime',
+            },
+            
         }
-    },
+    }
 
-
-    update() {
+    update_args() {
         return {
-            type: LessonMemberType,
-            description: 'Update lesson details',
-
-            args: {
-                id: {
-                    type: new GraphQLNonNull(GraphQLID),
-                    description: 'Enter lesson member id',
-                },
-                lesson_id: {
-                    type: GraphQLID,
-                    description: 'Enter lesson id',
-                },
-                client_id: {
-                    type: GraphQLID,
-                    description: 'Enter client id',
-                },
-                presence: {
-                    type: GraphQLBoolean,
-                    description: 'Enter presence',
-                },
-                reg_datetime: {
-                    type: GraphQLDateTime,
-                    description: 'Enter registration datetime',
-                },
-                
+            id: {
+                type: new GraphQLNonNull(GraphQLID),
+                description: 'Enter lesson member id',
             },
-            resolve(parent, fields) {
-                return LessonMemberResolver.update(fields);
-            }
-
-        }
-    },
-
-
-    delete() {
-        return {
-            type: LessonMemberType,
-            description: 'Delete existing lesson member',
-
-            args: {
-                id: {
-                    type: new GraphQLNonNull(GraphQLID),
-                    description: 'Enter lesson member id',
-                },
+            lesson_id: {
+                type: GraphQLID,
+                description: 'Enter lesson id',
             },
-            resolve(parent, fields) {
-                return LessonMemberResolver.delete(fields);
-            }
+            client_id: {
+                type: GraphQLID,
+                description: 'Enter client id',
+            },
+            presence: {
+                type: GraphQLBoolean,
+                description: 'Enter presence',
+            },
+            reg_datetime: {
+                type: GraphQLDateTime,
+                description: 'Enter registration datetime',
+            },
+            
         }
-    },
+    }
+}
 
+module.exports = new LessonMemberMutation();
 
-};

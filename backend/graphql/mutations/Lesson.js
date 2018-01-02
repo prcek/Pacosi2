@@ -17,12 +17,8 @@ const {
 } = GraphQLIsoDate;
 
 
-// lets import our user type
 const LessonType = require('../types/Lesson');
-
-// lets import our user resolver
 const LessonResolver = require('../resolvers/Lesson');
-
 const BaseMutation = require('./BaseMutation');
 
 

@@ -9,88 +9,53 @@ const {
     GraphQLBoolean
 } = GraphQL;
 
-// lets import our user type
 const LessonTypeType = require('../types/LessonType');
-
-// lets import our user resolver
 const LessonTypeResolver = require('../resolvers/LessonType');
+const BaseMutation = require('./BaseMutation');
 
 
-module.exports = {
-
-    create() {
+class LessonTypeMutation extends BaseMutation {
+    constructor() {
+        super(LessonTypeType,LessonTypeResolver);
+    }
+    create_args() {
         return {
-            type: LessonTypeType,
-            description: 'Add new lesson type',
-
-            args: {
-                name: {
-                    type: new GraphQLNonNull(GraphQLString),
-                    description: 'Enter lesson type name, Cannot be left empty',
-                },
-                location_id: {
-                    type: new GraphQLNonNull(GraphQLID),
-                    description: 'Enter location id, Cannot be left empty',
-                },
-                active: {
-                    type: GraphQLBoolean,
-                    description: 'Enters lesson type status, by default its set to active. true: active, false: disabled',
-                },
+            name: {
+                type: new GraphQLNonNull(GraphQLString),
+                description: 'Enter lesson type name, Cannot be left empty',
             },
-            resolve(parent, fields) {
-                return LessonTypeResolver.create(fields);
-            }
-        }
-    },
-
-
-    update() {
+            location_id: {
+                type: new GraphQLNonNull(GraphQLID),
+                description: 'Enter location id, Cannot be left empty',
+            },
+            active: {
+                type: GraphQLBoolean,
+                description: 'Enters lesson type status, by default its set to active. true: active, false: disabled',
+            },
+        };
+    }
+    
+    update_args() {
         return {
-            type: LessonTypeType,
-            description: 'Update lesson type details',
-
-            args: {
-                id: {
-                    type: new GraphQLNonNull(GraphQLID),
-                    description: 'Enter lesson type id',
-                },
-                name: {
-                    type: GraphQLString,
-                    description: 'Enter lesson type name, Cannot be left empty',
-                },
-                location_id: {
-                    type: GraphQLID,
-                    description: 'Enter location id',
-                },
-                active: {
-                    type: GraphQLBoolean,
-                    description: 'Enters lesson type status. true: active, false: disabled',
-                },
+            id: {
+                type: new GraphQLNonNull(GraphQLID),
+                description: 'Enter lesson type id',
             },
-            resolve(parent, fields) {
-                return LessonTypeResolver.update(fields);
-            }
-
-        }
-    },
-
-
-    delete() {
-        return {
-            type: LessonTypeType,
-            description: 'Delete existing lesson type',
-
-            args: {
-                id: {
-                    type: new GraphQLNonNull(GraphQLID),
-                    description: 'Enter lesson type id',
-                },
+            name: {
+                type: GraphQLString,
+                description: 'Enter lesson type name, Cannot be left empty',
             },
-            resolve(parent, fields) {
-                return LessonTypeResolver.delete(fields);
-            }
-        }
-    },
+            location_id: {
+                type: GraphQLID,
+                description: 'Enter location id',
+            },
+            active: {
+                type: GraphQLBoolean,
+                description: 'Enters lesson type status. true: active, false: disabled',
+            },
+        };
+    }
+}
 
 
-};
+module.exports = new LessonTypeMutation();

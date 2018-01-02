@@ -9,80 +9,44 @@ const {
     GraphQLBoolean
 } = GraphQL;
 
-// lets import our user type
 const LocationType = require('../types/Location');
-
-// lets import our user resolver
 const LocationResolver = require('../resolvers/Location');
+const BaseMutation = require('./BaseMutation');
 
 
-module.exports = {
-
-    create() {
+class LocationMutation extends BaseMutation {
+    constructor() {
+        super(LocationType,LocationResolver);
+    }
+    create_args() {
         return {
-            type: LocationType,
-            description: 'Add new location',
-
-            args: {
-                name: {
-                    type: new GraphQLNonNull(GraphQLString),
-                    description: 'Enter location name, Cannot be left empty',
-                },
-                active: {
-                    type: GraphQLBoolean,
-                    description: 'Enters location status, by default its set to active. true: active, false: disabled',
-                },
+            name: {
+                type: new GraphQLNonNull(GraphQLString),
+                description: 'Enter location name, Cannot be left empty',
             },
-            resolve(parent, fields) {
-                return LocationResolver.create(fields);
-            }
+            active: {
+                type: GraphQLBoolean,
+                description: 'Enters location status, by default its set to active. true: active, false: disabled',
+            },
         }
-    },
-
-
-    update() {
+    }
+    update_args() {
         return {
-            type: LocationType,
-            description: 'Update location details',
-
-            args: {
-                id: {
-                    type: new GraphQLNonNull(GraphQLID),
-                    description: 'Enter location id',
-                },
-                name: {
-                    type: GraphQLString,
-                    description: 'Enter location name',
-                },
-                active: {
-                    type: GraphQLBoolean,
-                    description: 'Enters location status. true: active, false: disabled',
-                },
+            id: {
+                type: new GraphQLNonNull(GraphQLID),
+                description: 'Enter location id',
             },
-            resolve(parent, fields) {
-                return LocationResolver.update(fields);
-            }
-
-        }
-    },
-
-
-    delete() {
-        return {
-            type: LocationType,
-            description: 'Delete existing location type',
-
-            args: {
-                id: {
-                    type: new GraphQLNonNull(GraphQLID),
-                    description: 'Enter location id',
-                },
+            name: {
+                type: GraphQLString,
+                description: 'Enter location name',
             },
-            resolve(parent, fields) {
-                return LocationResolver.delete(fields);
-            }
-        }
-    },
+            active: {
+                type: GraphQLBoolean,
+                description: 'Enters location status. true: active, false: disabled',
+            },
+        };
+    }
+}
 
 
-};
+module.exports = new LocationMutation();
