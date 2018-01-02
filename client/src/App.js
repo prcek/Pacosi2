@@ -13,6 +13,7 @@ import MassageRoom from './components/MassageRoom';
 import LessonType from './components/LessonType';
 import Users from './components/Users';
 import Clients from './components/Clients';
+import TestComponent from './components/TestComponent';
 
 
 
@@ -49,6 +50,14 @@ const PageNoMatch = ({ match }) => (
   </div>
 )
 
+const PageTest = ({ match }) => (
+  <div>
+    <h3>TEST PAGE</h3>
+    <TestComponent />
+  </div>
+)
+
+
 class App extends Component {
 
   
@@ -67,6 +76,7 @@ class App extends Component {
           <Route path="/massages/:id" component={PageMassages}/>
           <Route path="/users" component={PageUsers}/>
           <Route path="/clients" component={PageClients}/>
+          <Route path="/test" component={PageTest}/>
           <Route component={PageNoMatch}/>
         </Switch>
 
