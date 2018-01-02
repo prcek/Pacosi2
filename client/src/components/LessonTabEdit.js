@@ -15,12 +15,13 @@ var moment = require('moment');
 require("moment/min/locales.min");
 moment.locale('cs');
 
+var moment_tz = require('moment-timezone');
 
 
 const LessonInfo = gql`
   query LessonInfo($lesson_id: ID!) {
     lessonInfo(id:$lesson_id) {
-        id,datetime,capacity
+        id,datetime,capacity,members_count
         lesson_type {
             name
             location {
@@ -32,7 +33,21 @@ const LessonInfo = gql`
 `;
 
 
+const UpdateLesson = gql`
+    mutation UpdateLesson($id: ID!, $capacity: Int!, $datetime: DateTime!) {
+        updateLesson(id:$id,capacity:$capacity,datetime:$datetime) {
+            id
+        }
+    }
+`;
 
+const DeleteLesson = gql`
+    mutation DeleteLesson($id: ID!) {
+        deleteLesson(id:$id) {
+            id
+        }
+    }
+`;
 
 const styles = theme => ({
     root: {
@@ -79,6 +94,32 @@ class LessonTabEdit extends React.Component {
         });
     }
 
+    submitUpdate() {
+        console.log("submitUpdate")
+        const datetime_str = moment(this.props.lessonInfo.lessonInfo.datetime).format("YYYY-MM-DD")+" "+this.state.timestr;
+        const resdt = moment_tz.tz(datetime_str,"Europe/Prague").tz("UTC").format();
+        console.log(resdt);
+        this.props.updateLesson({variables:{
+            id: this.props.lessonId,
+            capacity: this.state.capacitystr,
+            datetime:resdt 
+        }}).then(({ data }) => {
+            console.log('got data', data);
+        }).catch((error) => {
+            console.log('there was an error sending the query', error);
+        });
+    }
+
+    submitDelete() {
+        console.log("submitDelete")
+        this.props.deleteLesson({variables:{
+            id: this.props.lessonId,
+        }}).then(({ data }) => {
+            console.log('got data', data);
+        }).catch((error) => {
+            console.log('there was an error sending the query', error);
+        });
+    }
 
     componentWillReceiveProps(nextProps) {
         if (nextProps.lessonInfo && nextProps.lessonInfo.lessonInfo) {
@@ -111,7 +152,7 @@ class LessonTabEdit extends React.Component {
             <div className={classes.root}>
                 <Toolbar>
                     <Typography type="title" className={classes.flex} noWrap> Editace lekce {lessonInfo.lesson_type.name} - {lessonInfo.lesson_type.location.name}, <DateTimeView date={lessonInfo.datetime} format="LLLL"/> </Typography>
-                    <Button raised className={classes.button} > Smazat lekci </Button>
+                    <Button raised className={classes.button} disabled={this.props.lessonInfo.lessonInfo.members_count>0} onClick={()=>this.submitDelete()}> Smazat lekci </Button>
                 </Toolbar>
                 <div className={classes.container}>
                 <TextField className={classes.field}
@@ -132,7 +173,7 @@ class LessonTabEdit extends React.Component {
                 />
                 </div>
                 <div className={classes.container}>
-                <Button raised disabled={!capacityvalid || !timevalid} onClick={()=>this.submitSave()}>Uložit</Button>
+                <Button raised disabled={!capacityvalid || !timevalid} onClick={()=>this.submitUpdate()}>Uložit</Button>
                 </div>
 
                 <Typography type="caption"> Lesson Id: {this.props.lessonId} </Typography>
@@ -154,5 +195,21 @@ export default compose(
         name: "lessonInfo",
         options: ({lessonId})=>({variables:{lesson_id:lessonId}})
     }),
+    graphql(UpdateLesson,{
+        name:"updateLesson",
+        options: {
+            refetchQueries: [
+                'LessonsInfo',
+              ],
+        }
+    }),
+    graphql(DeleteLesson,{
+        name:"deleteLesson",
+        options: {
+            refetchQueries: [
+                'LessonsInfo',
+            ],
+        }
+    })
 
 )(LessonTabEdit)
