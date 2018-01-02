@@ -15,12 +15,8 @@ const {
 } = GraphQLIsoDate;
 
 
-// import the user type we created
 const TestType = require('../types/Test');
-
-// import the user resolver we created
 const TestResolver = require('../resolvers/Test');
-
 const BaseQuery = require('./BaseQuery');
 
 class TestQuery extends BaseQuery {

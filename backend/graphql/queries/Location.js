@@ -7,43 +7,21 @@ const {
     GraphQLNonNull,
 } = GraphQL;
 
-// import the user type we created
 const LocationType = require('../types/Location');
 const LocationInfoType = require('../types/LocationInfo');
 
-// import the user resolver we created
 const LocationResolver = require('../resolvers/Location');
 
 const MassageRoomType = require('./MassageRoom');
 const MassageRoomResolver = require('../resolvers/MassageRoom');
 
-module.exports = {
+const BaseQuery = require('./BaseQuery');
 
-    index() {
-        return {
-            type: new GraphQLList(LocationType),
-            description: 'This will return all the items present in the database',
-            resolve(parent, args, context, info) {
-                return LocationResolver.index({});
-            }
-        }
-    },
+class LocationQuery extends BaseQuery {
 
-    single() {
-        return {
-            type: LocationType,
-            description: 'This will return data of a single item based on the id provided',
-            args: {
-                id: {
-                    type: new GraphQLNonNull(GraphQLID),
-                    description: 'Please enter item id',
-                }
-            },
-            resolve(parent, args, context, info) {
-                return LocationResolver.single({ id: args.id });
-            }
-        }
-    },
+    constructor() {
+        super(LocationType,LocationResolver);
+    }
 
     info() {
         return {
@@ -59,7 +37,7 @@ module.exports = {
                 return LocationResolver.single({ id: args.id });
             }
         }
-    },
+    }
     
     infos() {
         return {
@@ -69,6 +47,9 @@ module.exports = {
                 return LocationResolver.index({  });
             }
         }
-    },
+    }
 
-};
+}
+
+module.exports = new LocationQuery();
+
