@@ -4,6 +4,7 @@ const GraphQL = require('graphql');
 const {
     GraphQLList,
     GraphQLID,
+    GraphQLInt,
     GraphQLNonNull,
 } = GraphQL;
 
@@ -13,6 +14,45 @@ const {
     GraphQLTime,
     GraphQLDateTime
 } = GraphQLIsoDate;
+
+
+const PaginationType = new GraphQL.GraphQLInputObjectType({
+    name: 'Pagination',
+   
+
+    fields: () => ({
+        pageNo: {
+            type: new GraphQLNonNull(GraphQLInt),
+        },
+        pageLength: {
+            type: new GraphQLNonNull(GraphQLInt),
+        },
+    })
+
+});
+
+const PaginationInfoType = new GraphQL.GraphQLObjectType({
+    name: 'PaginationInfo',
+   
+
+    fields: () => ({
+        pageNo: {
+            type: GraphQLInt,
+        },
+        pageLength: {
+            type: GraphQLInt,
+        },
+        totalPages: {
+            type: GraphQLInt,
+        },
+        totalCount: {
+            type: GraphQLInt,
+        }
+    })
+
+});
+
+
 
 
 class BaseQuery {
@@ -28,6 +68,30 @@ class BaseQuery {
             description: 'List all '+this.type+' records present in the database',
             resolve: (parent, args, context, info) => {
                 return this.resolver.index();
+            }
+        }
+    }
+    index_pages() {
+        return {
+            type: new GraphQL.GraphQLObjectType({
+                name: this.type+'Pages',
+                fields: () => ({
+                    items: {
+                        type: new GraphQLList(this.type)
+                    },
+                    paginationInfo: {
+                        type: PaginationInfoType
+                    }
+                }) 
+            }),
+            args: {
+                pagination: {
+                    type: new GraphQLNonNull(PaginationType),
+                }
+            },
+            description: 'List all '+this.type+' records present in the database',
+            resolve: (parent, args, context, info) => {
+                return this.resolver.index_pages(args.pagination);
             }
         }
     }

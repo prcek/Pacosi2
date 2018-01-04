@@ -20,6 +20,26 @@ class BaseController {
             });
     }
 
+    index_pages(pagination) {
+        console.log("BaseController index pages",this.model.modelName,pagination)
+        const offset = pagination.pageLength*pagination.pageNo;
+        const limit = pagination.pageLength;
+
+        return new Promise((resolve, reject) => {
+            this.model.find().count().then(c=>{
+                const rem = c%pagination.pageLength;
+                const tp = (((c - rem) / pagination.pageLength))+(rem?1:0);
+
+                this.model.find().sort('created_at').skip(offset).limit(limit).then(records=>{
+                    resolve({items:records,paginationInfo:{pageNo:pagination.pageNo,pageLength:pagination.pageLength,totalCount:c,totalPages:tp}});
+                }).catch(reject)
+
+
+            }).catch(reject);
+        });
+
+    }
+    
     search(options) {
         console.log("BaseController search",this.model.modelName+"(",options,")")
         return this.model.find(options)
