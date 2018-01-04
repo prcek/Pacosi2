@@ -26,6 +26,9 @@ const ClientType = new GraphQL.GraphQLObjectType({
             type: GraphQLID,
             description: 'ID of the client, Generated automatically by MongoDB',
         },
+        no: {
+            type: GraphQLInt
+        },
         name: {
             type: GraphQLString,
             description: 'Name of the client',

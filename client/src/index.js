@@ -23,10 +23,19 @@ const client = new ApolloClient({
   cache: new InMemoryCache()
 });
 
-
+const redux_state_version = 4;
 const psconfig = {
     key: 'root',
     storage,
+    version:redux_state_version,
+    migrate: (state) => {
+        if ((state._persist) && (state._persist.version<redux_state_version)) {
+            console.log("redux state reset");
+            return Promise.resolve({})
+        } else {
+            return Promise.resolve(state)
+        }
+    }
 }
 const preducer = persistReducer(psconfig, reducer)
 

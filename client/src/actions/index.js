@@ -7,9 +7,14 @@ const setClientPageNo = (page_no) => ({
     type: 'SET_CLIENT_PAGE_NO',
     page_no
 })
+const setClientPageLength = (page_length) => ({
+    type: 'SET_CLIENT_PAGE_LENGTH',
+    page_length
+})
 
 
 export {
     setLocation,
-    setClientPageNo
+    setClientPageNo,
+    setClientPageLength,
 }

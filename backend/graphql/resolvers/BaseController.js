@@ -22,6 +22,14 @@ class BaseController {
 
     index_pages(pagination) {
         console.log("BaseController index pages",this.model.modelName,pagination)
+        if (pagination.pageNo<0) {
+            pagination.pageNo = 0;
+        }
+        if (pagination.pageLength<1) {
+            pagination.pageLength = 10;
+        }
+
+
         const offset = pagination.pageLength*pagination.pageNo;
         const limit = pagination.pageLength;
 
