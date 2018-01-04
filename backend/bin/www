@@ -17,7 +17,13 @@ const mongoose = require('mongoose');
 
 
 mongoose.Promise = require('bluebird');
-mongoose.connect( config.database.HOST, {useMongoClient: true});
+var mongo_options = {
+  autoReconnect: true,
+  reconnectTries: Number.MAX_VALUE,
+  reconnectInterval: 1000,
+  useMongoClient: true
+};
+mongoose.connect( config.database.HOST, mongo_options);
 
 var port = normalizePort(config.server.PORT);
 app.set('port', port);

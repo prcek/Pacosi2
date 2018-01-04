@@ -5,12 +5,20 @@ mongoose.Promise = require('bluebird');
 
 const ClientSchema = mongoose.Schema(
     {
+        no: {
+            type: Number,
+            unique: true,
+            required: true
+        },
         name: {
             type: String,
         },
         surname: {
             type: String,
             required: true
+        },
+        year: {
+            type: Number,
         },
         email: {
             type: String,
@@ -29,7 +37,7 @@ const ClientSchema = mongoose.Schema(
             type: Boolean,
             default: true
         },
-
+        
         search: {
             name: String,
             surname: String
@@ -41,9 +49,37 @@ const ClientSchema = mongoose.Schema(
     }
 );
 
+
 const removeDiacritics = require('diacritics').remove;
 
+function genNo() {
+   return Math.floor(Math.random()*100000)*7+100000;
+}
 
+function generateNo(model) {
+    return new Promise((resolve, reject) => {
+        const no = genNo();
+        ClientModel.find({no:no}).then(r=>{
+            if (r.length == 0) {
+                resolve(no);
+            } else {
+                reject("dupl");
+            }
+        }).catch(reject);
+    });
+}
+
+const pRetry = require('p-retry');
+
+ClientSchema.methods.generateNo = function() {
+    let me = this;
+    return new Promise((resolve, reject) => {
+        pRetry(generateNo,{retries: 10,minTimeout:1,maxTimeout:1}).then(no=>{
+            me.no=no;
+            resolve(no);
+        }).catch(reject);
+    });
+};
 
 ClientSchema.pre('save', function(next) {
     if ( this.isModified('surname') ) {
@@ -63,5 +99,6 @@ ClientSchema.pre('save', function(next) {
     next();
 });
 
+var ClientModel = mongoose.model( 'Client', ClientSchema );
 
-module.exports = mongoose.model( 'Client', ClientSchema );
+module.exports = ClientModel;
