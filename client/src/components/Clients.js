@@ -4,7 +4,9 @@ import { withStyles } from 'material-ui/styles';
 import Typography from 'material-ui/Typography';
 import { compose } from 'react-apollo'
 import { graphql } from 'react-apollo';
+import { connect } from 'react-redux'
 import gql from 'graphql-tag';
+import { setClientPageNo } from './../actions'
 
 
 const styles = theme => ({
@@ -15,13 +17,15 @@ const styles = theme => ({
 });
   
 const CurrentClients = gql`
-  query Clients {
-    clients {
-      id
-      name
-      surname
-      email
-      phone
+  query Clients($pageNo: Int!) {
+    clients_pages(pagination:{pageNo:$pageNo,pageLength:10}) {
+      items {
+        id
+        name
+        surname
+        email
+        phone
+      }
     }
   }
 `;
@@ -30,6 +34,7 @@ const CurrentClients = gql`
 class Clients extends React.Component {
 
     renderClients(clients) {
+        console.log(clients)
         return clients.map(user=> (
           <div key={user.id}> {user.id} {user.name} {user.surname} {user.phone} {user.email} </div>
         ));
@@ -40,7 +45,7 @@ class Clients extends React.Component {
         return (
             <div>
             <Typography> I Am Clients page </Typography>
-            {this.props.data.loading ? <div> loading </div>: this.renderClients(this.props.data.clients) }
+            {this.props.clients.loading ? <div> loading </div>: this.renderClients(this.props.clients.clients_pages.items) }
             </div>
         )
     }
@@ -52,7 +57,25 @@ Clients.propTypes = {
 };
   
 
+function mapStateToProps(state) {
+    return { current_page_no: state.clientPage }
+}
+  
+const mapDispatchToProps = dispatch => {
+    return {
+      onSelectPageNo: no => {
+        dispatch(setClientPageNo(no))
+      }
+    }
+}
+  
 export default compose(
     withStyles(styles),
-    graphql(CurrentClients),
+    connect(mapStateToProps,mapDispatchToProps),
+    graphql(CurrentClients,{
+        name: "clients",
+        options: ({current_page_no})=>({variables:{pageNo:current_page_no}})
+    }),
+
+
 )(Clients)
