@@ -7,6 +7,12 @@ import { graphql } from 'react-apollo';
 import { connect } from 'react-redux'
 import gql from 'graphql-tag';
 import { setClientPageNo, setClientPageLength } from './../actions'
+import DateTimeView from './DateTimeView';
+import DeleteIcon from 'material-ui-icons/Delete';
+import EditIcon from 'material-ui-icons/Edit';
+import Toolbar from 'material-ui/Toolbar';
+import Button from 'material-ui/Button';
+
 
 import Table, {
     TableBody,
@@ -32,6 +38,9 @@ const styles = theme => ({
     tableWrapper: {
         overflowX: 'auto',
     },
+    toolbar: {
+        minHeight:0
+    }
 });
   
 const CurrentClients = gql`
@@ -44,6 +53,8 @@ const CurrentClients = gql`
         surname
         email
         phone
+        year
+        created_at
       }
 
       paginationInfo {
@@ -86,15 +97,27 @@ class Clients extends React.Component {
 */
 
     renderClients(clients) {
+        const { classes } = this.props;
         return clients.map(user=> (
           <TableRow key={user.id}>
-             <TableCell>{user.no}</TableCell>
-             <TableCell>{user.surname}</TableCell>
-             <TableCell>{user.name}</TableCell>
+             <TableCell padding={"dense"} style={{width:"0px"}}>{user.no}</TableCell>
+             <TableCell padding={"dense"}>{user.surname}</TableCell>
+             <TableCell padding={"dense"}>{user.name}</TableCell>
+             <TableCell padding={"dense"}>{user.phone}</TableCell>
+             <TableCell padding={"dense"} style={{width:"0px"}}>{user.year}</TableCell>
+             <TableCell padding={"dense"}>{user.email}</TableCell>
+             <TableCell padding={"dense"}><DateTimeView date={user.created_at} format="LLL"/></TableCell>
+             <TableCell padding={"dense"} classes={{root:classes.cell}}>
+                <Toolbar disableGutters={true} classes={{root:classes.toolbar}} >
+                    <Button raised style={{minWidth:"38px"}}> <EditIcon/>  </Button>
+                </Toolbar>
+            </TableCell>
+
           </TableRow>
         ));
     }
     renderPaginator(pi) {
+        const { classes } = this.props;
         return (
             <TablePagination
             count={1000}
@@ -115,11 +138,15 @@ class Clients extends React.Component {
             <Typography> I Am Clients page {this.props.current_page_no} </Typography>
             <Table className={classes.table}>
                 <TableHead>
-    
                     <TableRow>
-                        <TableCell>ev.c.</TableCell>
-                        <TableCell>prijmeni</TableCell>
-                        <TableCell>jmeno</TableCell>
+                        <TableCell padding={"dense"} style={{width:"0px"}}>Ev.č.</TableCell>
+                        <TableCell padding={"dense"}>Přijmení</TableCell>
+                        <TableCell padding={"dense"}>Jméno</TableCell>
+                        <TableCell padding={"dense"}>Telefon</TableCell>
+                        <TableCell padding={"dense"} style={{width:"0px"}}>Ročník</TableCell>
+                        <TableCell padding={"dense"}>Email</TableCell>
+                        <TableCell padding={"dense"}>Zaevidován</TableCell>
+                        <TableCell padding={"dense"}></TableCell>
                     </TableRow>
                 </TableHead>
                 <TableBody>

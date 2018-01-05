@@ -46,7 +46,9 @@ const ClientType = new GraphQL.GraphQLObjectType({
             type: GraphQLString,
             description: 'Phone number of the client',
         },
-
+        year: {
+            type: GraphQLInt
+        },
         street: {
             type: GraphQLString,
             description: 'Street of the client',
