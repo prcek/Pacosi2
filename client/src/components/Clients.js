@@ -81,6 +81,17 @@ const CurrentClients = gql`
     }
   }
 `;
+
+
+const UpdateClient = gql`
+    mutation SubmitNewLesson($lesson_type_id: ID!, $capacity: Int!, $datetime: DateTime!) {
+        addLesson(lesson_type_id:$lesson_type_id,capacity:$capacity,datetime:$datetime) {
+            id
+        }
+    }
+`;
+
+
 function null2empty(v) {
     if ((v === null) || (v === undefined)) {return ""}
     return v;
@@ -115,7 +126,7 @@ class Clients extends React.Component {
         this.setState({ editOpen: false, addOpen:false });
     };
     
-    onOpenDialog(client) {
+    onOpenEditDialog(client) {
         console.log(client);
         const cl = {
             id: client.id,
@@ -216,6 +227,7 @@ class Clients extends React.Component {
                         type="text"
                         value={null2empty(this.state.client.email)}
                         onChange={(e)=>this.handleClientChange("email",empty2null(e.target.value))}
+                        InputProps={{style:{width:350}}}
                     />
 
                     <TextField className={classes.textfield} 
@@ -225,6 +237,7 @@ class Clients extends React.Component {
                         type="number"
                         value={null2empty(this.state.client.year)}
                         onChange={(e)=>this.handleClientChange("year",empty2null(e.target.value))}
+                        InputProps={{style:{width:100}}}
                     />
                 </form>
 
@@ -255,7 +268,8 @@ class Clients extends React.Component {
              <TableCell padding={"dense"}><DateTimeView date={user.created_at} format="LLL"/></TableCell>
              <TableCell padding={"dense"} classes={{root:classes.cell}}>
                 <Toolbar disableGutters={true} classes={{root:classes.toolbar}} >
-                    <Button raised style={{minWidth:"38px"}} onClick={()=>this.onOpenDialog(user)}> <EditIcon/>  </Button>
+                    <Button raised style={{minWidth:"38px"}} onClick={()=>this.onOpenEditDialog(user)}> <EditIcon/>  </Button>
+                    <Button raised style={{minWidth:"38px"}} onClick={()=>this.onOpenDeleteDialog(user)}> <DeleteIcon/>  </Button>
                 </Toolbar>
             </TableCell>
 
@@ -263,7 +277,7 @@ class Clients extends React.Component {
         ));
     }
     renderPaginator(pi) {
-        const { classes } = this.props;
+        //const { classes } = this.props;
         return (
             <TablePagination
             count={1000}
