@@ -84,8 +84,8 @@ const CurrentClients = gql`
 
 
 const UpdateClient = gql`
-    mutation SubmitNewLesson($lesson_type_id: ID!, $capacity: Int!, $datetime: DateTime!) {
-        addLesson(lesson_type_id:$lesson_type_id,capacity:$capacity,datetime:$datetime) {
+    mutation UpdateClient($id: ID!, $surname: String!, $name: String, $phone: String, $email: String, $year: Int) {
+        updateClient(id:$id,surname:$surname,name:$name,phone:$phone,email:$email,year:$year) {
             id
         }
     }
@@ -123,7 +123,26 @@ class Clients extends React.Component {
     };
 
     handleSaveAndCloseDialog = () => {
-        this.setState({ editOpen: false, addOpen:false });
+        const {client} = this.state;
+        this.props.updateClient({
+            variables: {
+                id:client.id,
+                surname:client.surname,
+                name:client.name,
+                phone:client.phone,
+                email:client.email,
+                year:client.year
+            },
+        }).then(r=>{
+            console.log(r);
+            this.setState({ editOpen: false, addOpen:false });
+        }).catch(e=>{
+            console.error(e);
+
+        })
+
+
+        //this.setState({ editOpen: false, addOpen:false });
     };
     
     onOpenEditDialog(client) {
@@ -357,6 +376,13 @@ export default compose(
         name: "clients",
         options: ({current_page_no,current_page_length})=>({variables:{pageNo:current_page_no,pageLength:current_page_length}})
     }),
-
+    graphql(UpdateClient,{
+        name:"updateClient",
+        options: {
+            refetchQueries: [
+                'Clients',
+              ],
+        }
+    }),
 
 )(Clients)

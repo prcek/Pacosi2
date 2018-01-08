@@ -37,6 +37,10 @@ class ClientMutation extends BaseMutation {
                 type: GraphQLString,
                 description: 'Enter client phone number',
             },
+            year: {
+                type: GraphQLInt,
+                description: 'Enter client year',
+            },
             street: {
                 type: GraphQLString,
                 description: 'Enter client street',
@@ -73,6 +77,10 @@ class ClientMutation extends BaseMutation {
             phone: {
                 type: GraphQLString,
                 description: 'Enter client phone number',
+            },
+            year: {
+                type: GraphQLInt,
+                description: 'Enter client year',
             },
             street: {
                 type: GraphQLString,
