@@ -6,7 +6,7 @@ import { compose } from 'react-apollo'
 import { connect } from 'react-redux'
 import { Route, Switch } from 'react-router-dom';
 import { SnackbarContent } from 'material-ui/Snackbar';
-
+import Reboot from 'material-ui/Reboot';
 import { withRouter } from 'react-router'
 
 import MassageRoom from './components/MassageRoom';
@@ -65,6 +65,7 @@ class App extends Component {
   render() {
     return (
       <div className="App">
+        <Reboot />
         <header className="App-header">
           <MenuBar />
         </header>

@@ -12,6 +12,14 @@ import DeleteIcon from 'material-ui-icons/Delete';
 import EditIcon from 'material-ui-icons/Edit';
 import Toolbar from 'material-ui/Toolbar';
 import Button from 'material-ui/Button';
+import TextField from 'material-ui/TextField';
+
+import Dialog, {
+    DialogActions,
+    DialogContent,
+    DialogContentText,
+    DialogTitle,
+} from 'material-ui/Dialog';
 
 
 import Table, {
@@ -40,6 +48,13 @@ const styles = theme => ({
     },
     toolbar: {
         minHeight:0
+    },
+    form: {
+        display: 'flex',
+        flexWrap: 'wrap',
+    },
+    textfield: {
+        margin: theme.spacing.unit
     }
 });
   
@@ -66,14 +81,22 @@ const CurrentClients = gql`
     }
   }
 `;
-
+function null2empty(v) {
+    if ((v === null) || (v === undefined)) {return ""}
+    return v;
+}
+function empty2null(v) {
+    if (v === "") { return null} 
+    return v;
+}
 
 class Clients extends React.Component {
 
     state = {
-        page:1,
-        count:1,
-        rowsPerPage:20
+        editOpen:false,
+        addOpen:false,
+        client: {},
+        client_err: {}
     }
 
     handleChangePage = (event, page) => {
@@ -83,6 +106,54 @@ class Clients extends React.Component {
     handleChangeRowsPerPage = event => {
         this.props.onSelectPageLength(event.target.value);
     };
+
+    handleCancelDialog = () => {
+        this.setState({ editOpen: false, addOpen:false, client:{},client_err:{} });
+    };
+
+    handleSaveAndCloseDialog = () => {
+        this.setState({ editOpen: false, addOpen:false });
+    };
+    
+    onOpenDialog(client) {
+        console.log(client);
+        const cl = {
+            id: client.id,
+            surname: client.surname,
+            name: client.name,
+            phone: client.phone,
+            email: client.email,
+            year: client.year,
+        };
+        /*
+        Object.keys(client).map( field => {
+            console.log()
+            cl[field] = client[field];
+        });
+        */
+        this.setState({editOpen:true,client:cl})
+    }
+
+    checkClientField(name,value) {
+        switch(name) {
+        case 'surname': return (value!==null);
+        default: return true;
+        }
+    }
+
+    checkClient() {
+        return this.checkClientField('surname',this.state.client.surname);
+    }
+
+    handleClientChange(name,value){
+        let { client, client_err } = this.state;
+        client[name]=value;
+        client_err[name]=!this.checkClientField(name,value);
+        this.setState({
+          client:client,
+          client_err:client_err
+        });
+    }
 
 /*
     componentWillReceiveProps(nextProps) {
@@ -96,6 +167,81 @@ class Clients extends React.Component {
     }
 */
 
+
+    renderDialog() {
+        const { classes } = this.props;
+        return (
+        <Dialog
+            open={this.state.editOpen || this.state.addOpen}
+            onClose={this.handleCloseDialog}
+            aria-labelledby="form-dialog-title"
+            >
+            <DialogTitle id="form-dialog-title">Editace klienta</DialogTitle>
+            <DialogContent>
+                <DialogContentText>
+                Uprava zaznamu klienta, musi byt vypleno alespon prijmeni
+                </DialogContentText>
+                <form className={classes.form}  noValidate autoComplete="off">
+                    
+                    <TextField className={classes.textfield}
+                        autoFocus
+                        error={this.state.client_err.surname}
+                        margin="dense"
+                        id="surname"
+                        label="Přijmení"
+                        type="text"
+                        value={null2empty(this.state.client.surname)}
+                        onChange={(e)=>this.handleClientChange("surname",empty2null(e.target.value))}
+                    />
+                    <TextField className={classes.textfield}
+                        margin="dense"
+                        id="name"
+                        label="Jméno"
+                        type="text"
+                        value={null2empty(this.state.client.name)}
+                        onChange={(e)=>this.handleClientChange("name",empty2null(e.target.value))}
+                    />
+                    <TextField className={classes.textfield}
+                        margin="dense"
+                        id="phone"
+                        label="Telefon"
+                        type="text"
+                        value={null2empty(this.state.client.phone)}
+                        onChange={(e)=>this.handleClientChange("phone",empty2null(e.target.value))}
+                    />
+                    <TextField className={classes.textfield} 
+                        margin="dense"
+                        id="email"
+                        label="Emailová adresa"
+                        type="text"
+                        value={null2empty(this.state.client.email)}
+                        onChange={(e)=>this.handleClientChange("email",empty2null(e.target.value))}
+                    />
+
+                    <TextField className={classes.textfield} 
+                        margin="dense"
+                        id="year"
+                        label="Rok narozeni"
+                        type="number"
+                        value={null2empty(this.state.client.year)}
+                        onChange={(e)=>this.handleClientChange("year",empty2null(e.target.value))}
+                    />
+                </form>
+
+             
+
+            </DialogContent>
+            <DialogActions>
+                <Button onClick={this.handleCancelDialog} color="primary">
+                Neukladat
+                </Button>
+                <Button disabled={!this.checkClient()} onClick={this.handleSaveAndCloseDialog} color="primary">
+                Ulozit
+                </Button>
+            </DialogActions>
+        </Dialog>
+        );
+    }
     renderClients(clients) {
         const { classes } = this.props;
         return clients.map(user=> (
@@ -109,7 +255,7 @@ class Clients extends React.Component {
              <TableCell padding={"dense"}><DateTimeView date={user.created_at} format="LLL"/></TableCell>
              <TableCell padding={"dense"} classes={{root:classes.cell}}>
                 <Toolbar disableGutters={true} classes={{root:classes.toolbar}} >
-                    <Button raised style={{minWidth:"38px"}}> <EditIcon/>  </Button>
+                    <Button raised style={{minWidth:"38px"}} onClick={()=>this.onOpenDialog(user)}> <EditIcon/>  </Button>
                 </Toolbar>
             </TableCell>
 
@@ -133,8 +279,10 @@ class Clients extends React.Component {
         const { classes } = this.props;
         const rows = !this.props.clients.clients_pages ?[]:this.renderClients(this.props.clients.clients_pages.items);
         const paginator = !this.props.clients.clients_pages ?null:this.renderPaginator(this.props.clients.clients_pages.paginationInfo);
+        const dialog = this.renderDialog();
         return (
             <div>
+            {dialog}
             <Typography> I Am Clients page {this.props.current_page_no} </Typography>
             <Table className={classes.table}>
                 <TableHead>
