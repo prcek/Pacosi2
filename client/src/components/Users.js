@@ -13,6 +13,11 @@ import Button from 'material-ui/Button';
 import TextField from 'material-ui/TextField';
 import { SnackbarContent } from 'material-ui/Snackbar';
 
+import Input, { InputLabel } from 'material-ui/Input';
+import { MenuItem } from 'material-ui/Menu';
+import { FormControl, FormHelperText } from 'material-ui/Form';
+import Select from 'material-ui/Select';
+
 import Dialog, {
     DialogActions,
     DialogContent,
@@ -270,14 +275,21 @@ class Users extends React.Component {
                         value={null2empty(this.state.user.name)}
                         onChange={(e)=>this.handleUserChange("name",empty2null(e.target.value))}
                     />
-                    <TextField className={classes.textfield}
-                        margin="dense"
-                        id="role"
-                        label="Role"
-                        type="text"
-                        value={null2empty(this.state.user.role)}
+
+                    <FormControl className={classes.textfield}>
+                    <InputLabel htmlFor="role-simple">Role</InputLabel>
+                    <Select
+                        value={this.state.user.role?this.state.user.role:""}
                         onChange={(e)=>this.handleUserChange("role",empty2null(e.target.value))}
-                    />
+                        input={<Input name="role" id="role-simple" />}
+                    >
+                        <MenuItem value={"ADMIN"}>admin</MenuItem>
+                        <MenuItem value={"DOCTOR"}>doktor</MenuItem>
+                        <MenuItem value={"RECEPTION"}>recepce</MenuItem>
+                    </Select>
+                    </FormControl>
+
+
                     <TextField className={classes.textfield} 
                         margin="dense"
                         id="email"
