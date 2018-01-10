@@ -9,6 +9,7 @@ const {
 } = GraphQL;
 
 const UserType = require('../types/User');
+const UserRoleType = require('../types/UserRole');
 const UserResolver = require('../resolvers/User');
 const BaseMutation = require('./BaseMutation');
 
@@ -23,6 +24,10 @@ class UserMutation extends BaseMutation {
                 type: new GraphQLNonNull(GraphQLString),
                 description: 'Enter users full name, Cannot be left empty',
             },
+            role: {
+                type: new GraphQLNonNull(UserRoleType),
+                description: 'User role - Admin,Reception,Doctor'
+            },
             email: {
                 type: new GraphQLNonNull(GraphQLString),
                 description: 'Enter users email address, Must be valid and unique',
@@ -30,10 +35,6 @@ class UserMutation extends BaseMutation {
             password: {
                 type: new GraphQLNonNull(GraphQLString),
                 description: 'Enter users password, will be automatically hashed',
-            },
-            phone: {
-                type: GraphQLString,
-                description: 'Enter users phone number',
             },
             status: {
                 type: GraphQLInt,
@@ -51,6 +52,10 @@ class UserMutation extends BaseMutation {
                 type: GraphQLString,
                 description: 'Enter users full name, Cannot be left empty',
             },
+            role: {
+                type: UserRoleType,
+                description: 'User role - Admin,Reception,Doctor'
+            },
             email: {
                 type: GraphQLString,
                 description: 'Enter users email address, Must be valid and unique',
@@ -58,10 +63,6 @@ class UserMutation extends BaseMutation {
             password: {
                 type: GraphQLString,
                 description: 'Enter users password, will be automatically hashed',
-            },
-            phone: {
-                type: GraphQLString,
-                description: 'Enter users phone number',
             },
             status: {
                 type: GraphQLInt,

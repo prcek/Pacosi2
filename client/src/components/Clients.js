@@ -148,7 +148,6 @@ class Clients extends React.Component {
     };
 
     handleCancelOkDialog = () => {
-        //TODO delete
         const {client} = this.state;
         this.setState({client_error_msg:null});
         this.props.hideClient({
@@ -234,7 +233,7 @@ class Clients extends React.Component {
         this.setState({editOpen:false,addOpen:false,delOpen:true,client:cl,client_error_msg:null})
     }
  
-    onOpenAddDialog(client) {
+    onOpenAddDialog() {
         this.setState({addOpen:true,editOpen:false,client:{},client_error_msg:null})
     }
    
@@ -367,6 +366,7 @@ class Clients extends React.Component {
         </Dialog>
         );
     }
+
     renderClients(clients) {
         const { classes } = this.props;
         return clients.map(user=> (

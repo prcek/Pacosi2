@@ -16,6 +16,10 @@ const {
 } = GraphQLIsoDate;
 
 
+
+const UserRoleType = require('./UserRole');
+
+
 const UserType = new GraphQL.GraphQLObjectType({
     name: 'User',
     description: 'User type for managing all the users in our application.',
@@ -25,6 +29,10 @@ const UserType = new GraphQL.GraphQLObjectType({
             type: GraphQLID,
             description: 'ID of the user, Generated automatically by MongoDB',
         },
+        role: {
+            type: UserRoleType,
+            description: 'User role - Admin,Reception,Doctor'
+        },
         name: {
             type: GraphQLString,
             description: 'Full name of the user',
@@ -33,12 +41,6 @@ const UserType = new GraphQL.GraphQLObjectType({
             type: GraphQLString,
             description: 'Email address of the user, must be valid and unique',
         },
-
-        phone: {
-            type: GraphQLString,
-            description: 'Phone number of the user',
-        },
-
         status: {
             type: GraphQLInt,
             description: 'Status of the user, whether active or disabled',
