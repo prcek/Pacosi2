@@ -68,7 +68,7 @@ class LessonQuery extends BaseQuery {
                 if (args.date) {
                     srch.datetime={"$gte":args.date,"$lt":new Date(args.date.getTime()+ (24 * 60 * 60 * 1000))}
                 }
-                return LessonResolver.search(srch);
+                return LessonResolver.index(srch);
             }
         }
     }

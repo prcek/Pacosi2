@@ -51,7 +51,7 @@ const LessonInfoType = new GraphQL.GraphQLObjectType({
             type: new GraphQLList(LessonMemberType),
             description: 'This will return all the members present in the lesson',
             resolve(parent, args, context, info) {
-                return LessonMemberResolver.search({lesson_id:parent.id});
+                return LessonMemberResolver.index({lesson_id:parent.id});
             }
         },
 
