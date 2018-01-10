@@ -45,7 +45,7 @@ const LocationInfoType = new GraphQL.GraphQLObjectType({
             type: new GraphQLList(MassageRoomType),
             description: 'This will return all the massage rooms present in the location',
             resolve(parent, args, context, info) {
-                return MassageRoomResolver.search({active:true,location_id:parent.id});
+                return MassageRoomResolver.index({active:true,location_id:parent.id});
             }
         },
 
@@ -53,7 +53,7 @@ const LocationInfoType = new GraphQL.GraphQLObjectType({
             type: new GraphQLList(LessonTypeType),
             description: 'This will return all the lesson types present in the location',
             resolve(parent, args, context, info) {
-                return LessonTypeResolver.search({active:true,location_id:parent.id});
+                return LessonTypeResolver.index({active:true,location_id:parent.id});
             }
         },
  

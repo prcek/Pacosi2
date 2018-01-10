@@ -33,11 +33,10 @@ const ClientSchema = mongoose.Schema(
         city: {
             type: String
         },
-        active: {
+        hidden: {
             type: Boolean,
-            default: true
+            default: false
         },
-        
         search: {
             name: String,
             surname: String

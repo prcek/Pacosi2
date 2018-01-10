@@ -7,9 +7,11 @@ class BaseController {
         this.model = model;
     }
 
-    index() {
-        console.log("BaseController index",this.model.modelName)
-        return this.model.find()
+    
+
+    index(filter={}) {
+        console.log("BaseController index",this.model.modelName+"(",filter,")")
+        return this.model.find(filter)
             .sort('created_at')
             .exec()
             .then( records => {
@@ -20,8 +22,8 @@ class BaseController {
             });
     }
 
-    index_pages(pagination) {
-        console.log("BaseController index pages",this.model.modelName,pagination)
+    index_pages(pagination,filter={}) {
+        console.log("BaseController index pages",this.model.modelName,pagination,filter)
         if (pagination.pageNo<0) {
             pagination.pageNo = 0;
         }
@@ -34,11 +36,11 @@ class BaseController {
         const limit = pagination.pageLength;
 
         return new Promise((resolve, reject) => {
-            this.model.find().count().then(c=>{
+            this.model.find(filter).count().then(c=>{
                 const rem = c%pagination.pageLength;
                 const tp = (((c - rem) / pagination.pageLength))+(rem?1:0);
 
-                this.model.find().sort('created_at').skip(offset).limit(limit).then(records=>{
+                this.model.find(filter).sort('created_at').skip(offset).limit(limit).then(records=>{
                     resolve({items:records,paginationInfo:{pageNo:pagination.pageNo,pageLength:pagination.pageLength,totalCount:c,totalPages:tp}});
                 }).catch(reject)
 
@@ -47,23 +49,14 @@ class BaseController {
         });
 
     }
-    
-    search(options) {
-        console.log("BaseController search",this.model.modelName+"(",options,")")
-        return this.model.find(options)
-            .sort('created_at')
-            .exec()
-            .then( records => {
-                return records;
-            })
-            .catch( error => {
-                return error;
-            });
+   /* 
+    search(filter) {
+        return this.index(filter);
     }
-
-    count(options) {
-        console.log("BaseController count",this.model.modelName+"(",options,")")        
-        return this.model.find(options).count()
+  */
+    count(filter={}) {
+        console.log("BaseController count",this.model.modelName+"(",filter,")")        
+        return this.model.find(filter).count()
             .exec()
             .then( count => {
                 return count;
@@ -134,6 +127,22 @@ class BaseController {
         });
     }
 
+    hide(args) {
+        return new Promise((resolve, reject) => {
+            console.log("BaseController hide",this.model.modelName+"(",args,")")
+            this.model.findOne({ _id: args.id }).then(r=>{
+                if (r === null) {
+                    console.log("can't find",this.model.modelName,"with id:",args.id);
+                    resolve(null);
+                } else {
+                    r["hidden"] = true;
+                    r.save().then(u=>{
+                        resolve(u);
+                    }).catch(reject);
+                }
+            }).catch(reject);
+        });
+    }
 
 
 };

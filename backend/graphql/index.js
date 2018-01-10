@@ -82,7 +82,7 @@ const RootMutation = new GraphQLObjectType({
         deleteUser: UserMutation.delete(),
         addClient: ClientMutation.create(),
         updateClient: ClientMutation.update(),
-        deleteClient: ClientMutation.delete(),
+        hideClient: ClientMutation.hide(),
         addOrderItem: OrderItemMutation.create(),
         updateOrderItem: OrderItemMutation.update(),
         deleteOrderItem: OrderItemMutation.delete(),

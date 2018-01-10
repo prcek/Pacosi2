@@ -62,6 +62,22 @@ class BaseMutation {
         }
     }
 
+    hide() {
+        return {
+            type: this.type,
+            description: 'Hide existing '+this.type+' record',
+            args: { 
+                id: {
+                    type: new GraphQLNonNull(GraphQLID), 
+                    description: 'Enter '+this.type+' id',
+                },
+            },
+            resolve: (parent, args, context, info)=>{
+                return this.resolver.hide(args);
+            }
+        }
+    }
+
 };
 
 

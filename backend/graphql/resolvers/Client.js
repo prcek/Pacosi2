@@ -9,8 +9,10 @@ const BaseController = require('./BaseController');
 
 class ClientController extends BaseController{
 
+
     constructor() {
         super(Client);
+        this.hiddenFilter = {hidden: {$ne: true}}
     }
 
     create(args) {
@@ -33,11 +35,25 @@ class ClientController extends BaseController{
         });
     }
 
+    index_pages(pagination,filter={}) { 
+        const f = {...filter,...this.hiddenFilter}
+        return super.index_pages(pagination,f);
+    }
+
+    index(filter={}) { 
+        const f = {...filter,...this.hiddenFilter}
+        return super.index(f);
+    }
+    
+    count(filter={}) { 
+        const f = {...filter,...this.hiddenFilter}
+        return super.count(f);
+    }
 
     lookup(text,limit=0) {
         console.log("ClientController lookup","["+text+"]",limit)    
         const srchtxt = "^"+escapeStringRegexp(removeDiacritics(text).toLowerCase().trim());
-        return this.model.find({ $or: [{'search.surname': {$regex: srchtxt }},{'search.name':{$regex: srchtxt } }]}).limit(limit)
+        return this.model.find({ $or: [{'search.surname': {$regex: srchtxt }},{'search.name':{$regex: srchtxt } }],...this.hiddenFilter}).limit(limit)
             .sort('created_at')
             .exec()
             .then( records => {

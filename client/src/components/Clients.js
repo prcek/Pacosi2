@@ -10,6 +10,7 @@ import { setClientPageNo, setClientPageLength } from './../actions'
 import DateTimeView from './DateTimeView';
 import DeleteIcon from 'material-ui-icons/Delete';
 import EditIcon from 'material-ui-icons/Edit';
+import AddIcon from 'material-ui-icons/Add';
 import Toolbar from 'material-ui/Toolbar';
 import Button from 'material-ui/Button';
 import TextField from 'material-ui/TextField';
@@ -100,6 +101,16 @@ const AddClient = gql`
     }
 `;
 
+
+const HideClient = gql`
+    mutation HideClient($id: ID!) {
+        hideClient(id:$id) {
+            id
+        }
+    }
+`;
+
+
 function null2empty(v) {
     if ((v === null) || (v === undefined)) {return ""}
     return v;
@@ -138,7 +149,19 @@ class Clients extends React.Component {
 
     handleCancelOkDialog = () => {
         //TODO delete
-        this.setState({ delOpen: false, client:{},client_err:{} });
+        const {client} = this.state;
+        this.setState({client_error_msg:null});
+        this.props.hideClient({
+            variables: {
+                id:client.id,
+            }
+        }).then(r=>{
+            this.setState({ delOpen: false, client:{},client_err:{} });
+        }).catch(e=>{
+            console.error(e);
+            this.setState({ client_error_msg:"Chyba mazání: "+e})
+        })     
+       
     };
     
 
@@ -194,7 +217,7 @@ class Clients extends React.Component {
             year: client.year,
         };
       
-        this.setState({editOpen:true,addOpen:false,client:cl})
+        this.setState({editOpen:true,addOpen:false,client:cl,client_error_msg:null})
     }
 
     onOpenDeleteDialog(client) {
@@ -208,16 +231,16 @@ class Clients extends React.Component {
             year: client.year,
         };
       
-        this.setState({editOpen:false,addOpen:false,delOpen:true,client:cl})
+        this.setState({editOpen:false,addOpen:false,delOpen:true,client:cl,client_error_msg:null})
     }
  
     onOpenAddDialog(client) {
-        this.setState({addOpen:true,editOpen:false,client:{}})
+        this.setState({addOpen:true,editOpen:false,client:{},client_error_msg:null})
     }
    
     checkClientField(name,value) {
         switch(name) {
-        case 'surname': return (value!==null);
+        case 'surname': return ((value!==null) && (value!==undefined));
         default: return true;
         }
     }
@@ -388,7 +411,7 @@ class Clients extends React.Component {
             <div>
             {dialog} {dialogDel}
             <Typography> I Am Clients page {this.props.current_page_no} </Typography>
-            <Button raised style={{minWidth:"38px"}} onClick={()=>this.onOpenAddDialog()}> <EditIcon/>  </Button>
+            <Button raised style={{minWidth:"38px"}} onClick={()=>this.onOpenAddDialog()}> <AddIcon/>  </Button>
             <Table className={classes.table}>
                 <TableHead>
                     <TableRow>
@@ -458,6 +481,14 @@ export default compose(
     }),
     graphql(AddClient,{
         name:"addClient",
+        options: {
+            refetchQueries: [
+                'Clients',
+              ],
+        }
+    }),
+    graphql(HideClient,{
+        name:"hideClient",
         options: {
             refetchQueries: [
                 'Clients',
