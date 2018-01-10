@@ -13,6 +13,26 @@ class ClientController extends BaseController{
         super(Client);
     }
 
+    create(args) {
+        return new Promise((resolve, reject) => {
+            console.log("ClientController create",this.model.modelName+"(",args,")")   
+            const record = new this.model(args);
+
+            
+            record.generateNo().then(x=>{
+                console.log("record with No",record);
+                record.save().then(r=>{
+                    if (r===null) {
+                        console.log("can't create",this.model.modelName)
+                    } else {
+                        console.log("new",this.model.modelName,"id",r.id)
+                    }
+                    resolve(r);
+                }).catch(reject);
+            }).catch(reject);
+        });
+    }
+
 
     lookup(text,limit=0) {
         console.log("ClientController lookup","["+text+"]",limit)    

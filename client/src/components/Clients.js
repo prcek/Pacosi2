@@ -13,6 +13,7 @@ import EditIcon from 'material-ui-icons/Edit';
 import Toolbar from 'material-ui/Toolbar';
 import Button from 'material-ui/Button';
 import TextField from 'material-ui/TextField';
+import { SnackbarContent } from 'material-ui/Snackbar';
 
 import Dialog, {
     DialogActions,
@@ -91,6 +92,13 @@ const UpdateClient = gql`
     }
 `;
 
+const AddClient = gql`
+    mutation AddClient($surname: String!, $name: String, $phone: String, $email: String, $year: Int) {
+        addClient(surname:$surname,name:$name,phone:$phone,email:$email,year:$year) {
+            id
+        }
+    }
+`;
 
 function null2empty(v) {
     if ((v === null) || (v === undefined)) {return ""}
@@ -107,7 +115,8 @@ class Clients extends React.Component {
         editOpen:false,
         addOpen:false,
         client: {},
-        client_err: {}
+        client_err: {},
+        client_error_msg:null
     }
 
     handleChangePage = (event, page) => {
@@ -124,22 +133,41 @@ class Clients extends React.Component {
 
     handleSaveAndCloseDialog = () => {
         const {client} = this.state;
-        this.props.updateClient({
-            variables: {
-                id:client.id,
-                surname:client.surname,
-                name:client.name,
-                phone:client.phone,
-                email:client.email,
-                year:client.year
-            },
-        }).then(r=>{
-            console.log(r);
-            this.setState({ editOpen: false, addOpen:false });
-        }).catch(e=>{
-            console.error(e);
-
-        })
+        this.setState({client_error_msg:null});
+        if (client.id) {
+            this.props.updateClient({
+                variables: {
+                    id:client.id,
+                    surname:client.surname,
+                    name:client.name,
+                    phone:client.phone,
+                    email:client.email,
+                    year:client.year
+                },
+            }).then(r=>{
+                console.log(r);
+                this.setState({ editOpen: false, addOpen:false });
+            }).catch(e=>{
+                console.error(e);
+                this.setState({ client_error_msg:"Chyba ukládání: "+e})
+            })
+        } else {
+            this.props.addClient({
+                variables: {
+                    surname:client.surname,
+                    name:client.name,
+                    phone:client.phone,
+                    email:client.email,
+                    year:client.year
+                },
+            }).then(r=>{
+                console.log(r);
+                this.setState({ editOpen: false, addOpen:false });
+            }).catch(e=>{
+                console.error(e);
+                this.setState({ client_error_msg:"Chyba ukládání: "+e})
+            })
+        }
 
 
         //this.setState({ editOpen: false, addOpen:false });
@@ -161,9 +189,13 @@ class Clients extends React.Component {
             cl[field] = client[field];
         });
         */
-        this.setState({editOpen:true,client:cl})
+        this.setState({editOpen:true,addOpen:false,client:cl})
     }
 
+    onOpenAddDialog(client) {
+        this.setState({addOpen:true,editOpen:false,client:{}})
+    }
+   
     checkClientField(name,value) {
         switch(name) {
         case 'surname': return (value!==null);
@@ -200,16 +232,18 @@ class Clients extends React.Component {
 
     renderDialog() {
         const { classes } = this.props;
+        const dialogCaption = this.state.addOpen?"Zaevidování nového klienta":"Editace klienta";
+        const dialogDesc = this.state.addOpen?"Nový záznam klienta":"Úprava záznamu klienta";
         return (
         <Dialog
             open={this.state.editOpen || this.state.addOpen}
             onClose={this.handleCloseDialog}
             aria-labelledby="form-dialog-title"
             >
-            <DialogTitle id="form-dialog-title">Editace klienta</DialogTitle>
+            <DialogTitle id="form-dialog-title">{dialogCaption}</DialogTitle>
             <DialogContent>
                 <DialogContentText>
-                Uprava zaznamu klienta, musi byt vypleno alespon prijmeni
+                {dialogDesc}, musí byt vyplňeno alespoň přijmení
                 </DialogContentText>
                 <form className={classes.form}  noValidate autoComplete="off">
                     
@@ -252,25 +286,24 @@ class Clients extends React.Component {
                     <TextField className={classes.textfield} 
                         margin="dense"
                         id="year"
-                        label="Rok narozeni"
+                        label="Ročník"
                         type="number"
                         value={null2empty(this.state.client.year)}
                         onChange={(e)=>this.handleClientChange("year",empty2null(e.target.value))}
                         InputProps={{style:{width:100}}}
                     />
                 </form>
-
-             
-
+                {this.state.client_error_msg && <SnackbarContent message={this.state.client_error_msg}/>}
             </DialogContent>
             <DialogActions>
                 <Button onClick={this.handleCancelDialog} color="primary">
-                Neukladat
+                Neukládat
                 </Button>
                 <Button disabled={!this.checkClient()} onClick={this.handleSaveAndCloseDialog} color="primary">
-                Ulozit
+                Uložit
                 </Button>
             </DialogActions>
+
         </Dialog>
         );
     }
@@ -299,7 +332,7 @@ class Clients extends React.Component {
         //const { classes } = this.props;
         return (
             <TablePagination
-            count={1000}
+            count={pi.totalCount}
             rowsPerPage={pi.pageLength}
             page={pi.pageNo}
             onChangePage={this.handleChangePage}
@@ -317,6 +350,7 @@ class Clients extends React.Component {
             <div>
             {dialog}
             <Typography> I Am Clients page {this.props.current_page_no} </Typography>
+            <Button raised style={{minWidth:"38px"}} onClick={()=>this.onOpenAddDialog()}> <EditIcon/>  </Button>
             <Table className={classes.table}>
                 <TableHead>
                     <TableRow>
@@ -378,6 +412,14 @@ export default compose(
     }),
     graphql(UpdateClient,{
         name:"updateClient",
+        options: {
+            refetchQueries: [
+                'Clients',
+              ],
+        }
+    }),
+    graphql(AddClient,{
+        name:"addClient",
         options: {
             refetchQueries: [
                 'Clients',

@@ -53,7 +53,7 @@ const ClientSchema = mongoose.Schema(
 const removeDiacritics = require('diacritics').remove;
 
 function genNo() {
-   return Math.floor(Math.random()*100000)*7+100000;
+   return Math.floor(Math.random()*128000)*7+100000;
 }
 
 function generateNo(model) {
