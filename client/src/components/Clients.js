@@ -114,6 +114,7 @@ class Clients extends React.Component {
     state = {
         editOpen:false,
         addOpen:false,
+        delOpen:false,
         client: {},
         client_err: {},
         client_error_msg:null
@@ -130,6 +131,16 @@ class Clients extends React.Component {
     handleCancelDialog = () => {
         this.setState({ editOpen: false, addOpen:false, client:{},client_err:{} });
     };
+
+    handleCancelDelDialog = () => {
+        this.setState({ delOpen: false, client:{},client_err:{} });
+    };
+
+    handleCancelOkDialog = () => {
+        //TODO delete
+        this.setState({ delOpen: false, client:{},client_err:{} });
+    };
+    
 
     handleSaveAndCloseDialog = () => {
         const {client} = this.state;
@@ -170,11 +181,10 @@ class Clients extends React.Component {
         }
 
 
-        //this.setState({ editOpen: false, addOpen:false });
+      
     };
     
     onOpenEditDialog(client) {
-        console.log(client);
         const cl = {
             id: client.id,
             surname: client.surname,
@@ -183,15 +193,24 @@ class Clients extends React.Component {
             email: client.email,
             year: client.year,
         };
-        /*
-        Object.keys(client).map( field => {
-            console.log()
-            cl[field] = client[field];
-        });
-        */
+      
         this.setState({editOpen:true,addOpen:false,client:cl})
     }
 
+    onOpenDeleteDialog(client) {
+        const cl = {
+            id: client.id,
+            no: client.no,
+            surname: client.surname,
+            name: client.name,
+            phone: client.phone,
+            email: client.email,
+            year: client.year,
+        };
+      
+        this.setState({editOpen:false,addOpen:false,delOpen:true,client:cl})
+    }
+ 
     onOpenAddDialog(client) {
         this.setState({addOpen:true,editOpen:false,client:{}})
     }
@@ -228,7 +247,25 @@ class Clients extends React.Component {
         }
     }
 */
-
+    renderAskDialog() {
+        const { classes } = this.props;
+        return (
+            <Dialog open={this.state.delOpen} onClose={this.handleCancelDelDialog}  aria-labelledby="del-dialog-title">
+                <DialogTitle id="del-dialog-title">Opravdu smazat klienta z evidence?</DialogTitle>
+                <DialogContent>
+                    Klient číslo {this.state.client.no} - {this.state.client.surname} {this.state.client.name} bude odstranen
+                </DialogContent>
+                <DialogActions>
+                    <Button onClick={this.handleCancelDelDialog} color="primary">
+                    Nemazat
+                    </Button>
+                    <Button  onClick={this.handleCancelOkDialog} color="primary">
+                    Opravdu smazat
+                    </Button>
+                </DialogActions>
+            </Dialog>
+        );
+    }
 
     renderDialog() {
         const { classes } = this.props;
@@ -237,7 +274,7 @@ class Clients extends React.Component {
         return (
         <Dialog
             open={this.state.editOpen || this.state.addOpen}
-            onClose={this.handleCloseDialog}
+            onClose={this.handleCancelDialog}
             aria-labelledby="form-dialog-title"
             >
             <DialogTitle id="form-dialog-title">{dialogCaption}</DialogTitle>
@@ -346,9 +383,10 @@ class Clients extends React.Component {
         const rows = !this.props.clients.clients_pages ?[]:this.renderClients(this.props.clients.clients_pages.items);
         const paginator = !this.props.clients.clients_pages ?null:this.renderPaginator(this.props.clients.clients_pages.paginationInfo);
         const dialog = this.renderDialog();
+        const dialogDel = this.renderAskDialog();
         return (
             <div>
-            {dialog}
+            {dialog} {dialogDel}
             <Typography> I Am Clients page {this.props.current_page_no} </Typography>
             <Button raised style={{minWidth:"38px"}} onClick={()=>this.onOpenAddDialog()}> <EditIcon/>  </Button>
             <Table className={classes.table}>
