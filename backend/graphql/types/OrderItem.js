@@ -16,6 +16,8 @@ const {
     GraphQLDateTime
 } = GraphQLIsoDate;
 
+const StatusType = require('./Status');
+
 
 const OrderItemType = new GraphQL.GraphQLObjectType({
     name: 'OrderItem',
@@ -30,8 +32,8 @@ const OrderItemType = new GraphQL.GraphQLObjectType({
             type: GraphQLString,
             description: 'Name of the item',
         },
-        active: {
-            type: GraphQLBoolean,
+        status: {
+            type: StatusType,
             description: 'Status of the item, whether active or disabled',
         },
 

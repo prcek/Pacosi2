@@ -12,6 +12,7 @@ import { withRouter } from 'react-router'
 import MassageRoom from './components/MassageRoom';
 import LessonType from './components/LessonType';
 import Users from './components/Users';
+import OrderItems from './components/OrderItems';
 import Clients from './components/Clients';
 import TestComponent from './components/TestComponent';
 
@@ -34,6 +35,13 @@ const PageUsers = ({ match }) => (
   <div>
     <h3>Users</h3>
     <Users />
+  </div>
+)
+
+const PageOrderItems = ({ match }) => (
+  <div>
+    <h3>OrderItems</h3>
+    <OrderItems />
   </div>
 )
 
@@ -76,6 +84,7 @@ class App extends Component {
           <Route path="/lessons/:id" component={PageLessons}/>
           <Route path="/massages/:id" component={PageMassages}/>
           <Route path="/users" component={PageUsers}/>
+          <Route path="/orderitems" component={PageOrderItems}/>
           <Route path="/clients" component={PageClients}/>
           <Route path="/test" component={PageTest}/>
           <Route component={PageNoMatch}/>

@@ -12,7 +12,7 @@ import Toolbar from 'material-ui/Toolbar';
 import Button from 'material-ui/Button';
 import TextField from 'material-ui/TextField';
 import { SnackbarContent } from 'material-ui/Snackbar';
-
+import StatusView from './StatusView';
 import Input, { InputLabel } from 'material-ui/Input';
 import { MenuItem } from 'material-ui/Menu';
 import { FormControl, FormHelperText } from 'material-ui/Form';
@@ -71,7 +71,7 @@ const CurrentUsers = gql`
 
 
 const UpdateUser = gql`
-    mutation UpdateUser($id: ID!, $name: String!, $email: String, $role: UserRole, $status: UserStatus) {
+    mutation UpdateUser($id: ID!, $name: String!, $email: String, $role: UserRole, $status: Status) {
         updateUser(id:$id,name:$name,email:$email,role:$role, status:$status) {
             id
         }
@@ -79,7 +79,7 @@ const UpdateUser = gql`
 `;
 
 const AddUser = gql`
-    mutation AddUser($name: String!, $email: String, $role: UserRole!, $status: UserStatus!) {
+    mutation AddUser($name: String!, $email: String, $role: UserRole!, $status: Status!) {
         addUser(name:$name,email:$email,role:$role,status:$status) {
             id
         }
@@ -340,7 +340,7 @@ class Users extends React.Component {
         const { classes } = this.props;
         return users.map(user=> (
           <TableRow key={user.id}>
-             <TableCell padding={"dense"} style={{width:"0px"}}>{user.status}</TableCell>
+             <TableCell padding={"dense"} style={{width:"0px"}}><StatusView status={user.status}/></TableCell>
              <TableCell padding={"dense"}>{user.name}</TableCell>
              <TableCell padding={"dense"}>{user.role}</TableCell>
              <TableCell padding={"dense"}>{user.email}</TableCell>

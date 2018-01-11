@@ -10,7 +10,7 @@ const {
 
 const UserType = require('../types/User');
 const UserRoleType = require('../types/UserRole');
-const UserStatusType = require('../types/UserStatus');
+const StatusType = require('../types/Status');
 const UserResolver = require('../resolvers/User');
 const BaseMutation = require('./BaseMutation');
 
@@ -38,7 +38,7 @@ class UserMutation extends BaseMutation {
                 description: 'Enter users password, will be automatically hashed',
             },
             status: {
-                type: new GraphQLNonNull(UserStatusType),
+                type: new GraphQLNonNull(StatusType),
                 description: 'Enters users status, by default its set to active. 1: active, 2: disabled',
             },
         };
@@ -66,7 +66,7 @@ class UserMutation extends BaseMutation {
                 description: 'Enter users password, will be automatically hashed',
             },
             status: {
-                type: UserStatusType,
+                type: StatusType,
                 description: 'Enters users status. 1: active, 2: disabled',
             },
         };

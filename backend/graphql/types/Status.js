@@ -16,8 +16,8 @@ const {
 } = GraphQLIsoDate;
 
 
-const UserStatusType =  new GraphQL.GraphQLEnumType({
-    name: 'UserStatus',
+const StatusType =  new GraphQL.GraphQLEnumType({
+    name: 'Status',
     values: {
         ACTIVE:{value:1},
         DISABLED:{value:2},
@@ -26,4 +26,4 @@ const UserStatusType =  new GraphQL.GraphQLEnumType({
 
 
 
-module.exports = UserStatusType;
+module.exports = StatusType;

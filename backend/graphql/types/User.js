@@ -18,7 +18,7 @@ const {
 
 
 const UserRoleType = require('./UserRole');
-const UserStatusType = require('./UserStatus');
+const StatusType = require('./Status');
 
 
 const UserType = new GraphQL.GraphQLObjectType({
@@ -43,7 +43,7 @@ const UserType = new GraphQL.GraphQLObjectType({
             description: 'Email address of the user, must be valid and unique',
         },
         status: {
-            type: UserStatusType,
+            type: StatusType,
             description: 'Status of the user, whether active or disabled',
         },
         created_at: {

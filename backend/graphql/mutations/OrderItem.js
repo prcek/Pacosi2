@@ -9,10 +9,8 @@ const {
     GraphQLBoolean
 } = GraphQL;
 
-// lets import our user type
 const OrderItemType = require('../types/OrderItem');
-
-// lets import our user resolver
+const StatusType = require('../types/Status');
 const OrderItemResolver = require('../resolvers/OrderItem');
 const BaseMutation = require('./BaseMutation');
 
@@ -27,10 +25,11 @@ class OrderItemMutation extends BaseMutation {
                 type: new GraphQLNonNull(GraphQLString),
                 description: 'Enter order item name, Cannot be left empty',
             },
-            active: {
-                type: GraphQLBoolean,
-                description: 'Enters order item status, by default its set to active. true: active, false: disabled',
+            status: {
+                type: new GraphQLNonNull(StatusType),
+                description: 'Enters order item status, by default its set to active. 1: active, 2: disabled',
             },
+
         };
     }
     update_args() {
@@ -43,11 +42,11 @@ class OrderItemMutation extends BaseMutation {
                 type: GraphQLString,
                 description: 'Enter order item name, Cannot be left empty',
             },
-            active: {
-                type: GraphQLBoolean,
-                description: 'Enters order item status. true: active, false: disabled',
+            status: {
+                type: StatusType,
+                description: 'Enters order item status. 1: active, 2: disabled',
             },
-        };
+       };
     }
 }
 
