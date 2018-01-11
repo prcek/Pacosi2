@@ -17,6 +17,7 @@ const {
 } = GraphQLIsoDate;
 
 const LocationType = require('./Location');
+const StatusType = require('./Status');
 const LocationResolver = require('../resolvers/Location');
 
 
@@ -47,9 +48,9 @@ const MassageRoomType = new GraphQL.GraphQLObjectType({
             }
         },
 
-        active: {
-            type: GraphQLBoolean,
-            description: 'Status of the massage room, whether active or disabled',
+        status: {
+            type: StatusType,
+            description: 'Status of the item, whether active or disabled',
         },
 
         created_at: {

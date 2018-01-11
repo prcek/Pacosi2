@@ -10,6 +10,7 @@ const {
 } = GraphQL;
 
 const MassageRoomType = require('../types/MassageRoom');
+const StatusType = require('../types/Status');
 const MassageRoomResolver = require('../resolvers/MassageRoom');
 const BaseMutation = require('./BaseMutation');
 
@@ -28,9 +29,9 @@ class MassageRoomMutation extends BaseMutation {
                 type: new GraphQLNonNull(GraphQLID),
                 description: 'Enter location id, Cannot be left empty',
             },
-            active: {
-                type: GraphQLBoolean,
-                description: 'Enters Massage root status, by default its set to active. true: active, false: disabled',
+            status: {
+                type: new GraphQLNonNull(StatusType),
+                description: 'Enters massageroom status, by default its set to active. 1: active, 2: disabled',
             },
         };
     }
@@ -48,9 +49,9 @@ class MassageRoomMutation extends BaseMutation {
                 type: GraphQLID,
                 description: 'Enter location id',
             },
-            active: {
-                type: GraphQLBoolean,
-                description: 'Enters Massage room status. true: active, false: disabled',
+            status: {
+                type: StatusType,
+                description: 'Enters status, by default its set to active. 1: active, 2: disabled',
             },
         };
     }
