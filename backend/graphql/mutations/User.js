@@ -10,6 +10,7 @@ const {
 
 const UserType = require('../types/User');
 const UserRoleType = require('../types/UserRole');
+const UserStatusType = require('../types/UserStatus');
 const UserResolver = require('../resolvers/User');
 const BaseMutation = require('./BaseMutation');
 
@@ -29,15 +30,15 @@ class UserMutation extends BaseMutation {
                 description: 'User role - Admin,Reception,Doctor'
             },
             email: {
-                type: new GraphQLNonNull(GraphQLString),
+                type: GraphQLString,
                 description: 'Enter users email address, Must be valid and unique',
             },
             password: {
-                type: new GraphQLNonNull(GraphQLString),
+                type: GraphQLString,
                 description: 'Enter users password, will be automatically hashed',
             },
             status: {
-                type: GraphQLInt,
+                type: new GraphQLNonNull(UserStatusType),
                 description: 'Enters users status, by default its set to active. 1: active, 2: disabled',
             },
         };
@@ -65,7 +66,7 @@ class UserMutation extends BaseMutation {
                 description: 'Enter users password, will be automatically hashed',
             },
             status: {
-                type: GraphQLInt,
+                type: UserStatusType,
                 description: 'Enters users status. 1: active, 2: disabled',
             },
         };

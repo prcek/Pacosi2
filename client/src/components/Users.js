@@ -71,16 +71,16 @@ const CurrentUsers = gql`
 
 
 const UpdateUser = gql`
-    mutation UpdateUser($id: ID!, $name: String!, $email: String, $role: UserRole) {
-        updateUser(id:$id,name:$name,email:$email,role:$role) {
+    mutation UpdateUser($id: ID!, $name: String!, $email: String, $role: UserRole, $status: UserStatus) {
+        updateUser(id:$id,name:$name,email:$email,role:$role, status:$status) {
             id
         }
     }
 `;
 
 const AddUser = gql`
-    mutation AddUser($name: String!, $email: String, $role: UserRole!) {
-        addUser(name:$name,email:$email,role:$role) {
+    mutation AddUser($name: String!, $email: String, $role: UserRole!, $status: UserStatus!) {
+        addUser(name:$name,email:$email,role:$role,status:$status) {
             id
         }
     }
@@ -89,7 +89,7 @@ const AddUser = gql`
 
 const HideUser = gql`
     mutation HideUser($id: ID!) {
-        hideClient(id:$id) {
+        hideUser(id:$id) {
             id
         }
     }
@@ -125,14 +125,14 @@ class Users extends React.Component {
     };
     
     handleCancelOkDialog = () => {
-        const {client} = this.state;
-        this.setState({client_error_msg:null});
-        this.props.hideClient({
+        const {user} = this.state;
+        this.setState({user_error_msg:null});
+        this.props.hideUser({
             variables: {
-                id:client.id,
+                id:user.id,
             }
         }).then(r=>{
-            this.setState({ delOpen: false, client:{},client_err:{} });
+            this.setState({ delOpen: false, user:{},user_err:{} });
         }).catch(e=>{
             console.error(e);
             this.setState({ user_error_msg:"Chyba mazání: "+e})
@@ -150,7 +150,8 @@ class Users extends React.Component {
                     id:user.id,
                     name:user.name,
                     email:user.email,
-                    role:user.role
+                    role:user.role,
+                    status:user.status
                 },
             }).then(r=>{
                 console.log(r);
@@ -164,7 +165,8 @@ class Users extends React.Component {
                 variables: {
                     name:user.name,
                     email:user.email,
-                    role:user.role
+                    role:user.role,
+                    status:user.status
                 },
             }).then(r=>{
                 console.log(r);
@@ -184,7 +186,8 @@ class Users extends React.Component {
             id: user.id,
             name:user.name,
             email:user.email,
-            role:user.role
+            role:user.role,
+            status:user.status
         };
       
         this.setState({editOpen:true,addOpen:false,user:cl,user_error_msg:null})
@@ -195,26 +198,28 @@ class Users extends React.Component {
             id: user.id,
             name:user.name,
             email:user.email,
-            role:user.role
+            role:user.role,
+            status:user.status
         };
       
         this.setState({editOpen:false,addOpen:false,delOpen:true,user:cl,user_error_msg:null})
     }
  
     onOpenAddDialog() {
-        this.setState({addOpen:true,editOpen:false,user:{},user_error_msg:null})
+        this.setState({addOpen:true,editOpen:false,user:{status:"ACTIVE"},user_error_msg:null})
     }
 
     checkUserField(name,value) {
         switch(name) {
         case 'name': return ((value!==null) && (value!==undefined));
         case 'role': return ((value!==null) && (value!==undefined));
+        case 'status': return ((value!==null) && (value!==undefined));
         default: return true;
         }
     }
 
     checkUser() {
-        return this.checkUserField('name',this.state.user.name) && this.checkUserField('role',this.state.user.role) 
+        return this.checkUserField('name',this.state.user.name) && this.checkUserField('role',this.state.user.role) && this.checkUserField('status',this.state.user.status) 
     }
 
     handleUserChange(name,value){
@@ -266,6 +271,20 @@ class Users extends React.Component {
                 </DialogContentText>
                 <form className={classes.form}  noValidate autoComplete="off">
                     
+
+                    <FormControl className={classes.textfield}>
+                    <InputLabel htmlFor="status-simple">stav</InputLabel>
+                    <Select
+                        value={this.state.user.status?this.state.user.status:""}
+                        onChange={(e)=>this.handleUserChange("status",empty2null(e.target.value))}
+                        input={<Input name="status" id="status-simple" />}
+                    >
+                        <MenuItem value={"ACTIVE"}>aktivni</MenuItem>
+                        <MenuItem value={"DISABLED"}>pozastaven</MenuItem>
+                    </Select>
+                    </FormControl>
+
+
                     <TextField className={classes.textfield}
                         autoFocus
                         margin="dense"
