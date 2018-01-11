@@ -126,7 +126,7 @@ class MenuBar extends React.Component {
 
 
                 <Select value={this.props.current_location_id?this.props.current_location_id:""} onChange={(e)=>this.onNewLocation(e.target.value)}>
-                  <MenuItem value="">None</MenuItem>
+                  <MenuItem value={""}>Žádná lokalita</MenuItem>
                   {this.props.locations.locations && this.renderLocations(this.props.locations.locations) }
                 </Select>
 
