@@ -16,6 +16,8 @@ const {
     GraphQLDateTime
 } = GraphQLIsoDate;
 
+const StatusType = require('./Status');
+
 
 const MassageTypeType = new GraphQL.GraphQLObjectType({
     name: 'MassageType',
@@ -34,9 +36,9 @@ const MassageTypeType = new GraphQL.GraphQLObjectType({
             type: GraphQLInt,
             description: 'Length of the massage type',
         },
-        active: {
-            type: GraphQLBoolean,
-            description: 'Status of the massage type, whether active or disabled',
+        status: {
+            type: StatusType,
+            description: 'Status of the item, whether active or disabled',
         },
 
         created_at: {

@@ -14,9 +14,14 @@ const MassageTypeSchema = mongoose.Schema(
             type: Number,
             required: true
         },
-        active: {
+        hidden: {
             type: Boolean,
-            default: true
+            default: false
+        },
+        status: {
+            type: Number,
+            default: 1,
+            required: true
         },
     },
     {

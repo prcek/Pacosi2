@@ -15,6 +15,7 @@ import Users from './components/Users';
 import OrderItems from './components/OrderItems';
 import LessonTypes from './components/LessonTypes';
 import MassageRooms from './components/MassageRooms';
+import MassageTypes from './components/MassageTypes';
 import Clients from './components/Clients';
 import TestComponent from './components/TestComponent';
 
@@ -60,6 +61,13 @@ const PageMassageRooms = ({ match }) => (
   </div>
 )
 
+const PageMassageTypes = ({ match }) => (
+  <div>
+    <h3>MassageTypes</h3>
+    <MassageTypes />
+  </div>
+)
+
 const PageClients = ({ match }) => (
   <div>
     <h3>Clients</h3>
@@ -102,6 +110,7 @@ class App extends Component {
           <Route path="/orderitems" component={PageOrderItems}/>
           <Route path="/lessontypes" component={PageLessonTypes}/>
           <Route path="/massagerooms" component={PageMassageRooms}/>
+          <Route path="/massagetypes" component={PageMassageTypes}/>
           <Route path="/clients" component={PageClients}/>
           <Route path="/test" component={PageTest}/>
           <Route component={PageNoMatch}/>
