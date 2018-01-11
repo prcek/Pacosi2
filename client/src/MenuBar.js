@@ -8,8 +8,10 @@ import Button from 'material-ui/Button';
 //import IconButton from 'material-ui/IconButton';
 //import MenuIcon from 'material-ui-icons/Menu';
 import Select from 'material-ui/Select';
-import { MenuItem } from 'material-ui/Menu'
-
+import IconButton from 'material-ui/IconButton';
+import MenuIcon from 'material-ui-icons/Menu';
+import AccountCircle from 'material-ui-icons/AccountCircle';
+import Menu, { MenuItem } from 'material-ui/Menu';
 import { Link } from 'react-router-dom';
 import { withRouter } from 'react-router';
 import { compose } from 'react-apollo'
@@ -62,17 +64,30 @@ const styles = theme => ({
 });
 
 class MenuBar extends React.Component {
-    //constructor(props) {
-    //  super(props);
-   // }
+
+
+    state = {
+      auth: true,
+      anchorEl: null,
+    };
+
     onNewLocation(location_id) {
       this.props.onSelectLocation(location_id);
       this.props.history.replace('/');
     }
 
-    onClick() {
-      console.log("CLICK");
-    }
+    handleCfgMenu = event => {
+      this.setState({ anchorEl: event.currentTarget });
+    };
+  
+    handleCfgClose = () => {
+      this.setState({ anchorEl: null });
+    };
+
+    handleCfgClickTo = (url) => {
+      this.setState({ anchorEl: null });
+      this.props.history.push(url);
+    };
 
     renderMenu() {
       if (!this.props.locationInfo.locationInfo) {
@@ -97,6 +112,7 @@ class MenuBar extends React.Component {
 
     render() {
         const { classes } = this.props;
+        const openCfg = Boolean(this.state.anchorEl);
         return (
             <div className={classes.root}>
             <AppBar position="static">
@@ -105,21 +121,48 @@ class MenuBar extends React.Component {
                 {this.props.locationInfo && this.renderMenu()} 
 
 
+                <Button color="contrast" component={Link} to="/clients">Klienti</Button>
+
                 <Typography color="inherit" className={classes.flex}>
                 &nbsp;
                 </Typography>
 
-                <Button color="accent" component={Link} to="/users">Users</Button>
-                <Button color="accent" component={Link} to="/orderitems">OrderItems</Button>
-                <Button color="accent" component={Link} to="/lessontypes">LessonTypes</Button>
-                <Button color="accent" component={Link} to="/massagerooms">MassageRooms</Button>
-                <Button color="accent" component={Link} to="/massagetypes">MassageTypes</Button>
-                <Button color="contrast" component={Link} to="/clients">Klienti</Button>
 
                 <Select value={this.props.current_location_id?this.props.current_location_id:""} onChange={(e)=>this.onNewLocation(e.target.value)}>
                   <MenuItem value="">None</MenuItem>
                   {this.props.locations.locations && this.renderLocations(this.props.locations.locations) }
                 </Select>
+
+                <IconButton
+                  aria-owns={openCfg ? 'menu-appbar' : null}
+                  aria-haspopup="true"
+                  onClick={this.handleCfgMenu}
+                  color="contrast"
+                >
+                  <AccountCircle />
+                </IconButton>
+                <Menu
+                  id="menu-appbar"
+                  anchorEl={this.state.anchorEl}
+                  anchorOrigin={{
+                    vertical: 'top',
+                    horizontal: 'right',
+                  }}
+                  transformOrigin={{
+                    vertical: 'top',
+                    horizontal: 'right',
+                  }}
+                  open={openCfg}
+                  onClose={this.handleCfgClose}
+                >
+                  <MenuItem onClick={()=>this.handleCfgClickTo('/users')}>Uzivatele</MenuItem>
+                  <MenuItem onClick={()=>this.handleCfgClickTo('/orderitems')}>orderitems</MenuItem>
+                  <MenuItem onClick={()=>this.handleCfgClickTo('/lessontypes')}>lessontypes</MenuItem>
+                  <MenuItem onClick={()=>this.handleCfgClickTo('/massagerooms')}>massagerooms</MenuItem>
+                  <MenuItem onClick={()=>this.handleCfgClickTo('/massagetypes')}>massagetypes</MenuItem>
+                </Menu>
+
+      
                 </Toolbar>
             </AppBar>
             </div>
