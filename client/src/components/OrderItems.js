@@ -15,7 +15,7 @@ import { SnackbarContent } from 'material-ui/Snackbar';
 import StatusView from './StatusView';
 import Input, { InputLabel } from 'material-ui/Input';
 import { MenuItem } from 'material-ui/Menu';
-import { FormControl, FormHelperText } from 'material-ui/Form';
+import { FormControl } from 'material-ui/Form';
 import Select from 'material-ui/Select';
 
 import Dialog, {
@@ -224,7 +224,7 @@ class OrderItems extends React.Component {
 
 
     renderAskDialog() {
-        const { classes } = this.props;
+        //const { classes } = this.props;
         return (
             <Dialog open={this.state.delOpen} onClose={this.handleCancelDelDialog}  aria-labelledby="del-dialog-title">
                 <DialogTitle id="del-dialog-title">Opravdu smazat typ prodeje z evidence?</DialogTitle>

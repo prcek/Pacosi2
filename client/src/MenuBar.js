@@ -5,12 +5,9 @@ import AppBar from 'material-ui/AppBar';
 import Toolbar from 'material-ui/Toolbar';
 import Typography from 'material-ui/Typography';
 import Button from 'material-ui/Button';
-//import IconButton from 'material-ui/IconButton';
-//import MenuIcon from 'material-ui-icons/Menu';
 import Select from 'material-ui/Select';
 import IconButton from 'material-ui/IconButton';
-import MenuIcon from 'material-ui-icons/Menu';
-import AccountCircle from 'material-ui-icons/AccountCircle';
+import SettingsIcon from 'material-ui-icons/Settings';
 import Menu, { MenuItem } from 'material-ui/Menu';
 import { Link } from 'react-router-dom';
 import { withRouter } from 'react-router';
@@ -139,7 +136,7 @@ class MenuBar extends React.Component {
                   onClick={this.handleCfgMenu}
                   color="contrast"
                 >
-                  <AccountCircle />
+                  <SettingsIcon />
                 </IconButton>
                 <Menu
                   id="menu-appbar"
@@ -155,11 +152,11 @@ class MenuBar extends React.Component {
                   open={openCfg}
                   onClose={this.handleCfgClose}
                 >
-                  <MenuItem onClick={()=>this.handleCfgClickTo('/users')}>Uzivatele</MenuItem>
-                  <MenuItem onClick={()=>this.handleCfgClickTo('/orderitems')}>orderitems</MenuItem>
-                  <MenuItem onClick={()=>this.handleCfgClickTo('/lessontypes')}>lessontypes</MenuItem>
-                  <MenuItem onClick={()=>this.handleCfgClickTo('/massagerooms')}>massagerooms</MenuItem>
-                  <MenuItem onClick={()=>this.handleCfgClickTo('/massagetypes')}>massagetypes</MenuItem>
+                  <MenuItem onClick={()=>this.handleCfgClickTo('/users')}>Uživatelé</MenuItem>
+                  <MenuItem onClick={()=>this.handleCfgClickTo('/orderitems')}>Položky prodeje</MenuItem>
+                  <MenuItem onClick={()=>this.handleCfgClickTo('/lessontypes')}>Typy lekci</MenuItem>
+                  <MenuItem onClick={()=>this.handleCfgClickTo('/massagerooms')}>Masáže</MenuItem>
+                  <MenuItem onClick={()=>this.handleCfgClickTo('/massagetypes')}>Typy masáží</MenuItem>
                 </Menu>
 
       
