@@ -31,7 +31,7 @@ class LessonTypeMutation extends BaseMutation {
             },
             status: {
                 type: new GraphQLNonNull(StatusType),
-                description: 'Enters order item status, by default its set to active. 1: active, 2: disabled',
+                description: 'Enters lessontype status, by default its set to active. 1: active, 2: disabled',
             },
         };
     }
@@ -52,7 +52,7 @@ class LessonTypeMutation extends BaseMutation {
             },
             status: {
                 type: StatusType,
-                description: 'Enters order item status, by default its set to active. 1: active, 2: disabled',
+                description: 'Enters status, by default its set to active. 1: active, 2: disabled',
             },
         };
     }
