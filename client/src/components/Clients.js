@@ -270,7 +270,7 @@ class Clients extends React.Component {
     }
 */
     renderAskDialog() {
-        const { classes } = this.props;
+        //const { classes } = this.props;
         return (
             <Dialog open={this.state.delOpen} onClose={this.handleCancelDelDialog}  aria-labelledby="del-dialog-title">
                 <DialogTitle id="del-dialog-title">Opravdu smazat klienta z evidence?</DialogTitle>

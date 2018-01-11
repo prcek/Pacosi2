@@ -10,6 +10,7 @@ const {
 } = GraphQL;
 
 const LessonTypeType = require('../types/LessonType');
+const StatusType = require('../types/Status');
 const LessonTypeResolver = require('../resolvers/LessonType');
 const BaseMutation = require('./BaseMutation');
 
@@ -28,9 +29,9 @@ class LessonTypeMutation extends BaseMutation {
                 type: new GraphQLNonNull(GraphQLID),
                 description: 'Enter location id, Cannot be left empty',
             },
-            active: {
-                type: GraphQLBoolean,
-                description: 'Enters lesson type status, by default its set to active. true: active, false: disabled',
+            status: {
+                type: new GraphQLNonNull(StatusType),
+                description: 'Enters order item status, by default its set to active. 1: active, 2: disabled',
             },
         };
     }
@@ -49,9 +50,9 @@ class LessonTypeMutation extends BaseMutation {
                 type: GraphQLID,
                 description: 'Enter location id',
             },
-            active: {
-                type: GraphQLBoolean,
-                description: 'Enters lesson type status. true: active, false: disabled',
+            status: {
+                type: StatusType,
+                description: 'Enters order item status, by default its set to active. 1: active, 2: disabled',
             },
         };
     }

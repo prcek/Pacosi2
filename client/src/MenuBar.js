@@ -111,6 +111,7 @@ class MenuBar extends React.Component {
 
                 <Button color="accent" component={Link} to="/users">Users</Button>
                 <Button color="accent" component={Link} to="/orderitems">OrderItems</Button>
+                <Button color="accent" component={Link} to="/lessontypes">LessonTypes</Button>
                 <Button color="contrast" component={Link} to="/clients">Klienti</Button>
 
                 <Select value={this.props.current_location_id?this.props.current_location_id:""} onChange={(e)=>this.onNewLocation(e.target.value)}>
