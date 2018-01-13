@@ -29,6 +29,7 @@ const psconfig = {
     storage,
     version:redux_state_version,
     migrate: (state) => {
+        if (state===undefined) return Promise.resolve({});
         if ((state._persist) && (state._persist.version<redux_state_version)) {
             console.log("redux state reset");
             return Promise.resolve({})
