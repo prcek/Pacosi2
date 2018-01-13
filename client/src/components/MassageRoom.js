@@ -10,7 +10,7 @@ import Button from 'material-ui/Button';
 import ForwardIcon from 'material-ui-icons/FastForward';
 import RewindIcon from 'material-ui-icons/FastRewind';
 import SettingsIcon from 'material-ui-icons/Settings';
-import MassageDayCard from './MassageDayCard'
+import {MassageDayCard, MassageDayCardHeader} from './MassageDayCard'
 import DateTimeView from './DateTimeView'
 var moment = require('moment');
 require("moment/min/locales.min");
@@ -55,25 +55,45 @@ class MassageRoom extends React.Component {
     };
 
 
+    renderDayCard(d,status) {
+        const { classes } = this.props;
+        const s = this.state.calendarDay && moment(d).isSame(this.state.calendarDay,'day');
+        return (
+            <MassageDayCard className={classes.daycard} onClick={this.handleSelectDay} status={status} date={d} selected={s}/>
+        );
+    }
     renderWeek(startDay) {
         const { classes } = this.props;
         const d = moment(startDay).startOf('week');
         return (
             <div className={classes.weekline}>
-                <MassageDayCard className={classes.daycard} onClick={(d)=>this.handleSelectDay(d)} status={1} date={d.toDate()}/>
-                <MassageDayCard className={classes.daycard} onClick={(d)=>this.handleSelectDay(d)} status={0} date={d.add(1,'days').toDate()}/>
-                <MassageDayCard className={classes.daycard} onClick={(d)=>this.handleSelectDay(d)} status={2} date={d.add(1,'days').toDate()}/>
-                <MassageDayCard className={classes.daycard} onClick={(d)=>this.handleSelectDay(d)} date={d.add(1,'days').toDate()}/>
-                <MassageDayCard className={classes.daycard} onClick={(d)=>this.handleSelectDay(d)} date={d.add(1,'days').toDate()}/>
+                {this.renderDayCard(d.toDate(),1)}
+                {this.renderDayCard(d.add(1,'days').toDate(),1)}
+                {this.renderDayCard(d.add(1,'days').toDate(),2)}
+                {this.renderDayCard(d.add(1,'days').toDate(),1)}
+                {this.renderDayCard(d.add(1,'days').toDate(),0)}
+            </div>
+        );
+    }
+
+    renderWeekHeader() {
+        const { classes } = this.props;
+        return (
+            <div className={classes.weekline}>
+               <MassageDayCardHeader label={"Po"}/>
+               <MassageDayCardHeader label={"Út"}/>
+               <MassageDayCardHeader label={"St"}/>
+               <MassageDayCardHeader label={"Čt"}/>
+               <MassageDayCardHeader label={"Pá"}/>
             </div>
         );
     }
 
 
-
     render() {
         const { classes } = this.props;
-        const week1 = this.renderWeek(this.state.calendarStartDate)
+        const weekH = this.renderWeekHeader();
+        const week1 = this.renderWeek(this.state.calendarStartDate);
         const week2 = this.renderWeek(moment(this.state.calendarStartDate).add(7,'days').toDate());
         const week3 = this.renderWeek(moment(this.state.calendarStartDate).add(14,'days').toDate());
         const week4 = this.renderWeek(moment(this.state.calendarStartDate).add(21,'days').toDate());
@@ -88,6 +108,7 @@ class MassageRoom extends React.Component {
                             <Button onClick={this.handleNextWeek}><ForwardIcon/></Button>  
                         </Toolbar>
                         <Paper>
+                            {weekH}
                             {week1} {week2} {week3} {week4}      
                         </Paper>
                     </Grid>
