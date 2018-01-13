@@ -10,8 +10,9 @@ import Button from 'material-ui/Button';
 import ForwardIcon from 'material-ui-icons/FastForward';
 import RewindIcon from 'material-ui-icons/FastRewind';
 import SettingsIcon from 'material-ui-icons/Settings';
-import {MassageDayCard, MassageDayCardHeader} from './MassageDayCard'
-import DateTimeView from './DateTimeView'
+import {MassageDayCard, MassageDayCardHeader} from './MassageDayCard';
+import MassageDaySlot from './MassageDaySlot';
+import DateTimeView from './DateTimeView';
 var moment = require('moment');
 require("moment/min/locales.min");
 moment.locale('cs');
@@ -90,6 +91,19 @@ class MassageRoom extends React.Component {
     }
 
 
+    renderDayDetail() {
+        return (
+            <div>
+                <MassageDaySlot />
+                <MassageDaySlot length={2}/>
+                <MassageDaySlot />
+                <MassageDaySlot length={4}/>
+                <MassageDaySlot />
+
+            </div>
+        )
+    }
+
     render() {
         const { classes } = this.props;
         const weekH = this.renderWeekHeader();
@@ -97,6 +111,7 @@ class MassageRoom extends React.Component {
         const week2 = this.renderWeek(moment(this.state.calendarStartDate).add(7,'days').toDate());
         const week3 = this.renderWeek(moment(this.state.calendarStartDate).add(14,'days').toDate());
         const week4 = this.renderWeek(moment(this.state.calendarStartDate).add(21,'days').toDate());
+        const dd = this.renderDayDetail();
         return (
             <div className={classes.root}>
 
@@ -118,7 +133,7 @@ class MassageRoom extends React.Component {
                             {this.state.calendarDay && <Button onClick={this.handleNextWeek}><SettingsIcon/></Button>}
                         </Toolbar>  
                         <Paper>
-                           xxxx      
+                           {dd}    
                         </Paper>
                     </Grid>
                     <Grid item xs={12} sm={12} md={4} lg={4}>

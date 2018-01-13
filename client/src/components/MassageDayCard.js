@@ -1,7 +1,6 @@
 import React from 'react';
 import { withStyles } from 'material-ui/styles';
 import PropTypes from 'prop-types';
-import Paper from 'material-ui/Paper';
 import Typography from 'material-ui/Typography';
 import { compose } from 'react-apollo'
 import DateTimeView from './DateTimeView';
