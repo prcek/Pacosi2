@@ -9,10 +9,13 @@ import Toolbar from 'material-ui/Toolbar';
 import Button from 'material-ui/Button';
 import ForwardIcon from 'material-ui-icons/FastForward';
 import RewindIcon from 'material-ui-icons/FastRewind';
-import SettingsIcon from 'material-ui-icons/Settings';
 import {MassageDayCard, MassageDayCardHeader} from './MassageDayCard';
 import MassageDaySlot from './MassageDaySlot';
 import DateTimeView from './DateTimeView';
+import TimeField from './TimeField';
+import Switch from 'material-ui/Switch';
+import { FormGroup, FormControlLabel } from 'material-ui/Form';
+
 var moment = require('moment');
 require("moment/min/locales.min");
 moment.locale('cs');
@@ -36,8 +39,19 @@ const styles = theme => ({
 class MassageRoom extends React.Component {
     state = {
         calendarStartDate: moment().startOf('week').toDate(),
-        calendarDay: null
+        calendarDay: null,
+        timeTest: new Date(),
+        planMode: true
     }
+
+    onPlanMode(val) {
+        this.setState({planMode:val});
+    }
+
+    handleTimeTest = (d) => {
+        this.setState({timeTest:d});
+    }
+
 
     handleSelectDay = (d) => {
         this.setState({calendarDay:d});
@@ -99,10 +113,48 @@ class MassageRoom extends React.Component {
                 <MassageDaySlot />
                 <MassageDaySlot length={4}/>
                 <MassageDaySlot />
-
+                <MassageDaySlot length={3}/>
+                <MassageDaySlot length={2}/>
+                <MassageDaySlot />
+                <MassageDaySlot />
             </div>
         )
     }
+
+    renderSettingsSwitch() {
+        return (
+            <FormGroup row>
+                <FormControlLabel
+                    control={<Switch checked={this.state.planMode} onChange={(e,c)=>this.onPlanMode(c)}/>}
+                    label="Editace dne"
+                />
+            </FormGroup>
+        )
+    }
+
+
+    renderTimeTest() {
+
+        var ranges = [];
+        for(var i=0; i<2; i++) {
+            var m = moment().startOf('day').add(7+i*4,'hours');
+            var m2 = moment(m).add(120,'minutes');
+            ranges.push({begin:m.toDate(),end:m2.toDate()});
+        }
+
+        return (
+            <TimeField label={"cas"} ranges={ranges} value={this.state.timeTest} onChange={(e)=>this.handleTimeTest(e.target.value)} />
+        );
+    }
+ 
+    renderPlanEdit() {
+        return (
+            <div>
+                {this.renderTimeTest()}
+            </div>
+        )
+    }
+
 
     render() {
         const { classes } = this.props;
@@ -130,7 +182,7 @@ class MassageRoom extends React.Component {
                     <Grid item xs={12} sm={6} md={4} lg={4}>
                         <Toolbar >
                             <Typography> selected day:{this.state.calendarDay && <DateTimeView date={this.state.calendarDay}/>}</Typography>
-                            {this.state.calendarDay && <Button onClick={this.handleNextWeek}><SettingsIcon/></Button>}
+                            {this.state.calendarDay && this.renderSettingsSwitch()}
                         </Toolbar>  
                         <Paper>
                            {dd}    
@@ -138,7 +190,7 @@ class MassageRoom extends React.Component {
                     </Grid>
                     <Grid item xs={12} sm={12} md={4} lg={4}>
                         <Paper>
-                            massage          
+                            {this.state.planMode && this.renderPlanEdit()}       
                         </Paper>
                     </Grid>
                 </Grid>
