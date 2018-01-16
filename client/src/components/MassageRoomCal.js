@@ -65,7 +65,7 @@ class MassageRoomCal extends React.Component {
         const { classes } = this.props;
         const s = this.props.selected && moment(d.date).isSame(this.props.selected,'day');
         var st = 0;
-        console.log(d.status)
+        //console.log(d.status)
         switch (d.status) {
             case 'OFF': st=0; break;
             case 'FREE': st=1; break;

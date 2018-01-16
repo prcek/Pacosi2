@@ -2,6 +2,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { withStyles } from 'material-ui/styles';
 import Typography from 'material-ui/Typography';
+import DateTimeView from './DateTimeView';
 import { compose } from 'react-apollo'
 var classNames = require('classnames');
 
@@ -49,7 +50,7 @@ class MassageDaySlot extends React.Component {
         const { classes } = this.props;
         return (
             <div className={classes.time}>
-                11:55
+                <DateTimeView date={this.props.time} format={"HH:mm"} />
             </div>
         );
     }
@@ -61,7 +62,7 @@ class MassageDaySlot extends React.Component {
         return (
             <div className={classNames(classes.root,lc[this.props.length-1])}>
             <div className={classes.inner}>
-            {time} <Typography> massage day slot </Typography>
+            {time} <Typography> slot {this.props.break && "break"} </Typography>
             </div>
             </div>
         )
@@ -70,11 +71,13 @@ class MassageDaySlot extends React.Component {
 
 MassageDaySlot.propTypes = {
     classes: PropTypes.object.isRequired,
-    length: PropTypes.number
+    brake: PropTypes.bool,
+    time: PropTypes.objectOf(Date).isRequired,
+    length: PropTypes.number.isRequired
 }
  
 MassageDaySlot.defaultProps = {
-    length: 1
+    break: false
 }
 
 export default compose(

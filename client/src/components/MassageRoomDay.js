@@ -12,10 +12,16 @@ import MassageDaySlot from './MassageDaySlot';
 import DateTimeView from './DateTimeView';
 import Switch from 'material-ui/Switch';
 import { FormGroup, FormControlLabel } from 'material-ui/Form';
+import Lodash from 'lodash';
 
-var moment = require('moment');
+
+const Moment = require('moment');
+const MomentRange = require('moment-range');
+
+const moment = MomentRange.extendMoment(Moment);
 require("moment/min/locales.min");
 moment.locale('cs');
+
 
 
 const MassageRoomDayPlan = gql`
@@ -55,17 +61,28 @@ class MassageRoomDay extends React.Component {
 
  
     renderDayDetail() {
+        const {opening_times}  = this.props.massageRoomDayPlan.massageRoomDayPlan;
+        console.log(opening_times);
+
+
+        const tplan = opening_times.map(ot=>{
+            const range = moment.range(ot.begin,ot.end);
+            const slots = Array.from(range.by('minutes',{step:30})).map(x=>{return {date:x.toDate(),break:false,len:1}})
+            const last_date = moment(Lodash.last(slots).date).add(30,'minutes').toDate();
+            return [...slots,{date:last_date,break:true,len:1}]
+        });
+        const plan = Lodash.dropRight(Lodash.flatten(tplan));
+        console.log(plan)
+        const mds = plan.map(s=>{
+            return (
+                <MassageDaySlot key={s.date.toISOString()} break={s.break} time={s.date} length={s.len} /> 
+            )
+        });
+        
         return (
             <div>
-                <MassageDaySlot />
-                <MassageDaySlot length={2}/>
-                <MassageDaySlot />
-                <MassageDaySlot length={4}/>
-                <MassageDaySlot />
-                <MassageDaySlot length={3}/>
-                <MassageDaySlot length={2}/>
-                <MassageDaySlot />
-                <MassageDaySlot />
+                {mds}
+               
             </div>
         )
     }
@@ -85,7 +102,7 @@ class MassageRoomDay extends React.Component {
 
     render() {
         const { classes } = this.props;
-        const dd = this.renderDayDetail();
+        const dd = this.props.massageRoomDayPlan.massageRoomDayPlan?this.renderDayDetail():null;
         return (
             <div className={classes.root}>
                 <Toolbar >
