@@ -46,6 +46,24 @@ const MassageRoomDayInfoType = new GraphQL.GraphQLObjectType({
 
 });
 
+const MassageRoomDayPlan = new GraphQL.GraphQLObjectType({
+    name: 'MassageRoomDayPlan',
+   
+
+    fields: () => ({
+        date: {
+            type: GraphQLDate,
+        },
+        status: {
+            type: DayStatusType
+        },
+        opening_times: {
+            type: new GraphQLList(OpeningTimeType)
+        }
+    })
+
+});
+
 
 class MassageRoomQuery extends BaseQuery {
 
@@ -73,6 +91,25 @@ class MassageRoomQuery extends BaseQuery {
             },
             resolve(parent, args, context, info) {
                 return MassageRoomResolver.dayInfos(args);
+            }
+        }
+    }
+    dayPlan() {
+        return {
+            type: MassageRoomDayPlan,
+            description: 'This will return all the items present in the database',
+            args: {
+                massage_room_id: {
+                    type: new GraphQLNonNull(GraphQLID),
+                    description: 'Please enter massage room id',
+                },
+                date: {
+                    type: new GraphQLNonNull(GraphQLDate),
+                    description: 'Please enter date',
+                },
+            },
+            resolve(parent, args, context, info) {
+                return MassageRoomResolver.dayPlan(args);
             }
         }
     }

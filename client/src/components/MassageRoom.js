@@ -5,11 +5,10 @@ import Typography from 'material-ui/Typography';
 import { compose } from 'react-apollo'
 import Grid from 'material-ui/Grid';
 import Paper from 'material-ui/Paper';
-import Toolbar from 'material-ui/Toolbar';
 import MassageDaySlot from './MassageDaySlot';
-import DateTimeView from './DateTimeView';
 import TimeField from './TimeField';
 import MassageRoomCal from './MassageRoomCal';
+import MassageRoomDay from './MassageRoomDay';
 import Switch from 'material-ui/Switch';
 import { FormGroup, FormControlLabel } from 'material-ui/Form';
 
@@ -38,7 +37,7 @@ const styles = theme => ({
 class MassageRoom extends React.Component {
     state = {
         calendarStartDate: moment().startOf('week').toDate(),
-        calendarDay: null,
+        calendarDay: moment().startOf('day').toDate(),
         timeTest: new Date(),
         planMode: true
     }
@@ -115,7 +114,7 @@ class MassageRoom extends React.Component {
 
     render() {
         const { classes } = this.props;
-        const dd = this.renderDayDetail();
+      
         return (
             <div className={classes.root}>
 
@@ -124,13 +123,7 @@ class MassageRoom extends React.Component {
                        <MassageRoomCal massageRoomId={this.props.massageRoomId} begin={this.state.calendarStartDate} selected={this.state.calendarDay} onSelectDay={this.handleSelectDay} onMove={this.handleCalMove}/>
                     </Grid>
                     <Grid item xs={12} sm={6} md={4} lg={4}>
-                        <Toolbar >
-                            <Typography> selected day:{this.state.calendarDay && <DateTimeView date={this.state.calendarDay}/>}</Typography>
-                            {this.state.calendarDay && this.renderSettingsSwitch()}
-                        </Toolbar>  
-                        <Paper>
-                           {dd}    
-                        </Paper>
+                        {this.state.calendarDay && <MassageRoomDay massageRoomId={this.props.massageRoomId} day={this.state.calendarDay}/>}
                     </Grid>
                     <Grid item xs={12} sm={12} md={4} lg={4}>
                         <Paper>

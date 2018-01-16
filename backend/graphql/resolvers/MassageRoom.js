@@ -66,6 +66,26 @@ class MassageRoomController extends BaseController {
         });
 
     }
+    dayPlan(args) {
+
+        return new Promise((resolve, reject) => {
+
+            let srch = {};
+            if (args.massage_room_id) {
+                srch.massage_room_id=args.massage_room_id
+            }
+            if (args.date ) {
+                srch.begin={"$gte":args.date,"$lt":moment(args.date).add(1,'day').toDate()}
+            }
+            OpeningTimeResolver.index(srch).then(ots=>{
+                const plan = {date:args.date,status:ots.length?1:0,opening_times:ots}
+                resolve(plan);
+            }).catch(reject)
+    
+
+        });
+
+    }
 
 };
 
