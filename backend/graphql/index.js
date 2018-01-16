@@ -18,6 +18,7 @@ const MassageRoomQuery = require('./queries/MassageRoom');
 const LessonQuery = require('./queries/Lesson');
 const LessonMemberQuery = require('./queries/LessonMember');
 const LocationQuery = require('./queries/Location');
+const OpeningTimeQuery = require('./queries/OpeningTime');
 const TestQuery = require('./queries/Test');
 
 // import the user mutation file we created
@@ -31,6 +32,7 @@ const MassageRoomMutation = require('./mutations/MassageRoom');
 const LessonMutation = require('./mutations/Lesson');
 const LessonMemberMutation = require('./mutations/LessonMember');
 const LocationMutation = require('./mutations/Location');
+const OpeningTimeMutation = require('./mutations/OpeningTime');
 const TestMutation = require('./mutations/Test');
 
 
@@ -63,6 +65,9 @@ const RootQuery = new GraphQLObjectType({
         lessonMember: LessonMemberQuery.single(),
         locations: LocationQuery.index(),
         location: LocationQuery.single(),
+        openingTimes: OpeningTimeQuery.index(),
+        openingTime: OpeningTimeQuery.single(),
+        massageRoomOpeningTime: OpeningTimeQuery.massageRoomOpeningTimes(),
         locationInfo: LocationQuery.info(),
         locationsInfo: LocationQuery.infos(),
         testHi: TestQuery.hi(),
@@ -107,6 +112,9 @@ const RootMutation = new GraphQLObjectType({
         addLocation: LocationMutation.create(),
         updateLocation: LocationMutation.update(),
         deleteLocation: LocationMutation.delete(),
+        addOpeningTime: OpeningTimeMutation.create(),
+        updateOpeningTime: OpeningTimeMutation.update(),
+        deleteOpeningTime: OpeningTimeMutation.delete(),
         testCreateMethod: TestMutation.create(),
         testDeleteMethod: TestMutation.delete(),
         testUpdateMethod: TestMutation.update(),
