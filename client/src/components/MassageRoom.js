@@ -6,19 +6,18 @@ import { compose } from 'react-apollo'
 import Grid from 'material-ui/Grid';
 import Paper from 'material-ui/Paper';
 import Toolbar from 'material-ui/Toolbar';
-import Button from 'material-ui/Button';
-import ForwardIcon from 'material-ui-icons/FastForward';
-import RewindIcon from 'material-ui-icons/FastRewind';
-import {MassageDayCard, MassageDayCardHeader} from './MassageDayCard';
 import MassageDaySlot from './MassageDaySlot';
 import DateTimeView from './DateTimeView';
 import TimeField from './TimeField';
+import MassageRoomCal from './MassageRoomCal';
 import Switch from 'material-ui/Switch';
 import { FormGroup, FormControlLabel } from 'material-ui/Form';
 
 var moment = require('moment');
 require("moment/min/locales.min");
 moment.locale('cs');
+
+
 
 
 const styles = theme => ({
@@ -57,52 +56,10 @@ class MassageRoom extends React.Component {
         this.setState({calendarDay:d});
     }
 
-    handleNextWeek = () => {
-        const d = moment(this.state.calendarStartDate).add(7,'days').toDate();
+    handleCalMove = (d) => {
         this.setState({calendarStartDate:d});
-    };
-    handlePrevWeek = () => {
-        const d = moment(this.state.calendarStartDate).subtract(7,'days').toDate();
-        this.setState({calendarStartDate:d});
-    };
-    handleTodayWeek = () => {
-        this.setState({calendarStartDate: moment().startOf('week').toDate()})
-    };
-
-
-    renderDayCard(d,status) {
-        const { classes } = this.props;
-        const s = this.state.calendarDay && moment(d).isSame(this.state.calendarDay,'day');
-        return (
-            <MassageDayCard className={classes.daycard} onClick={this.handleSelectDay} status={status} date={d} selected={s}/>
-        );
-    }
-    renderWeek(startDay) {
-        const { classes } = this.props;
-        const d = moment(startDay).startOf('week');
-        return (
-            <div className={classes.weekline}>
-                {this.renderDayCard(d.toDate(),1)}
-                {this.renderDayCard(d.add(1,'days').toDate(),1)}
-                {this.renderDayCard(d.add(1,'days').toDate(),2)}
-                {this.renderDayCard(d.add(1,'days').toDate(),1)}
-                {this.renderDayCard(d.add(1,'days').toDate(),0)}
-            </div>
-        );
     }
 
-    renderWeekHeader() {
-        const { classes } = this.props;
-        return (
-            <div className={classes.weekline}>
-               <MassageDayCardHeader label={"Po"}/>
-               <MassageDayCardHeader label={"Út"}/>
-               <MassageDayCardHeader label={"St"}/>
-               <MassageDayCardHeader label={"Čt"}/>
-               <MassageDayCardHeader label={"Pá"}/>
-            </div>
-        );
-    }
 
 
     renderDayDetail() {
@@ -158,26 +115,13 @@ class MassageRoom extends React.Component {
 
     render() {
         const { classes } = this.props;
-        const weekH = this.renderWeekHeader();
-        const week1 = this.renderWeek(this.state.calendarStartDate);
-        const week2 = this.renderWeek(moment(this.state.calendarStartDate).add(7,'days').toDate());
-        const week3 = this.renderWeek(moment(this.state.calendarStartDate).add(14,'days').toDate());
-        const week4 = this.renderWeek(moment(this.state.calendarStartDate).add(21,'days').toDate());
         const dd = this.renderDayDetail();
         return (
             <div className={classes.root}>
 
                 <Grid container>
                     <Grid item xs={12} sm={6} md={4} lg={4}>
-                        <Toolbar >
-                            <Button onClick={this.handlePrevWeek}><RewindIcon/></Button>  
-                            <Button onClick={this.handleTodayWeek}>dnes</Button>
-                            <Button onClick={this.handleNextWeek}><ForwardIcon/></Button>  
-                        </Toolbar>
-                        <Paper>
-                            {weekH}
-                            {week1} {week2} {week3} {week4}      
-                        </Paper>
+                       <MassageRoomCal massageRoomId={this.props.massageRoomId} begin={this.state.calendarStartDate} selected={this.state.calendarDay} onSelectDay={this.handleSelectDay} onMove={this.handleCalMove}/>
                     </Grid>
                     <Grid item xs={12} sm={6} md={4} lg={4}>
                         <Toolbar >
