@@ -38,6 +38,23 @@ const MassageRoomDayPlan = gql`
 `;
 
 
+const AddOpeningTime = gql`
+    mutation AddOpeningTime($massage_room_id: ID! $begin: DateTime!, $end: DateTime!) {
+        addOpeningTime(massage_room_id:$massage_room_id,begin:$begin,end:$end) {
+            id
+        }
+    }
+`;
+
+const DeleteOpeningTime = gql`
+    mutation DeleteOpeningTime($id: ID!) {
+        deleteOpeningTime(id:$id) {
+            id
+        }
+    }
+`;
+
+
 const styles = theme => ({
     root: {
       marginTop: theme.spacing.unit * 3,
@@ -48,6 +65,13 @@ const styles = theme => ({
     },
     daycard: {
         
+    },
+    button: {
+        marginLeft: theme.spacing.unit * 3
+    },
+    warn: {
+        margin: theme.spacing.unit * 3,
+        color: 'red'
     }
 });
   
@@ -58,7 +82,7 @@ class MassageRoomDay extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
-            planMode: true,
+            planMode: false,
             newOt: false,
             newOtItem: {
                 begin: this.props.day,
@@ -81,14 +105,13 @@ class MassageRoomDay extends React.Component {
     renderDayDetail() {
         const {opening_times}  = this.props.massageRoomDayPlan.massageRoomDayPlan;
 
-        const tplan = opening_times.map(ot=>{
+        const tplan = Lodash.sortBy(opening_times,['begin']).map(ot=>{
             const range = moment.range(ot.begin,ot.end);
             const slots = Array.from(range.by('minutes',{step:30})).map(x=>{return {date:x.toDate(),break:false,len:1}})
             const last_date = moment(Lodash.last(slots).date).add(30,'minutes').toDate();
             return [...slots,{date:last_date,break:true,len:1}]
         });
         const plan = Lodash.dropRight(Lodash.flatten(tplan));
-        //console.log(plan)
         const mds = plan.map(s=>{
             return (
                 <MassageDaySlot key={s.date.toISOString()} break={s.break} time={s.date} length={s.len} /> 
@@ -123,13 +146,23 @@ class MassageRoomDay extends React.Component {
 
     handleNewOtTimeSave = () => {
         console.log("handleNewOtTimeSave");
+        this.props.addOpeningTime({variables:{
+            massage_room_id: this.props.massageRoomId,
+            begin: this.state.newOtItem.begin,
+            end:this.state.newOtItem.end 
+        }}).then(({ data }) => {
+            console.log('got data', data);
+        }).catch((error) => {
+            console.log('there was an error sending the query', error);
+        });
+
     }
     handleOtTimeDelete = (id) => {
         console.log("handleOtTimeDelete",id);
     }
 
     renderDayPlanNewOt() {
-
+        const { classes } = this.props;
 
         var ranges = [];
         var m = moment(this.props.day).startOf('day').add(7,'hours');
@@ -139,21 +172,21 @@ class MassageRoomDay extends React.Component {
 
         return (
             <div>
-            <Toolbar> 
-                <TimeField label={"OD"} ranges={ranges} value={this.state.newOtItem.begin} onChange={(e)=>this.handleNewOtTime("begin",e.target.value)} />
-                <TimeField label={"DO"} ranges={ranges} value={this.state.newOtItem.end} onChange={(e)=>this.handleNewOtTime("end",e.target.value)} />
-                <Button disabled={this.checkNewOt()!==null}raised onClick={this.handleNewOtTimeSave}> přidat </Button>
-            </Toolbar>
-            <Typography> {this.checkNewOt()} </Typography>
+                <Toolbar> 
+                    <TimeField label={"OD"} ranges={ranges} value={this.state.newOtItem.begin} onChange={(e)=>this.handleNewOtTime("begin",e.target.value)} />
+                    <TimeField label={"DO"} ranges={ranges} value={this.state.newOtItem.end} onChange={(e)=>this.handleNewOtTime("end",e.target.value)} />
+                    <Button className={classes.button} disabled={this.checkNewOt()!==null}raised onClick={this.handleNewOtTimeSave}> přidat </Button>
+                </Toolbar>
+                <Typography className={classes.warn}> {this.checkNewOt()} </Typography>
             </div>
         )
     }
     renderDayPlanOt(ot) {
+        const { classes } = this.props;
         return (
             <Toolbar key={ot.id}> 
                 <Typography> <DateTimeView date={ot.begin} format={"HH:mm"} /> - <DateTimeView date={ot.end} format={"HH:mm"} /> </Typography>
-                <DateTimeView date={ot.begin} />
-                <Button raised onClick={()=>this.handleOtTimeDelete(ot.id)}> smazat </Button>
+                <Button  className={classes.button} raised onClick={()=>this.handleOtTimeDelete(ot.id)}> smazat </Button>
             </Toolbar>
         )
     }
@@ -161,7 +194,7 @@ class MassageRoomDay extends React.Component {
     renderDayPlan() {
         const { classes } = this.props;
         const {opening_times}  = this.props.massageRoomDayPlan.massageRoomDayPlan;
-        const ot = opening_times.map(o=>{return this.renderDayPlanOt(o)})
+        const ot = Lodash.sortBy(opening_times,['begin']).map(o=>{return this.renderDayPlanOt(o)})
         const not = this.renderDayPlanNewOt();
         return (
             <div>
@@ -224,5 +257,24 @@ export default compose(
             }
         })
     }),
+    graphql(AddOpeningTime,{
+        name:"addOpeningTime",
+        options: {
+            refetchQueries: [
+                'MassageRoomDayPlan',
+                'MassageRoomDayInfos'
+              ],
+        }
+    }),
+    graphql(DeleteOpeningTime,{
+        name:"deleteOpeningTime",
+        options: {
+            refetchQueries: [
+                'MassageRoomDayPlan',
+                'MassageRoomDayInfos'
+              ],
+        }
+    })
+
 
 )(MassageRoomDay)
