@@ -12,6 +12,9 @@ const styles = theme => ({
         padding: 0,
         width: '100%',
     },
+    roothb: {
+        height: '1.5em',
+    },
     rooth1: {
         height: '2em',
     },
@@ -39,6 +42,13 @@ const styles = theme => ({
         margin: 0,
         paddingTop: '2px',
         borderRight: '1px solid gray'
+    },
+    break: {
+        width:"100%",
+        textAlign: 'center',
+        margin: 0,
+        paddingTop: '2px',
+        backgroundColor:'gray',
     }
 });
   
@@ -54,16 +64,34 @@ class MassageDaySlot extends React.Component {
             </div>
         );
     }
+    renderBreak() {
+        const { classes } = this.props;
+        return (
+            <div className={classes.inner}>
+            <div className={classes.break} >
+            přestávka
+            </div>
+            </div>
+        )
+    }
 
-    render() {
+    renderSlot() {
         const { classes } = this.props;
         const time=this.renderTime();
+        return (
+            <div className={classes.inner}>
+            {time} <Typography> slot </Typography>
+            </div>
+        )
+    }
+ 
+    render() {
+        const { classes } = this.props;
+        const inner=this.props.break?this.renderBreak():this.renderSlot();
         const lc = [classes.rooth1,classes.rooth2,classes.rooth3,classes.rooth4]
         return (
-            <div className={classNames(classes.root,lc[this.props.length-1])}>
-            <div className={classes.inner}>
-            {time} <Typography> slot {this.props.break && "break"} </Typography>
-            </div>
+            <div className={classNames(classes.root,this.props.break?classes.roothb:lc[this.props.length-1])}>
+                {inner}
             </div>
         )
     }
