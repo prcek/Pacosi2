@@ -22,6 +22,7 @@
     "moment-range": "^3.1.0",
     "mongoose": "^4.13.7",
     "morgan": "~1.9.0",
+    "p-all": "^1.0.0",
     "p-map": "^1.2.0",
     "p-retry": "^1.0.0",
     "pug": "2.0.0-beta11",

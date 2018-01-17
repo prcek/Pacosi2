@@ -4,12 +4,13 @@ const MassageRoom = require('../../services/models/MassageRoom');
 
 const BaseController = require('./BaseController');
 const OpeningTimeResolver = require('./OpeningTime');
+const MassageOrderResolver = require('./MassageOrder');
 const Moment = require('moment');
 const MomentRange = require('moment-range');
 
 const moment = MomentRange.extendMoment(Moment);
 
-
+const pAll = require('p-all');
 
 class MassageRoomController extends BaseController {
 
@@ -43,8 +44,11 @@ class MassageRoomController extends BaseController {
             if (args.begin_date && args.end_date) {
                 srch.begin={"$gte":args.begin_date,"$lt":args.end_date}
             }
-            OpeningTimeResolver.index(srch).then(ots=>{
 
+
+            pAll([()=>OpeningTimeResolver.index(srch),()=>MassageOrderResolver.index(srch)]).then(res=>{
+                const ots = res[0];
+                //TODO busy  const mos = res[1]
                 const range = moment.range(args.begin_date,args.end_date);
                 const days = Array.from(range.by('day'));
                 const infos = days.map(d=>{
@@ -61,7 +65,7 @@ class MassageRoomController extends BaseController {
                 })
                 resolve(infos);
             }).catch(reject)
-    
+
 
         });
 
@@ -77,8 +81,10 @@ class MassageRoomController extends BaseController {
             if (args.date ) {
                 srch.begin={"$gte":args.date,"$lt":moment(args.date).add(1,'day').toDate()}
             }
-            OpeningTimeResolver.index(srch).then(ots=>{
-                const plan = {date:args.date,status:ots.length?1:0,opening_times:ots}
+            pAll([()=>OpeningTimeResolver.index(srch),()=>MassageOrderResolver.index(srch)]).then(res=>{
+                const ots = res[0]
+                const mos = res[1]
+                const plan = {date:args.date,status:ots.length?1:0,opening_times:ots,massage_orders:mos}
                 resolve(plan);
             }).catch(reject)
     
