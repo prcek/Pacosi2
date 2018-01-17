@@ -29,9 +29,17 @@ const MassageRoomDayInfos = gql`
 
 const styles = theme => ({
     root: {
-      marginTop: theme.spacing.unit * 3,
+      //marginTop: theme.spacing.unit * 3,
       width: '100%',
     },
+    flex: {
+        flex: 1,
+    },
+    toolbar: {
+        minHeight:50
+    },
+    
+
     weekline: {
         display:'flex'
     },
@@ -123,9 +131,9 @@ class MassageRoomCal extends React.Component {
         const week4 = this.renderWeek(3);
         return (
             <div className={classes.root}>
-                <Toolbar >
+                <Toolbar classes={{root:classes.toolbar}} >
                     <Button onClick={this.handlePrevWeek}><RewindIcon/></Button>  
-                    <Button onClick={this.handleTodayWeek}>dnes</Button>
+                    <Button className={classes.flex} onClick={this.handleTodayWeek}>dnes</Button>
                     <Button onClick={this.handleNextWeek}><ForwardIcon/></Button>  
                 </Toolbar>
                 <Paper>

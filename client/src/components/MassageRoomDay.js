@@ -57,9 +57,17 @@ const DeleteOpeningTime = gql`
 
 const styles = theme => ({
     root: {
-      marginTop: theme.spacing.unit * 3,
+   //   marginTop: theme.spacing.unit * 3,
       width: '100%',
     },
+    
+    flex: {
+        flex: 1,
+    },
+    toolbar: {
+        minHeight:50
+    },
+    
     weekline: {
         display:'flex'
     },
@@ -127,7 +135,7 @@ class MassageRoomDay extends React.Component {
 
     checkNewOt() {
         if (moment(this.state.newOtItem.begin).isSameOrAfter(this.state.newOtItem.end)) {
-            return "Zacatek neni pred koncem"
+            return "Začátek není před koncem"
         }
         const range = moment.range(this.state.newOtItem.begin,this.state.newOtItem.end);
         const {opening_times}  = this.props.massageRoomDayPlan.massageRoomDayPlan;
@@ -159,6 +167,13 @@ class MassageRoomDay extends React.Component {
     }
     handleOtTimeDelete = (id) => {
         console.log("handleOtTimeDelete",id);
+        this.props.deleteOpeningTime({variables:{
+            id: id,
+        }}).then(({ data }) => {
+            console.log('got data', data);
+        }).catch((error) => {
+            console.log('there was an error sending the query', error);
+        });
     }
 
     renderDayPlanNewOt() {
@@ -226,8 +241,9 @@ class MassageRoomDay extends React.Component {
         const pm = this.props.massageRoomDayPlan.massageRoomDayPlan?this.renderDayPlan():null;
         return (
             <div className={classes.root}>
-                <Toolbar >
-                    <Typography><DateTimeView date={this.props.day}/></Typography>
+                <Toolbar classes={{root:classes.toolbar}}>
+                    <Typography type={"title"}><DateTimeView date={this.props.day}/></Typography>
+                    <Typography color="inherit" className={classes.flex}>&nbsp;</Typography>
                     {this.renderSettingsSwitch()}
                 </Toolbar>  
                 <Paper>

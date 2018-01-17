@@ -28,10 +28,7 @@ const PageLessons = ({ match }) => (
 )
 
 const PageMassages = ({ match }) => (
-  <div>
-    <h3>MassageRoom ID: {match.params.id}</h3>
-    <MassageRoom massageRoomId={match.params.id}/>
-  </div>
+  <MassageRoom massageRoomId={match.params.id}/>
 )
 
 const PageUsers = ({ match }) => (
