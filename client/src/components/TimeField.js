@@ -42,7 +42,6 @@ class TimeField extends React.Component {
 
     renderMenuItems() {
         return this.getMenuItems().map((i,IDX)=>{
-            console.log(i.toISOString());
             return (
                 <MenuItem key={IDX} value={i.toISOString()}>{Moment(i).format('HH:mm')}</MenuItem>
             )

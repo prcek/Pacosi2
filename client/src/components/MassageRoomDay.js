@@ -121,6 +121,13 @@ class MassageRoomDay extends React.Component {
         this.setState({newOtItem:newOtItem})
     }
 
+    handleNewOtTimeSave = () => {
+        console.log("handleNewOtTimeSave");
+    }
+    handleOtTimeDelete = (id) => {
+        console.log("handleOtTimeDelete",id);
+    }
+
     renderDayPlanNewOt() {
 
 
@@ -135,7 +142,7 @@ class MassageRoomDay extends React.Component {
             <Toolbar> 
                 <TimeField label={"OD"} ranges={ranges} value={this.state.newOtItem.begin} onChange={(e)=>this.handleNewOtTime("begin",e.target.value)} />
                 <TimeField label={"DO"} ranges={ranges} value={this.state.newOtItem.end} onChange={(e)=>this.handleNewOtTime("end",e.target.value)} />
-                <Button disabled={this.checkNewOt()!==null}raised> přidat </Button>
+                <Button disabled={this.checkNewOt()!==null}raised onClick={this.handleNewOtTimeSave}> přidat </Button>
             </Toolbar>
             <Typography> {this.checkNewOt()} </Typography>
             </div>
@@ -146,7 +153,7 @@ class MassageRoomDay extends React.Component {
             <Toolbar key={ot.id}> 
                 <Typography> <DateTimeView date={ot.begin} format={"HH:mm"} /> - <DateTimeView date={ot.end} format={"HH:mm"} /> </Typography>
                 <DateTimeView date={ot.begin} />
-                <Button raised> smazat </Button>
+                <Button raised onClick={()=>this.handleOtTimeDelete(ot.id)}> smazat </Button>
             </Toolbar>
         )
     }
@@ -154,7 +161,6 @@ class MassageRoomDay extends React.Component {
     renderDayPlan() {
         const { classes } = this.props;
         const {opening_times}  = this.props.massageRoomDayPlan.massageRoomDayPlan;
-        console.log(opening_times);
         const ot = opening_times.map(o=>{return this.renderDayPlanOt(o)})
         const not = this.renderDayPlanNewOt();
         return (
