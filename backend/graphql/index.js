@@ -7,7 +7,6 @@ const {
 } = GraphQL;
 
 
-// import the user query file we created
 const UserQuery = require('./queries/User');
 const ClientQuery = require('./queries/Client');
 const OrderItemQuery = require('./queries/OrderItem');
@@ -15,13 +14,13 @@ const OrderQuery = require('./queries/Order');
 const LessonTypeQuery = require('./queries/LessonType');
 const MassageTypeQuery = require('./queries/MassageType');
 const MassageRoomQuery = require('./queries/MassageRoom');
+const MassageOrderQuery = require('./queries/MassageOrder');
 const LessonQuery = require('./queries/Lesson');
 const LessonMemberQuery = require('./queries/LessonMember');
 const LocationQuery = require('./queries/Location');
 const OpeningTimeQuery = require('./queries/OpeningTime');
 const TestQuery = require('./queries/Test');
 
-// import the user mutation file we created
 const UserMutation = require('./mutations/User');
 const ClientMutation = require('./mutations/Client');
 const OrderItemMutation = require('./mutations/OrderItem');
@@ -29,6 +28,7 @@ const OrderMutation = require('./mutations/Order');
 const LessonTypeMutation = require('./mutations/LessonType');
 const MassageTypeMutation = require('./mutations/MassageType');
 const MassageRoomMutation = require('./mutations/MassageRoom');
+const MassageOrderMutation = require('./mutations/MassageOrder');
 const LessonMutation = require('./mutations/Lesson');
 const LessonMemberMutation = require('./mutations/LessonMember');
 const LocationMutation = require('./mutations/Location');
@@ -36,7 +36,6 @@ const OpeningTimeMutation = require('./mutations/OpeningTime');
 const TestMutation = require('./mutations/Test');
 
 
-// lets define our root query
 const RootQuery = new GraphQLObjectType({
     name: 'RootQueryType',
     description: 'This is the default root query provided by the backend',
@@ -60,6 +59,8 @@ const RootQuery = new GraphQLObjectType({
         massageRoomOpeningTime: MassageRoomQuery.openingTimes(),
         massageRoomDayInfos: MassageRoomQuery.dayInfos(),
         massageRoomDayPlan: MassageRoomQuery.dayPlan(),
+        massageOrders: MassageOrderQuery.index(),
+        massageOrder: MassageOrderQuery.single(),
         lessons: LessonQuery.index(),
         lesson: LessonQuery.single(),
         lessonsInfo: LessonQuery.infos(),
@@ -79,7 +80,6 @@ const RootQuery = new GraphQLObjectType({
 });
 
 
-// lets define our root mutation
 const RootMutation = new GraphQLObjectType({
     name: 'Mutation',
     description: 'Default mutation provided by the backend APIs',
@@ -105,6 +105,9 @@ const RootMutation = new GraphQLObjectType({
         addMassageRoom: MassageRoomMutation.create(),
         updateMassageRoom: MassageRoomMutation.update(),
         hideMassageRoom: MassageRoomMutation.hide(),
+        addMassageOrder: MassageOrderMutation.create(),
+        updateMassageOrder: MassageOrderMutation.update(),
+        deleteMassageOrder: MassageOrderMutation.delete(),
         addLesson: LessonMutation.create(),
         updateLesson: LessonMutation.update(),
         deleteLesson: LessonMutation.delete(),
