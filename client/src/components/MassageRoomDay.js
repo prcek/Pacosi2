@@ -8,8 +8,11 @@ import gql from 'graphql-tag';
 
 import Paper from 'material-ui/Paper';
 import Toolbar from 'material-ui/Toolbar';
+import Button from 'material-ui/Button';
 import MassageDaySlot from './MassageDaySlot';
 import DateTimeView from './DateTimeView';
+import TimeField from './TimeField';
+
 import Switch from 'material-ui/Switch';
 import { FormGroup, FormControlLabel } from 'material-ui/Form';
 import Lodash from 'lodash';
@@ -51,19 +54,32 @@ const styles = theme => ({
 
 
 class MassageRoomDay extends React.Component {
-    state = {
-        planMode: true
+ 
+    constructor(props) {
+        super(props);
+        this.state = {
+            planMode: true,
+            newOt: false,
+            newOtItem: {
+                begin: this.props.day,
+                end: this.props.day
+            }
+        };
     }
 
     onPlanMode(val) {
         this.setState({planMode:val});
     }
 
+    componentWillReceiveProps(nextProps) {
+        if (!moment(this.props.day).isSame(nextProps.day,'day')) {
+            this.setState({newOtItem:{begin:nextProps.day,end:nextProps.day}});
+        }
+    }
+   
  
     renderDayDetail() {
         const {opening_times}  = this.props.massageRoomDayPlan.massageRoomDayPlan;
-        console.log(opening_times);
-
 
         const tplan = opening_times.map(ot=>{
             const range = moment.range(ot.begin,ot.end);
@@ -72,7 +88,7 @@ class MassageRoomDay extends React.Component {
             return [...slots,{date:last_date,break:true,len:1}]
         });
         const plan = Lodash.dropRight(Lodash.flatten(tplan));
-        console.log(plan)
+        //console.log(plan)
         const mds = plan.map(s=>{
             return (
                 <MassageDaySlot key={s.date.toISOString()} break={s.break} time={s.date} length={s.len} /> 
@@ -82,7 +98,72 @@ class MassageRoomDay extends React.Component {
         return (
             <div>
                 {mds}
-               
+            </div>
+        )
+    }
+
+    checkNewOt() {
+        if (moment(this.state.newOtItem.begin).isSameOrAfter(this.state.newOtItem.end)) {
+            return "Zacatek neni pred koncem"
+        }
+        const range = moment.range(this.state.newOtItem.begin,this.state.newOtItem.end);
+        const {opening_times}  = this.props.massageRoomDayPlan.massageRoomDayPlan;
+        const ranges = opening_times.map(x=>{return moment.range(x.begin,x.end)});
+        const overlap =ranges.find(r=>{
+            return r.overlaps(range);
+        })
+        return overlap?"Překryv s existujícím intervalem":null;
+    }
+
+    handleNewOtTime = (field,date) => {
+        const {newOtItem} = this.state
+        newOtItem[field] = date;
+        this.setState({newOtItem:newOtItem})
+    }
+
+    renderDayPlanNewOt() {
+
+
+        var ranges = [];
+        var m = moment(this.props.day).startOf('day').add(7,'hours');
+        var m2 = moment(m).add(780,'minutes');
+        ranges.push({begin:m.toDate(),end:m2.toDate()});
+
+
+        return (
+            <div>
+            <Toolbar> 
+                <TimeField label={"OD"} ranges={ranges} value={this.state.newOtItem.begin} onChange={(e)=>this.handleNewOtTime("begin",e.target.value)} />
+                <TimeField label={"DO"} ranges={ranges} value={this.state.newOtItem.end} onChange={(e)=>this.handleNewOtTime("end",e.target.value)} />
+                <Button disabled={this.checkNewOt()!==null}raised> přidat </Button>
+            </Toolbar>
+            <Typography> {this.checkNewOt()} </Typography>
+            </div>
+        )
+    }
+    renderDayPlanOt(ot) {
+        return (
+            <Toolbar key={ot.id}> 
+                <Typography> <DateTimeView date={ot.begin} format={"HH:mm"} /> - <DateTimeView date={ot.end} format={"HH:mm"} /> </Typography>
+                <DateTimeView date={ot.begin} />
+                <Button raised> smazat </Button>
+            </Toolbar>
+        )
+    }
+
+    renderDayPlan() {
+        const { classes } = this.props;
+        const {opening_times}  = this.props.massageRoomDayPlan.massageRoomDayPlan;
+        console.log(opening_times);
+        const ot = opening_times.map(o=>{return this.renderDayPlanOt(o)})
+        const not = this.renderDayPlanNewOt();
+        return (
+            <div>
+                <Toolbar > 
+                        <Typography> přehled otvírací doby pro den </Typography>
+                </Toolbar>
+                {ot}
+                {not}
             </div>
         )
     }
@@ -103,6 +184,7 @@ class MassageRoomDay extends React.Component {
     render() {
         const { classes } = this.props;
         const dd = this.props.massageRoomDayPlan.massageRoomDayPlan?this.renderDayDetail():null;
+        const pm = this.props.massageRoomDayPlan.massageRoomDayPlan?this.renderDayPlan():null;
         return (
             <div className={classes.root}>
                 <Toolbar >
@@ -110,7 +192,7 @@ class MassageRoomDay extends React.Component {
                     {this.renderSettingsSwitch()}
                 </Toolbar>  
                 <Paper>
-                    {dd}    
+                    {this.state.planMode?pm:dd}    
                 </Paper>
             </div>
         )

@@ -6,7 +6,6 @@ import { compose } from 'react-apollo'
 import Grid from 'material-ui/Grid';
 import Paper from 'material-ui/Paper';
 import MassageDaySlot from './MassageDaySlot';
-import TimeField from './TimeField';
 import MassageRoomCal from './MassageRoomCal';
 import MassageRoomDay from './MassageRoomDay';
 import Switch from 'material-ui/Switch';
@@ -38,18 +37,9 @@ class MassageRoom extends React.Component {
     state = {
         calendarStartDate: moment().startOf('week').toDate(),
         calendarDay: moment().startOf('day').toDate(),
-        timeTest: new Date(),
-        planMode: true
     }
 
-    onPlanMode(val) {
-        this.setState({planMode:val});
-    }
-
-    handleTimeTest = (d) => {
-        this.setState({timeTest:d});
-    }
-
+ 
 
     handleSelectDay = (d) => {
         this.setState({calendarDay:d});
@@ -89,27 +79,7 @@ class MassageRoom extends React.Component {
     }
 
 
-    renderTimeTest() {
-
-        var ranges = [];
-        for(var i=0; i<2; i++) {
-            var m = moment().startOf('day').add(7+i*4,'hours');
-            var m2 = moment(m).add(120,'minutes');
-            ranges.push({begin:m.toDate(),end:m2.toDate()});
-        }
-
-        return (
-            <TimeField label={"cas"} ranges={ranges} value={this.state.timeTest} onChange={(e)=>this.handleTimeTest(e.target.value)} />
-        );
-    }
  
-    renderPlanEdit() {
-        return (
-            <div>
-                {this.renderTimeTest()}
-            </div>
-        )
-    }
 
 
     render() {
@@ -127,7 +97,6 @@ class MassageRoom extends React.Component {
                     </Grid>
                     <Grid item xs={12} sm={12} md={4} lg={4}>
                         <Paper>
-                            {this.state.planMode && this.renderPlanEdit()}       
                         </Paper>
                     </Grid>
                 </Grid>
