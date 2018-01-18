@@ -43,6 +43,12 @@ const styles = theme => ({
         paddingTop: '2px',
         borderRight: '1px solid gray'
     },
+    bgGreen: {
+        backgroundColor: 'green'
+    },
+    bgRed: {
+        backgroundColor: 'red'
+    },
     break: {
         width:"100%",
         textAlign: 'center',
@@ -56,10 +62,10 @@ const styles = theme => ({
 
 class MassageDaySlot extends React.Component {
 
-    renderTime() {
+    renderTime(free) {
         const { classes } = this.props;
         return (
-            <div className={classes.time}>
+            <div className={classNames(classes.time,free?classes.bgGreen:classes.bgRed)}>
                 <DateTimeView date={this.props.time} format={"HH:mm"} />
             </div>
         );
@@ -77,17 +83,26 @@ class MassageDaySlot extends React.Component {
 
     renderSlot() {
         const { classes } = this.props;
-        const time=this.renderTime();
+        const time=this.renderTime(false);
         return (
             <div className={classes.inner}>
             {time} <Typography> slot </Typography>
             </div>
         )
     }
+    renderFreeSlot() {
+        const { classes } = this.props;
+        const time=this.renderTime(true);
+        return (
+            <div className={classes.inner}>
+            {time} <Typography> </Typography>
+            </div>
+        )
+    }
  
     render() {
         const { classes } = this.props;
-        const inner=this.props.break?this.renderBreak():this.renderSlot();
+        const inner=this.props.break?this.renderBreak():(this.props.order?this.renderSlot():this.renderFreeSlot());
         const lc = [classes.rooth1,classes.rooth2,classes.rooth3,classes.rooth4]
         return (
             <div className={classNames(classes.root,this.props.break?classes.roothb:lc[this.props.length-1])}>
@@ -101,7 +116,8 @@ MassageDaySlot.propTypes = {
     classes: PropTypes.object.isRequired,
     brake: PropTypes.bool,
     time: PropTypes.objectOf(Date).isRequired,
-    length: PropTypes.number.isRequired
+    length: PropTypes.number.isRequired,
+    order: PropTypes.object
 }
  
 MassageDaySlot.defaultProps = {

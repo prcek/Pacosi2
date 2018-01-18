@@ -34,7 +34,7 @@ const MassageRoomDayPlan = gql`
           id,begin,end
       }
       massage_orders {
-        id massage_type {name length} begin
+        id massage_type {name length} begin customer_name comment
       }
     
     }
@@ -187,7 +187,7 @@ class MDController {
 
     getSlots() {
         return this.slots.map(s=>{
-            return {break:s.type==="b",order:s.type==="o"?s.order:null,begin:s.begin,len:Math.trunc(s.len/30)}
+            return {break:s.type==="b",order:s.type==="o"?s.order:null,date:s.begin,len:Math.trunc(s.len/30)}
         })
     }
 }
@@ -226,13 +226,9 @@ class MassageRoomDay extends React.Component {
  
     renderDayDetail() {
         const {opening_times,massage_orders}  = this.props.massageRoomDayPlan.massageRoomDayPlan;
-        const testSlots = prepareSlots(this.props.day,opening_times,massage_orders);
+        const slots = prepareSlots(this.props.day,opening_times,massage_orders);
 
-        console.log("OTS",opening_times);
-        console.log("MOS",massage_orders);
-        console.log("SLOTS",testSlots)
-
-
+      /*
         const tplan = Lodash.sortBy(opening_times,['begin']).map(ot=>{
             const range = moment.range(ot.begin,ot.end);
             const slots = Array.from(range.by('minutes',{step:30})).map(x=>{return {date:x.toDate(),break:false,len:1}})
@@ -240,9 +236,10 @@ class MassageRoomDay extends React.Component {
             return [...slots,{date:last_date,break:true,len:1}]
         });
         const plan = Lodash.dropRight(Lodash.flatten(tplan));
-        const mds = plan.map(s=>{
+        */
+        const mds = slots.map((s,idx)=>{
             return (
-                <MassageDaySlot key={s.date.toISOString()} break={s.break} time={s.date} length={s.len} /> 
+                <MassageDaySlot key={idx} break={s.break} time={s.date} order={s.order} length={s.len} /> 
             )
         });
         
@@ -327,7 +324,7 @@ class MassageRoomDay extends React.Component {
     }
 
     renderDayPlan() {
-        const { classes } = this.props;
+       // const { classes } = this.props;
         const {opening_times}  = this.props.massageRoomDayPlan.massageRoomDayPlan;
         const ot = Lodash.sortBy(opening_times,['begin']).map(o=>{return this.renderDayPlanOt(o)})
         const not = this.renderDayPlanNewOt();
