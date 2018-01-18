@@ -19,6 +19,10 @@ class MassageTypeController extends BaseController {
         const f = {...filter,...this.hiddenFilter}
         return super.index(f);
     }
+
+    all() { 
+        return super.index();
+    }
     
     count(filter={}) { 
         const f = {...filter,...this.hiddenFilter}

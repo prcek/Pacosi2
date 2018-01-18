@@ -115,7 +115,7 @@ class MDController {
         if (this.opening_times_range && this.massage_orders_range) {
             this.slots_range = this.umbrellaRange([{range:this.opening_times_range},{range:this.massage_orders_range}]);
         } else {
-            this.slots_range = this.opening_times_range;
+            this.slots_range = this.opening_times_range || this.massage_orders_range;
         }
 
         if (this.slots_range) {
@@ -190,12 +190,20 @@ class MDController {
             return {break:s.type==="b",order:s.type==="o"?s.order:null,date:s.begin,len:Math.trunc(s.len/30)}
         })
     }
+    getStatus() {
+        if (this.slots.length === 0) {
+            return 0;
+        }
+        const f = this.slots.find(s=>{
+            return s.type === "f";
+        })
+        if (f) {
+            return 1;
+        } 
+        return 2;
+    }
 }
 
-function prepareSlots(current_date,opening_times,massage_orders) {
-    var mdc = new MDController(current_date,opening_times,massage_orders)
-    return mdc.getSlots();
-}
 
 
 
@@ -224,9 +232,7 @@ class MassageRoomDay extends React.Component {
     }
    
  
-    renderDayDetail() {
-        const {opening_times,massage_orders}  = this.props.massageRoomDayPlan.massageRoomDayPlan;
-        const slots = prepareSlots(this.props.day,opening_times,massage_orders);
+    renderDayDetail(slots) {
 
       /*
         const tplan = Lodash.sortBy(opening_times,['begin']).map(ot=>{
@@ -354,7 +360,17 @@ class MassageRoomDay extends React.Component {
 
     render() {
         const { classes } = this.props;
-        const dd = this.props.massageRoomDayPlan.massageRoomDayPlan?this.renderDayDetail():null;
+
+        let dd = null;
+        let status = null;
+        if (this.props.massageRoomDayPlan.massageRoomDayPlan) {
+            const {opening_times,massage_orders}  = this.props.massageRoomDayPlan.massageRoomDayPlan;
+            var mdc = new MDController(this.props.day,opening_times,massage_orders)
+            const slots =  mdc.getSlots();
+            status = mdc.getStatus();
+            dd = this.renderDayDetail(slots);   
+        }
+
         const pm = this.props.massageRoomDayPlan.massageRoomDayPlan?this.renderDayPlan():null;
         return (
             <div className={classes.root}>

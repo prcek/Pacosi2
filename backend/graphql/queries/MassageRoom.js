@@ -5,6 +5,8 @@ const {
     GraphQLList,
     GraphQLID,
     GraphQLNonNull,
+    GraphQLInt,
+    GraphQLBoolean
 } = GraphQL;
 
 const GraphQLIsoDate = require('graphql-iso-date');
@@ -48,6 +50,29 @@ const MassageRoomDayInfoType = new GraphQL.GraphQLObjectType({
 
 });
 
+
+const MassageRoomDaySlot = new GraphQL.GraphQLObjectType({
+    name: 'MassageRoomDaySlot',
+   
+
+    fields: () => ({
+        date: {
+            type: GraphQLDateTime
+        },
+        break: {
+            type: GraphQLBoolean
+        },
+        len: {
+            type: GraphQLInt
+        },
+        order: {
+            type: MassageOrderType
+        }
+    })
+
+});
+
+
 const MassageRoomDayPlan = new GraphQL.GraphQLObjectType({
     name: 'MassageRoomDayPlan',
    
@@ -64,6 +89,12 @@ const MassageRoomDayPlan = new GraphQL.GraphQLObjectType({
         },
         massage_orders: {
             type: new GraphQLList(MassageOrderType)
+        },
+        slots: {
+            type: new GraphQLList(MassageRoomDaySlot)
+        },
+        status: {
+            type: DayStatusType
         }
     })
 
