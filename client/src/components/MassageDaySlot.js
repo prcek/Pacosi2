@@ -36,6 +36,9 @@ const styles = theme => ({
         height: '100%',
         borderBottom: '1px solid gray'        
     },
+    click: {
+        cursor: 'pointer'
+    },
     time: {
         width: '3em',
         textAlign: 'center',
@@ -62,6 +65,14 @@ const styles = theme => ({
 
 class MassageDaySlot extends React.Component {
 
+    handleSlotClick = () => {
+        console.log("slot click")
+        if (this.props.onClick) { 
+            this.props.onClick(this.props.time,this.props.order);
+        }
+    }
+
+
     renderTime(free) {
         const { classes } = this.props;
         return (
@@ -85,7 +96,7 @@ class MassageDaySlot extends React.Component {
         const { classes } = this.props;
         const time=this.renderTime(false);
         return (
-            <div className={classes.inner}>
+            <div className={classNames(classes.inner,classes.click)} onClick={this.handleSlotClick}>
             {time} <Typography> slot </Typography>
             </div>
         )
@@ -94,8 +105,8 @@ class MassageDaySlot extends React.Component {
         const { classes } = this.props;
         const time=this.renderTime(true);
         return (
-            <div className={classes.inner}>
-            {time} <Typography> </Typography>
+            <div className={classNames(classes.inner,classes.click)} onClick={this.handleSlotClick}>
+            {time} <Typography> {this.props.clen} </Typography>
             </div>
         )
     }
@@ -117,7 +128,9 @@ MassageDaySlot.propTypes = {
     brake: PropTypes.bool,
     time: PropTypes.objectOf(Date).isRequired,
     length: PropTypes.number.isRequired,
-    order: PropTypes.object
+    clen: PropTypes.number,
+    order: PropTypes.object,
+    onClick: PropTypes.func
 }
  
 MassageDaySlot.defaultProps = {

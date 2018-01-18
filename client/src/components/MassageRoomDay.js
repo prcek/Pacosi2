@@ -38,7 +38,7 @@ const MassageRoomDayPlan = gql`
       }
       status 
       slots {
-          date break order {id} len
+          date break free order {id} len clen
       }
     }
   }
@@ -121,7 +121,7 @@ class MassageRoomDay extends React.Component {
 
         const mds = slots.map((s,idx)=>{
             return (
-                <MassageDaySlot key={idx} break={s.break} time={moment(s.date).toDate()} order={s.order} length={s.len} /> 
+                <MassageDaySlot key={idx} break={s.break} time={moment(s.date).toDate()} order={s.order} length={s.len} clen={s.clen} /> 
             )
         });
         
@@ -239,7 +239,7 @@ class MassageRoomDay extends React.Component {
 
         let dd = null;
         if (this.props.massageRoomDayPlan.massageRoomDayPlan) {
-            const {opening_times,massage_orders,slots,status}  = this.props.massageRoomDayPlan.massageRoomDayPlan;
+            const {slots}  = this.props.massageRoomDayPlan.massageRoomDayPlan;
             dd = this.renderDayDetail(slots);   
         }
 

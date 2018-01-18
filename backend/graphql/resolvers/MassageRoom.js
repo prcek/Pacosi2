@@ -79,6 +79,7 @@ class MDController {
                 }
             }
             var cumb =0;
+            var cumf =0;
             for(let si=slots.length-1; si>=0; si--) {
                 if (slots[si].type==='b') {
                     if (slots[si].cont) {
@@ -86,6 +87,15 @@ class MDController {
                     } else {
                         slots[si].len = 30+cumb;
                         cumb = 0;
+                    }
+                }
+                if (slots[si].type==='f') {
+                    if ((si<(slots.length-1)) && (slots[si+1].type==='f')) {
+                        cumf = slots[si+1].clen + slots[si].len;
+                        slots[si].clen = cumf;
+                    } else {
+                        slots[si].clen = slots[si].len;
+                        cumf = slots[si].len
                     }
                 }
             }
@@ -127,7 +137,19 @@ class MDController {
 
     getSlots() {
         return this.slots.map(s=>{
-            return {break:s.type==="b",order:s.type==="o"?s.order:null,date:s.begin,len:Math.trunc(s.len/30)}
+
+            if (s.type === "b") {
+                return {break:true,free:false,date:s.begin,len:Math.trunc(s.len/30)};
+            } if (s.type === "f") {
+                return {break:false,free:true,date:s.begin,len:Math.trunc(s.len/30),clen:Math.trunc(s.clen/30)};
+            } if (s.type === "o") {
+                return {break:false,free:false,date:s.begin,len:Math.trunc(s.len/30),order:s.order};
+            } else {
+                return {break:false,free:false,date:s.begin};
+            }
+
+
+            //return {break:s.type==="b",order:s.type==="o"?s.order:null,date:s.begin,len:Math.trunc(s.len/30)}
         })
     }
     getStatus() {
