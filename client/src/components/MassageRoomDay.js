@@ -263,7 +263,9 @@ class MassageRoomDay extends React.Component {
 MassageRoomDay.propTypes = {
     classes: PropTypes.object.isRequired,
     massageRoomId: PropTypes.string.isRequired,
-    day: PropTypes.objectOf(Date).isRequired
+    day: PropTypes.objectOf(Date).isRequired,
+    onNew: PropTypes.func,
+    onEdit: PropTypes.func
 };
   
 

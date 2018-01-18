@@ -4,10 +4,9 @@ import { withStyles } from 'material-ui/styles';
 import Typography from 'material-ui/Typography';
 import { compose } from 'react-apollo'
 import Grid from 'material-ui/Grid';
-import Paper from 'material-ui/Paper';
-import MassageDaySlot from './MassageDaySlot';
 import MassageRoomCal from './MassageRoomCal';
 import MassageRoomDay from './MassageRoomDay';
+import MassageOrder from './MassageOrder';
 import Switch from 'material-ui/Switch';
 import { FormGroup, FormControlLabel } from 'material-ui/Form';
 
@@ -37,6 +36,10 @@ class MassageRoom extends React.Component {
     state = {
         calendarStartDate: moment().startOf('week').toDate(),
         calendarDay: moment().startOf('day').toDate(),
+        massageOrder: {
+            massage_room_id:this.props.massageRoomId,
+            begin: moment().startOf('day').add(7,'hours').toDate()
+        }
     }
 
  
@@ -49,22 +52,21 @@ class MassageRoom extends React.Component {
         this.setState({calendarStartDate:d});
     }
 
+    handleNewOrder = (d) => {
+        const order = {
+            massage_room_id:this.props.massageRoomId,
+            begin:d
+        }
+        this.setState({massageOrder:order})
+    }
+    handleEditOrder = (order) => {
+        
+    }
 
-
-    renderDayDetail() {
-        return (
-            <div>
-                <MassageDaySlot />
-                <MassageDaySlot length={2}/>
-                <MassageDaySlot />
-                <MassageDaySlot length={4}/>
-                <MassageDaySlot />
-                <MassageDaySlot length={3}/>
-                <MassageDaySlot length={2}/>
-                <MassageDaySlot />
-                <MassageDaySlot />
-            </div>
-        )
+    handleMassageOrderChange = (f,v) => {
+        const {massageOrder} = this.state
+        massageOrder[f]=v;
+        this.setState({massageOrder:massageOrder});
     }
 
     renderSettingsSwitch() {
@@ -93,11 +95,10 @@ class MassageRoom extends React.Component {
                        <MassageRoomCal massageRoomId={this.props.massageRoomId} begin={this.state.calendarStartDate} selected={this.state.calendarDay} onSelectDay={this.handleSelectDay} onMove={this.handleCalMove}/>
                     </Grid>
                     <Grid item xs={12} sm={6} md={4} lg={4}>
-                        {this.state.calendarDay && <MassageRoomDay massageRoomId={this.props.massageRoomId} day={this.state.calendarDay}/>}
+                        {this.state.calendarDay && <MassageRoomDay massageRoomId={this.props.massageRoomId} day={this.state.calendarDay} onNew={this.handleNewOrder} onEdit={this.handleEditOrder}/>}
                     </Grid>
                     <Grid item xs={12} sm={12} md={4} lg={4}>
-                        <Paper>
-                        </Paper>
+                        {this.state.massageOrder && <MassageOrder massageOrder={this.state.massageOrder} onMassageOrderChange={this.handleMassageOrderChange}/>}
                     </Grid>
                 </Grid>
 
