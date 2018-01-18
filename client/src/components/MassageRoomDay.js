@@ -36,7 +36,10 @@ const MassageRoomDayPlan = gql`
       massage_orders {
         id massage_type {name length} begin customer_name comment
       }
-    
+      status 
+      slots {
+          date break order {id} len
+      }
     }
   }
 `;
@@ -88,124 +91,6 @@ const styles = theme => ({
 });
   
 
-class MDController {
-
-    sortByRange(array) {
-        return Lodash.sortBy(array,[function(o) { return o.range.toDate()[0]; },function(o) { return o.range.toDate()[1]; }])
-    }
-    umbrellaRange(array) {
-        const begins = array.map((x)=>{return x.range.start.toDate()});
-        const ends = array.map((x)=>{return x.range.end.toDate()});
-        const begin = Lodash.min(begins);
-        const end = Lodash.max(ends);
-        if (begin && end) {
-            const res =  moment.range(begin,end);
-            return res;
-        }
-        return null;
-    }    
-    
-
-    updateSlots() {
-
-        this.opening_times_range = this.umbrellaRange(this.opening_times);
-        this.massage_orders_range = this.umbrellaRange(this.massage_orders);
-
-
-        if (this.opening_times_range && this.massage_orders_range) {
-            this.slots_range = this.umbrellaRange([{range:this.opening_times_range},{range:this.massage_orders_range}]);
-        } else {
-            this.slots_range = this.opening_times_range || this.massage_orders_range;
-        }
-
-        if (this.slots_range) {
-            const slots = Array.from(this.slots_range.by('minutes', { step: 30, exclusive: true })).map(s=>{
-                if (this.massage_orders_range) {
-                    const r = this.massage_orders.find((r)=>{
-                        return s.isSameOrAfter(r.range.start) && s.isBefore(r.range.end);
-                    });
-                    if (r) {
-                        const cont = s.isAfter(r.range.start);
-                        return {begin:s.toDate(),type:"o",cont:cont,order:r.massage_order,len:r.massage_order.massage_type.length}
-                    }
-                } 
-
-                if (this.opening_times_range) {
-                    const r = this.opening_times.find((r)=>{
-                        return s.isSameOrAfter(r.range.start) && s.isBefore(r.range.end);
-                    });
-                    if (r) {
-                        return {begin:s.toDate(),type:"f",opening_time:r,len:30}
-                    }
-                }
-
-                return {begin:s.toDate(),type:"b",len:30};
-            })
-
-            for(let si=1; si<slots.length;si++) {
-                if (slots[si].type==="b") {
-                    slots[si].cont = (slots[si-1].type==="b");
-                }
-            }
-            var cumb =0;
-            for(let si=slots.length-1; si>=0; si--) {
-                if (slots[si].type==='b') {
-                    if (slots[si].cont) {
-                        cumb+=30;
-                    } else {
-                        slots[si].len = 30+cumb;
-                        cumb = 0;
-                    }
-                }
-            }
-
-            this.slots = slots.filter(s=>{
-                return !( 
-                    (s.type==='b' && s.cont) || 
-                    (s.type==='o' && s.cont)
-                );
-            });
-        } else {
-            this.slots=[];
-        }
-
-    }
-
-    constructor(date,opening_times=[],massage_orders=[]) {
-        this.day = moment(date).startOf("day");
-        this.day_range = moment.range(this.day,moment(this.day).add(1,"day"));
-        this.opening_times = this.sortByRange(opening_times.map(ot=>{
-            return {id:ot.id,type:"ot",opening_time:ot,range:moment.range(ot.begin,ot.end)}
-        }));
-        this.massage_orders = this.sortByRange(massage_orders.map(mo=>{
-            const begin = moment(mo.begin).toDate()
-            const end = moment(mo.begin).add(mo.massage_type.length,"minutes").toDate();
-            return {id:mo.id,type:"mo",massage_order:mo,range:moment.range(begin,end)} 
-        }));
-        this.updateSlots();
-    }
-
-    getSlots() {
-        return this.slots.map(s=>{
-            return {break:s.type==="b",order:s.type==="o"?s.order:null,date:s.begin,len:Math.trunc(s.len/30)}
-        })
-    }
-    getStatus() {
-        if (this.slots.length === 0) {
-            return 0;
-        }
-        const f = this.slots.find(s=>{
-            return s.type === "f";
-        })
-        if (f) {
-            return 1;
-        } 
-        return 2;
-    }
-}
-
-
-
 
 class MassageRoomDay extends React.Component {
  
@@ -234,18 +119,9 @@ class MassageRoomDay extends React.Component {
  
     renderDayDetail(slots) {
 
-      /*
-        const tplan = Lodash.sortBy(opening_times,['begin']).map(ot=>{
-            const range = moment.range(ot.begin,ot.end);
-            const slots = Array.from(range.by('minutes',{step:30})).map(x=>{return {date:x.toDate(),break:false,len:1}})
-            const last_date = moment(Lodash.last(slots).date).add(30,'minutes').toDate();
-            return [...slots,{date:last_date,break:true,len:1}]
-        });
-        const plan = Lodash.dropRight(Lodash.flatten(tplan));
-        */
         const mds = slots.map((s,idx)=>{
             return (
-                <MassageDaySlot key={idx} break={s.break} time={s.date} order={s.order} length={s.len} /> 
+                <MassageDaySlot key={idx} break={s.break} time={moment(s.date).toDate()} order={s.order} length={s.len} /> 
             )
         });
         
@@ -362,12 +238,8 @@ class MassageRoomDay extends React.Component {
         const { classes } = this.props;
 
         let dd = null;
-        let status = null;
         if (this.props.massageRoomDayPlan.massageRoomDayPlan) {
-            const {opening_times,massage_orders}  = this.props.massageRoomDayPlan.massageRoomDayPlan;
-            var mdc = new MDController(this.props.day,opening_times,massage_orders)
-            const slots =  mdc.getSlots();
-            status = mdc.getStatus();
+            const {opening_times,massage_orders,slots,status}  = this.props.massageRoomDayPlan.massageRoomDayPlan;
             dd = this.renderDayDetail(slots);   
         }
 

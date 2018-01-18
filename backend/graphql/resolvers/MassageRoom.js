@@ -30,7 +30,12 @@ class MDController {
         }
         return null;
     }    
-    
+    filterByRange(array,range) {
+        return array.filter(x=>{
+           const b =  moment(x.begin);
+           return b.isSameOrAfter(range.start) && b.isBefore(range.end);
+        });
+    }
 
     updateSlots() {
 
@@ -100,10 +105,10 @@ class MDController {
     constructor(date,opening_times=[],massage_orders=[],massage_type_dict={}) {
         this.day = moment(date).startOf("day");
         this.day_range = moment.range(this.day,moment(this.day).add(1,"day"));
-        this.opening_times = this.sortByRange(opening_times.map(ot=>{
+        this.opening_times = this.sortByRange(this.filterByRange(opening_times,this.day_range).map(ot=>{
             return {id:ot.id,type:"ot",opening_time:ot,range:moment.range(ot.begin,ot.end)}
         }));
-        this.massage_orders = this.sortByRange(massage_orders.map(mo=>{
+        this.massage_orders = this.sortByRange(this.filterByRange(massage_orders,this.day_range).map(mo=>{
             const begin = moment(mo.begin).toDate()
             const mt = massage_type_dict[mo.massage_type_id];
             let len = 30;
@@ -176,9 +181,10 @@ class MassageRoomController extends BaseController {
             }
 
 
-            pAll([()=>OpeningTimeResolver.index(srch),()=>MassageOrderResolver.index(srch)]).then(res=>{
+            pAll([()=>OpeningTimeResolver.index(srch),()=>MassageOrderResolver.index(srch),()=>MassageTypeResolver.all()]).then(res=>{
                 const ots = res[0];
-                //TODO busy  const mos = res[1]
+                const mos = res[1];
+                const mts = Lodash.keyBy(res[2], 'id') 
                 const range = moment.range(args.begin_date,args.end_date);
                 const days = Array.from(range.by('day'));
                 const infos = days.map(d=>{
@@ -186,11 +192,21 @@ class MassageRoomController extends BaseController {
                     const has_ot = ots.find(ot=>{
                         return d.isSame(moment(ot.begin),'day')
                     });
+                    const has_mo = mos.find(ot=>{
+                        return d.isSame(moment(ot.begin),'day')
+                    });
+
                     var status = 0;
                     if (has_ot) {
-                        status = 1;
-                    } 
-
+                        if (!has_mo) {
+                            status = 1;    
+                        } else {
+                            const mdc = new MDController(d,ots,mos,mts) 
+                            status = mdc.getStatus();
+                        }
+                    } else if (has_mo) {
+                        status = 2;
+                    }
                     return {date:d.toDate(),status:status};
                 })
                 resolve(infos);
@@ -220,7 +236,7 @@ class MassageRoomController extends BaseController {
                 const mdc = new MDController(args.date,ots,mos,mts);
                 const slots =mdc.getSlots();
                 const status = mdc.getStatus();
-                console.log("SLOTS",slots)
+                //console.log("SLOTS",slots)
                   
                 const plan = {date:args.date,status:ots.length?1:0,opening_times:ots,massage_orders:mos,slots:slots,status:status}
                 resolve(plan);
