@@ -98,7 +98,7 @@ class MassageOrder extends React.Component {
 
             </form>
 
-            <Button raised disabled={!this.props.correct} onClick={this.props.onSave} color="primary">Uložit</Button>
+            <Button raised disabled={(!this.props.correct) || (this.props.wait)} onClick={this.props.onSave} color="primary">Uložit</Button>
 
             </div>
         )
@@ -109,6 +109,7 @@ MassageOrder.propTypes = {
     classes: PropTypes.object.isRequired,
     massageOrder: PropTypes.object.isRequired,
     correct: PropTypes.bool,
+    wait: PropTypes.bool,
     onMassageOrderChange: PropTypes.func.isRequired,
     onSave: PropTypes.func.isRequired
 }  

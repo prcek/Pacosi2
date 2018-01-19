@@ -40,6 +40,9 @@ const MassageRoomDayPlan = gql`
       slots {
           date break free order {id} len clen
       }
+      massage_types {
+        id name length hidden
+      }
     }
   }
 `;
@@ -56,6 +59,15 @@ const AddOpeningTime = gql`
 const DeleteOpeningTime = gql`
     mutation DeleteOpeningTime($id: ID!) {
         deleteOpeningTime(id:$id) {
+            id
+        }
+    }
+`;
+
+
+const AddMassageOrder = gql`
+    mutation AddMassageOrder($massage_room_id: ID! $massage_type_id: ID! $begin: DateTime!, $customer_name: String!, $comment: String ) {
+        addMassageOrder(massage_room_id:$massage_room_id, massage_type_id:$massage_type_id, begin:$begin,customer_name:$customer_name, comment:$comment) {
             id
         }
     }
@@ -193,13 +205,73 @@ class MassageRoomDay extends React.Component {
     }
 
     handleSaveOrder = () => {
-        console.log("handleSaveOrder")
+        console.log("handleSaveOrder",this.state.massageOrder)
+        this.setState({moWait:true})
+
+        const vars = {
+            massage_room_id: this.state.massageOrder.massage_room_id,
+            massage_type_id: this.state.massageOrder.massage_type_id,
+            begin: this.state.massageOrder.begin,
+            customer_name: this.state.massageOrder.customer_name,
+            comment: this.state.massageOrder.comment
+        }
+        //console.log(vars);
+        this.props.addMassageOrder({variables:vars}).then(({ data }) => {
+            this.setState({moWait:false,moCorrect:false})
+            console.log('got data', data);
+        }).catch((error) => {
+            this.setState({moWait:false,moCorrect:false})
+            console.log('there was an error sending the query', error);
+        });
     }
  
+    getMassageType(id) {
+        if (!this.props.massageRoomDayPlan.massageRoomDayPlan) {
+            return null;
+        }
+        return this.props.massageRoomDayPlan.massageRoomDayPlan.massage_types.find((i)=>{
+            return i.id === id;
+        })
+        
+    }
+
+    checkOrderSlot(begin,len) {
+        console.log("checkOrderSlot",begin,len)
+        const slen = Math.trunc(len/30);
+        if (!this.props.massageRoomDayPlan.massageRoomDayPlan) {
+            return false;
+        }
+        const slot = this.props.massageRoomDayPlan.massageRoomDayPlan.slots.find(s=>{
+            return moment(s.date).isSame(begin)
+        })
+        console.log("slot:",slot)
+        if (!slot) { return false;}
+        if (slot.free && (slen > slot.clen)) { return false;}
+        return true; 
+    }
+
+    checkOrder(order) {
+        console.log("CHECK ORDER",order);
+        if (!order.begin) { return false;}
+        if (!moment(order.begin).isSame(this.props.day,"day")) {return false;}
+        if (!order.customer_name) { return false;}
+        if (!order.massage_type_id) { return false;}
+        const massageType = this.getMassageType(order.massage_type_id);
+        if (!massageType) {return false;}
+        const massageLen = massageType.length;
+        if (!this.checkOrderSlot(order.begin,massageLen)) { return false; }
+        return true;
+    }
+
     handleMassageOrderChange = (f,v) => {
         const {massageOrder} = this.state
         massageOrder[f]=v;
-        this.setState({massageOrder:massageOrder});
+
+
+        const c = this.checkOrder(massageOrder);
+
+
+        this.setState({massageOrder:massageOrder,moCorrect:c});
     }
 
 
@@ -287,7 +359,7 @@ class MassageRoomDay extends React.Component {
                 </Grid>
                 <Grid item xs={12} sm={12} md={12} lg={4}> 
                     <Paper>     
-                    {this.state.massageOrder && <MassageOrder massageOrder={this.state.massageOrder} onMassageOrderChange={this.handleMassageOrderChange} onSave={this.handleSaveOrder}/>}
+                    {this.state.massageOrder && <MassageOrder massageOrder={this.state.massageOrder} correct={this.state.moCorrect} wait={this.state.moWait} onMassageOrderChange={this.handleMassageOrderChange} onSave={this.handleSaveOrder}/>}
                     </Paper>
                 </Grid>
             </Grid>
@@ -334,7 +406,16 @@ export default compose(
                 'MassageRoomDayInfos'
               ],
         }
-    })
+    }),
+    graphql(AddMassageOrder,{
+        name:"addMassageOrder",
+        options: {
+            refetchQueries: [
+                'MassageRoomDayPlan',
+                'MassageRoomDayInfos'
+              ],
+        }
+    }),
 
 
 )(MassageRoomDay)

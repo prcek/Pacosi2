@@ -22,6 +22,8 @@ const OpeningTimeType = require('../types/OpeningTime');
 const OpeningTimeResolver = require('../resolvers/OpeningTime');
 const MassageOrderType = require('../types/MassageOrder');
 const MassageOrderResolver = require('../resolvers/MassageOrder');
+const MassageTypeType = require('../types/MassageType');
+const MassageTypeResolver = require('../resolvers/MassageType');
 
 const BaseQuery = require('./BaseQuery');
 
@@ -95,6 +97,12 @@ const MassageRoomDayPlan = new GraphQL.GraphQLObjectType({
         },
         massage_orders: {
             type: new GraphQLList(MassageOrderType)
+        },
+        massage_types: {
+            type: new GraphQLList(MassageTypeType),
+            resolve(parent, args, context, info) {
+                return MassageTypeResolver.all();
+            }
         },
         slots: {
             type: new GraphQLList(MassageRoomDaySlot)

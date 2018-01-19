@@ -41,6 +41,10 @@ const MassageTypeType = new GraphQL.GraphQLObjectType({
             description: 'Status of the item, whether active or disabled',
         },
 
+        hidden: {
+            type: GraphQLBoolean
+        },
+        
         created_at: {
             type: GraphQLDateTime,
             description: 'Date and time when this massage type was created',

@@ -39,7 +39,7 @@ class MassageOrderMutation extends BaseMutation {
                 type: new GraphQLNonNull(GraphQLDateTime),
                 description: 'Enter start time, Cannot be left empty',
             },
-            custumer_name: {
+            customer_name: {
                 type: GraphQLString,
                 description: 'Enter order customer name',
             },
@@ -68,7 +68,7 @@ class MassageOrderMutation extends BaseMutation {
                 type: GraphQLDateTime,
                 description: 'Enter start time, Cannot be left empty',
             },
-            custumer_name: {
+            customer_name: {
                 type: GraphQLString,
                 description: 'Enter order customer name',
             },
