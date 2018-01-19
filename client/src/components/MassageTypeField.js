@@ -3,11 +3,11 @@ import PropTypes from 'prop-types';
 import { withStyles } from 'material-ui/styles';
 import { compose, graphql } from 'react-apollo'
 import gql from 'graphql-tag';
-import Typography from 'material-ui/Typography';
 import Input, { InputLabel } from 'material-ui/Input';
 import { MenuItem } from 'material-ui/Menu';
 import { FormControl } from 'material-ui/Form';
 import Select from 'material-ui/Select';
+
 
 const styles = theme => ({
     root: {
@@ -35,11 +35,12 @@ const CurrentMassageTypes = gql`
 class MassageTypeField extends React.Component {
 
     renderItems(items) {
-        //const { classes } = this.props;
         return items.map(item=> (
-            <MenuItem key={item.id} value={item.id}> <Typography>{item.name}&nbsp;<em>{item.length}</em></Typography></MenuItem>
+            <MenuItem key={item.id} value={item.id}><span>{item.name}</span>&nbsp;<em>{item.length}</em></MenuItem>
         )); 
     }
+
+  
     render() {
         const items = !this.props.docs.massageTypes ?[]:this.renderItems(this.props.docs.massageTypes);
         const { classes } = this.props;

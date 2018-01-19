@@ -20,7 +20,6 @@ import Lodash from 'lodash';
 
 const Moment = require('moment');
 const MomentRange = require('moment-range');
-
 const moment = MomentRange.extendMoment(Moment);
 require("moment/min/locales.min");
 moment.locale('cs');

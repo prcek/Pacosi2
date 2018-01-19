@@ -63,6 +63,10 @@ class MassageRoom extends React.Component {
         
     }
 
+    handleSaveOrder = () => {
+        console.log("handleSaveOrder")
+    }
+ 
     handleMassageOrderChange = (f,v) => {
         const {massageOrder} = this.state
         massageOrder[f]=v;
@@ -98,7 +102,7 @@ class MassageRoom extends React.Component {
                         {this.state.calendarDay && <MassageRoomDay massageRoomId={this.props.massageRoomId} day={this.state.calendarDay} onNew={this.handleNewOrder} onEdit={this.handleEditOrder}/>}
                     </Grid>
                     <Grid item xs={12} sm={12} md={4} lg={4}>
-                        {this.state.massageOrder && <MassageOrder massageOrder={this.state.massageOrder} onMassageOrderChange={this.handleMassageOrderChange}/>}
+                        {this.state.massageOrder && <MassageOrder massageOrder={this.state.massageOrder} onMassageOrderChange={this.handleMassageOrderChange} onSave={this.handleSaveOrder}/>}
                     </Grid>
                 </Grid>
 
