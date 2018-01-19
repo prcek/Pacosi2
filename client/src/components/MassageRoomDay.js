@@ -17,6 +17,12 @@ import CloseIcon from 'material-ui-icons/Close';
 import IconButton from 'material-ui/IconButton';
 import Switch from 'material-ui/Switch';
 import { FormGroup, FormControlLabel } from 'material-ui/Form';
+import Dialog, {
+    DialogActions,
+    DialogContent,
+    DialogContentText,
+    DialogTitle,
+  } from 'material-ui/Dialog';
 import Lodash from 'lodash';
 
 
@@ -127,6 +133,7 @@ class MassageRoomDay extends React.Component {
         super(props);
         this.state = {
             planMode: false,
+            open_mod: false,
             newOt: false,
             newOtItem: {
                 begin: this.props.day,
@@ -273,16 +280,7 @@ class MassageRoomDay extends React.Component {
 
 
     handleDeleteOrder = () => {
-        console.log("handleDeleteOrder",this.state.massageOrder)
-        this.setState({moWait:true})
-        //console.log(vars);
-        this.props.deleteMassageOrder({variables:{id:this.state.massageOrder.id}}).then(({ data }) => {
-            this.setState({moWait:false,moCorrect:false,massageOrder:null})
-            console.log('got data', data);
-        }).catch((error) => {
-            this.setState({moWait:false,moCorrect:false})
-            console.log('there was an error sending the query', error);
-        });
+        this.setState({open_mod:true});
     }
 
  
@@ -451,7 +449,44 @@ class MassageRoomDay extends React.Component {
             </div>
         )
     }
+   
+    handleCloseMOD = () => {
+        this.setState({open_mod:false});
+    }
 
+    handleConfirmMODelete = () => {
+        console.log("handleDeleteOrder",this.state.massageOrder)
+        this.setState({moWait:true})
+        //console.log(vars);
+        this.props.deleteMassageOrder({variables:{id:this.state.massageOrder.id}}).then(({ data }) => {
+            this.setState({moWait:false,moCorrect:false,massageOrder:null,open_mod:false})
+            console.log('got data', data);
+        }).catch((error) => {
+            this.setState({moWait:false,moCorrect:false,open_mod:false})
+            console.log('there was an error sending the query', error);
+        });
+    }
+
+    renderMODeleteDialog() {
+        return (
+            <Dialog open={this.state.open_mod} onClose={this.handleCloseMOD}>
+                <DialogTitle id="alert-dialog-title">{"Smazání objednané masáže"}</DialogTitle>
+                <DialogContent>
+                    <DialogContentText id="alert-dialog-description">
+                        Opravdu chcete smazat objednanou masáž?
+                    </DialogContentText>
+                </DialogContent>
+                <DialogActions>
+                    <Button onClick={this.handleCloseMOD} color="primary">
+                        Ne
+                    </Button>
+                    <Button onClick={this.handleConfirmMODelete} color="primary" autoFocus>
+                        Ano
+                    </Button>
+                </DialogActions>
+            </Dialog>
+        )
+    }
 
     render() {
         const { classes } = this.props;
@@ -464,8 +499,10 @@ class MassageRoomDay extends React.Component {
 
         const pm = this.props.massageRoomDayPlan.massageRoomDayPlan?this.renderDayPlan():null;
         const mo = this.state.massageOrder?this.renderOrder():null;
+        const mod_dialog = this.renderMODeleteDialog();
         return (
             <div className={classes.root}>
+            {mod_dialog}
              <Grid container>
                 <Grid item xs={12} sm={12} md={12} lg={8}>
                     <Toolbar classes={{root:classes.toolbar}}>
