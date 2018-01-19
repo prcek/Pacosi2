@@ -132,9 +132,9 @@ class MassageRoomCal extends React.Component {
         return (
             <div className={classes.root}>
                 <Toolbar classes={{root:classes.toolbar}} >
-                    <Button onClick={this.handlePrevWeek}><RewindIcon/></Button>  
-                    <Button className={classes.flex} onClick={this.handleTodayWeek}>dnes</Button>
-                    <Button onClick={this.handleNextWeek}><ForwardIcon/></Button>  
+                    <Button color={"primary"} onClick={this.handlePrevWeek}><RewindIcon/></Button>  
+                    <Button color={"primary"} className={classes.flex} onClick={this.handleTodayWeek}>dnes</Button>
+                    <Button color={"primary"} onClick={this.handleNextWeek}><ForwardIcon/></Button>  
                 </Toolbar>
                 <Paper>
                     {weekH}

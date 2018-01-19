@@ -8,6 +8,7 @@ import TimeField from './TimeField';
 import TextField from 'material-ui/TextField';
 import Button from 'material-ui/Button';
 
+import Toolbar from 'material-ui/Toolbar';
 
 const Moment = require('moment');
 const MomentRange = require('moment-range');
@@ -26,8 +27,14 @@ const styles = theme => ({
     },
     textfield: {
         margin: theme.spacing.unit
+    },
+    toolbar: {
+        minHeight:50
+    },
+    button:{
+        marginLeft:theme.spacing.unit,
+        marginRight:theme.spacing.unit
     }
-
 });
   
 function null2empty(v) {
@@ -54,7 +61,6 @@ class MassageOrder extends React.Component {
 
         return (
             <div>
-            <Typography> Massage Order id: {this.props.massageOrder.id} </Typography>
             <form className={classes.form}  noValidate autoComplete="off">
 
                 <TimeField 
@@ -97,12 +103,12 @@ class MassageOrder extends React.Component {
 
 
             </form>
-
-            <Button raised disabled={(!this.props.correct) || (this.props.wait)} onClick={this.props.onSave} color="primary">Uložit</Button>
-            <Button raised onClick={this.props.onCancel} color="primary">Zrusit</Button>
-            {this.props.massageOrder.id && 
-               <Button raised onClick={this.props.onDelete} color="primary">Smazat</Button>
-            }
+            <Toolbar>
+                <Button className={classes.button} raised disabled={(!this.props.correct) || (this.props.wait)} onClick={this.props.onSave} color="primary">Uložit</Button>
+                {this.props.massageOrder.id && 
+                <Button className={classes.button} raised onClick={this.props.onDelete} color="primary">Smazat</Button>
+                }
+            </Toolbar>
             </div>
         )
     }
@@ -116,7 +122,6 @@ MassageOrder.propTypes = {
     wait: PropTypes.bool,
     onMassageOrderChange: PropTypes.func.isRequired,
     onSave: PropTypes.func.isRequired,
-    onCancel: PropTypes.func.isRequired,
     onDelete: PropTypes.func.isRequired
 }  
 

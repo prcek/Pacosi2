@@ -13,7 +13,8 @@ import MassageDaySlot from './MassageDaySlot';
 import DateTimeView from './DateTimeView';
 import TimeField from './TimeField';
 import MassageOrder from './MassageOrder';
-
+import CloseIcon from 'material-ui-icons/Close';
+import IconButton from 'material-ui/IconButton';
 import Switch from 'material-ui/Switch';
 import { FormGroup, FormControlLabel } from 'material-ui/Form';
 import Lodash from 'lodash';
@@ -422,6 +423,34 @@ class MassageRoomDay extends React.Component {
         )
     }
 
+    renderOrder() {
+        const { classes } = this.props;
+        return (
+            <div>
+
+                <Toolbar classes={{root:classes.toolbar}}>
+                    <Typography type={"title"}>{this.state.massageOrder.id?"Editace masáže":"Nová masáž"}</Typography>
+                    <Typography color="inherit" className={classes.flex}>&nbsp;</Typography>
+               
+                    <IconButton color="primary" onClick={this.handleCancelOrder} aria-label="Close">
+                        <CloseIcon />
+                    </IconButton>
+                </Toolbar>  
+                
+                <Paper>
+                    <MassageOrder 
+                        massageOrder={this.state.massageOrder} 
+                        correct={this.state.moCorrect} 
+                        wait={this.state.moWait} 
+                        onMassageOrderChange={this.handleMassageOrderChange} 
+                        onSave={this.handleSaveOrder}
+                        onDelete={this.handleDeleteOrder}
+                    />
+                </Paper>
+           
+            </div>
+        )
+    }
 
 
     render() {
@@ -434,6 +463,7 @@ class MassageRoomDay extends React.Component {
         }
 
         const pm = this.props.massageRoomDayPlan.massageRoomDayPlan?this.renderDayPlan():null;
+        const mo = this.state.massageOrder?this.renderOrder():null;
         return (
             <div className={classes.root}>
              <Grid container>
@@ -448,19 +478,7 @@ class MassageRoomDay extends React.Component {
                     </Paper>
                 </Grid>
                 <Grid item xs={12} sm={12} md={12} lg={4}> 
-                    <Paper>     
-                    {this.state.massageOrder && 
-                        <MassageOrder 
-                            massageOrder={this.state.massageOrder} 
-                            correct={this.state.moCorrect} 
-                            wait={this.state.moWait} 
-                            onMassageOrderChange={this.handleMassageOrderChange} 
-                            onSave={this.handleSaveOrder}
-                            onCancel={this.handleCancelOrder}
-                            onDelete={this.handleDeleteOrder}
-                        />
-                    }
-                    </Paper>
+                    {mo}
                 </Grid>
             </Grid>
             </div>
