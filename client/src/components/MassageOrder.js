@@ -61,8 +61,8 @@ class MassageOrder extends React.Component {
                     label={"OD"} 
                    // margin="dense"
                     ranges={ranges} 
-                    value={this.props.massageOrder.begin} 
-                    onChange={(e)=>this.props.onMassageOrderChange("begin",e.target.value)} 
+                    value={moment(this.props.massageOrder.begin)} 
+                    onChange={(e)=>this.props.onMassageOrderChange("begin",e.target.value.toISOString())} 
                 />
 
                 <MassageTypeField
@@ -99,7 +99,10 @@ class MassageOrder extends React.Component {
             </form>
 
             <Button raised disabled={(!this.props.correct) || (this.props.wait)} onClick={this.props.onSave} color="primary">Uložit</Button>
-
+            <Button raised onClick={this.props.onCancel} color="primary">Zrusit</Button>
+            {this.props.massageOrder.id && 
+               <Button raised onClick={this.props.onDelete} color="primary">Smazat</Button>
+            }
             </div>
         )
     }
@@ -108,10 +111,13 @@ class MassageOrder extends React.Component {
 MassageOrder.propTypes = {
     classes: PropTypes.object.isRequired,
     massageOrder: PropTypes.object.isRequired,
+    times: PropTypes.array,
     correct: PropTypes.bool,
     wait: PropTypes.bool,
     onMassageOrderChange: PropTypes.func.isRequired,
-    onSave: PropTypes.func.isRequired
+    onSave: PropTypes.func.isRequired,
+    onCancel: PropTypes.func.isRequired,
+    onDelete: PropTypes.func.isRequired
 }  
 
 export default compose(

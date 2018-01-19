@@ -34,11 +34,11 @@ const MassageRoomDayPlan = gql`
           id,begin,end
       }
       massage_orders {
-        id massage_type {name length} begin customer_name comment
+        id massage_type {name length} massage_type_id begin customer_name comment
       }
       status 
       slots {
-          date break free order {id} len clen
+          date break free order {id massage_type {name length} massage_type_id begin customer_name comment} len clen
       }
       massage_types {
         id name length hidden
@@ -68,6 +68,22 @@ const DeleteOpeningTime = gql`
 const AddMassageOrder = gql`
     mutation AddMassageOrder($massage_room_id: ID! $massage_type_id: ID! $begin: DateTime!, $customer_name: String!, $comment: String ) {
         addMassageOrder(massage_room_id:$massage_room_id, massage_type_id:$massage_type_id, begin:$begin,customer_name:$customer_name, comment:$comment) {
+            id
+        }
+    }
+`;
+
+const UpdateMassageOrder = gql`
+    mutation UpdateMassageOrder($id: ID! $massage_type_id: ID $begin: DateTime, $customer_name: String, $comment: String ) {
+        updateMassageOrder(id:$id, massage_type_id:$massage_type_id, begin:$begin,customer_name:$customer_name, comment:$comment) {
+            id
+        }
+    }
+`;
+
+const DeleteMassageOrder = gql`
+    mutation DeleteMassageOrder($id: ID!) {
+        deleteMassageOrder(id:$id) {
             id
         }
     }
@@ -115,10 +131,9 @@ class MassageRoomDay extends React.Component {
                 begin: this.props.day,
                 end: this.props.day
             },
-            massageOrder: {
-                massage_room_id:this.props.massageRoomId,
-                begin: moment().startOf('day').add(7,'hours').toDate()
-            }
+            massageOrder: null
+        
+            
         };
     }
 
@@ -128,7 +143,7 @@ class MassageRoomDay extends React.Component {
 
     componentWillReceiveProps(nextProps) {
         if (!moment(this.props.day).isSame(nextProps.day,'day')) {
-            this.setState({newOtItem:{begin:nextProps.day,end:nextProps.day}});
+            this.setState({newOtItem:{begin:nextProps.day,end:nextProps.day},massageOrder:null});
         }
     }
    
@@ -137,7 +152,7 @@ class MassageRoomDay extends React.Component {
 
         const mds = slots.map((s,idx)=>{
             return (
-                <MassageDaySlot key={idx} break={s.break} time={moment(s.date).toDate()} order={s.order} length={s.len} clen={s.clen} /> 
+                <MassageDaySlot key={idx} break={s.break} time={moment(s.date).toDate()} order={s.order} length={s.len} clen={s.clen} onClick={this.handleSlotClick} /> 
             )
         });
         
@@ -191,39 +206,84 @@ class MassageRoomDay extends React.Component {
         });
     }
 
-
-
-    handleNewOrder = (d) => {
-        const order = {
-            massage_room_id:this.props.massageRoomId,
-            begin:d
+    handleSlotClick = (d,order) => {
+        console.log("handleSlotClick",d,order);
+        if (order) {
+            const mo = {
+                id: order.id,
+                massage_room_id: this.props.massageRoomId,
+                begin:order.begin,
+                massage_type_id: order.massage_type_id,
+                customer_name: order.customer_name,
+                comment: order.comment
+            }
+            const c = this.checkOrder(mo);
+            this.setState({massageOrder:mo,moCorrect:c})
+        } else {
+            const mo = {
+                massage_room_id: this.props.massageRoomId,
+                begin:d
+            }
+            this.setState({massageOrder:mo,moCorrect:false})
         }
-        this.setState({massageOrder:order})
     }
-    handleEditOrder = (order) => {
-        
+
+    handleCancelOrder = () => {
+        this.setState({massageOrder:null})
     }
+
 
     handleSaveOrder = () => {
         console.log("handleSaveOrder",this.state.massageOrder)
         this.setState({moWait:true})
 
-        const vars = {
-            massage_room_id: this.state.massageOrder.massage_room_id,
-            massage_type_id: this.state.massageOrder.massage_type_id,
-            begin: this.state.massageOrder.begin,
-            customer_name: this.state.massageOrder.customer_name,
-            comment: this.state.massageOrder.comment
+        if (this.state.massageOrder.id) {
+            this.props.updateMassageOrder({variables:{
+                id: this.state.massageOrder.id,
+                massage_type_id: this.state.massageOrder.massage_type_id,
+                begin: this.state.massageOrder.begin,
+                customer_name: this.state.massageOrder.customer_name,
+                comment: this.state.massageOrder.comment
+            }}).then(({ data }) => {
+                this.setState({moWait:false,moCorrect:false,massageOrder:null})
+                console.log('got data', data);
+            }).catch((error) => {
+                this.setState({moWait:false,moCorrect:false})
+                console.log('there was an error sending the query', error);
+            });
+    
+        } else {
+            this.props.addMassageOrder({variables:{
+                massage_room_id: this.state.massageOrder.massage_room_id,
+                massage_type_id: this.state.massageOrder.massage_type_id,
+                begin: this.state.massageOrder.begin,
+                customer_name: this.state.massageOrder.customer_name,
+                comment: this.state.massageOrder.comment
+            }}).then(({ data }) => {
+                this.setState({moWait:false,moCorrect:false,massageOrder:null})
+                console.log('got data', data);
+            }).catch((error) => {
+                this.setState({moWait:false,moCorrect:false})
+                console.log('there was an error sending the query', error);
+            });
         }
+
+    }
+
+
+    handleDeleteOrder = () => {
+        console.log("handleDeleteOrder",this.state.massageOrder)
+        this.setState({moWait:true})
         //console.log(vars);
-        this.props.addMassageOrder({variables:vars}).then(({ data }) => {
-            this.setState({moWait:false,moCorrect:false})
+        this.props.deleteMassageOrder({variables:{id:this.state.massageOrder.id}}).then(({ data }) => {
+            this.setState({moWait:false,moCorrect:false,massageOrder:null})
             console.log('got data', data);
         }).catch((error) => {
             this.setState({moWait:false,moCorrect:false})
             console.log('there was an error sending the query', error);
         });
     }
+
  
     getMassageType(id) {
         if (!this.props.massageRoomDayPlan.massageRoomDayPlan) {
@@ -234,20 +294,50 @@ class MassageRoomDay extends React.Component {
         })
         
     }
+    getMassageOrder(id) {
+        if (!this.props.massageRoomDayPlan.massageRoomDayPlan) {
+            return null;
+        }
+        return this.props.massageRoomDayPlan.massageRoomDayPlan.massage_orders.find((i)=>{
+            return i.id === id;
+        })
+    }
 
-    checkOrderSlot(begin,len) {
-        console.log("checkOrderSlot",begin,len)
+    getPossibleSlots(len,skip_order_id=null) {
         const slen = Math.trunc(len/30);
         if (!this.props.massageRoomDayPlan.massageRoomDayPlan) {
-            return false;
+            return [];
         }
-        const slot = this.props.massageRoomDayPlan.massageRoomDayPlan.slots.find(s=>{
-            return moment(s.date).isSame(begin)
-        })
-        console.log("slot:",slot)
-        if (!slot) { return false;}
-        if (slot.free && (slen > slot.clen)) { return false;}
-        return true; 
+        const times = this.props.massageRoomDayPlan.massageRoomDayPlan.slots.reduce((a,s)=>{
+            if (s.free) {
+                return [...a,s.date]
+            }
+            if (s.order && s.order.id === skip_order_id) {
+                const int = Array.from(moment.range(s.date,moment(s.date).add(30*s.len,"minutes")).by('minutes',{step:30,exclusive:true}))
+                return [...a,...int]
+            }
+            return a;
+        },[]);
+
+        const ctimes = times.reduceRight((a,v)=>{
+            if (a.length===0) {
+                return [{date:v,clen:1}]
+            }
+            const last = a[0];
+            if (moment(last.date).subtract(30,'minutes').isSame(v)) {
+                return [{date:v,clen:last.clen+1},...a]    
+            } else {
+                return [{date:v,clen:1},...a]
+            }
+        },[]).filter(i=>{return i.clen>=slen}).map(i=>{return moment(i.date).toDate()})
+        return ctimes;
+    }
+
+    checkOrderSlot(begin,len,skip_order_id=null) {
+        console.log("checkOrderSlot",begin,len,skip_order_id)
+        const times = this.getPossibleSlots(len,skip_order_id);
+        const pos  = times.find(t=>{return moment(t).isSame(begin)});
+        return pos !==undefined
     }
 
     checkOrder(order) {
@@ -259,7 +349,7 @@ class MassageRoomDay extends React.Component {
         const massageType = this.getMassageType(order.massage_type_id);
         if (!massageType) {return false;}
         const massageLen = massageType.length;
-        if (!this.checkOrderSlot(order.begin,massageLen)) { return false; }
+        if (!this.checkOrderSlot(order.begin,massageLen,order.id)) { return false; }
         return true;
     }
 
@@ -269,7 +359,7 @@ class MassageRoomDay extends React.Component {
 
 
         const c = this.checkOrder(massageOrder);
-
+        
 
         this.setState({massageOrder:massageOrder,moCorrect:c});
     }
@@ -359,7 +449,17 @@ class MassageRoomDay extends React.Component {
                 </Grid>
                 <Grid item xs={12} sm={12} md={12} lg={4}> 
                     <Paper>     
-                    {this.state.massageOrder && <MassageOrder massageOrder={this.state.massageOrder} correct={this.state.moCorrect} wait={this.state.moWait} onMassageOrderChange={this.handleMassageOrderChange} onSave={this.handleSaveOrder}/>}
+                    {this.state.massageOrder && 
+                        <MassageOrder 
+                            massageOrder={this.state.massageOrder} 
+                            correct={this.state.moCorrect} 
+                            wait={this.state.moWait} 
+                            onMassageOrderChange={this.handleMassageOrderChange} 
+                            onSave={this.handleSaveOrder}
+                            onCancel={this.handleCancelOrder}
+                            onDelete={this.handleDeleteOrder}
+                        />
+                    }
                     </Paper>
                 </Grid>
             </Grid>
@@ -409,6 +509,25 @@ export default compose(
     }),
     graphql(AddMassageOrder,{
         name:"addMassageOrder",
+        options: {
+            refetchQueries: [
+                'MassageRoomDayPlan',
+                'MassageRoomDayInfos'
+              ],
+        }
+    }),
+    graphql(UpdateMassageOrder,{
+        name:"updateMassageOrder",
+        options: {
+            refetchQueries: [
+                'MassageRoomDayPlan',
+                'MassageRoomDayInfos'
+              ],
+        }
+    }),
+
+    graphql(DeleteMassageOrder,{
+        name:"deleteMassageOrder",
         options: {
             refetchQueries: [
                 'MassageRoomDayPlan',
