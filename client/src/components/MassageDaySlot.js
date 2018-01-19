@@ -97,7 +97,7 @@ class MassageDaySlot extends React.Component {
         const time=this.renderTime(false);
         return (
             <div className={classNames(classes.inner,classes.click)} onClick={this.handleSlotClick}>
-            {time} <Typography> slot </Typography>
+            {time} <Typography> {this.props.order.customer_name} </Typography>
             </div>
         )
     }
@@ -106,7 +106,7 @@ class MassageDaySlot extends React.Component {
         const time=this.renderTime(true);
         return (
             <div className={classNames(classes.inner,classes.click)} onClick={this.handleSlotClick}>
-            {time} <Typography> {this.props.clen} </Typography>
+            {time} <Typography>  </Typography>
             </div>
         )
     }
