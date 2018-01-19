@@ -23,6 +23,7 @@ import Dialog, {
     DialogContentText,
     DialogTitle,
   } from 'material-ui/Dialog';
+import Divider from 'material-ui/Divider';
 import Lodash from 'lodash';
 
 
@@ -402,9 +403,11 @@ class MassageRoomDay extends React.Component {
         return (
             <div>
                 <Toolbar > 
-                        <Typography> přehled otvírací doby pro den </Typography>
+                        <Typography type={"subheading"}> Nastavení provozní doby </Typography>
                 </Toolbar>
+                <Divider/>
                 {ot}
+                <Divider/>
                 {not}
             </div>
         )
