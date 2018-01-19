@@ -5,13 +5,14 @@ import Typography from 'material-ui/Typography';
 import { compose } from 'react-apollo'
 import { graphql } from 'react-apollo';
 import gql from 'graphql-tag';
-
+import Grid from 'material-ui/Grid';
 import Paper from 'material-ui/Paper';
 import Toolbar from 'material-ui/Toolbar';
 import Button from 'material-ui/Button';
 import MassageDaySlot from './MassageDaySlot';
 import DateTimeView from './DateTimeView';
 import TimeField from './TimeField';
+import MassageOrder from './MassageOrder';
 
 import Switch from 'material-ui/Switch';
 import { FormGroup, FormControlLabel } from 'material-ui/Form';
@@ -101,6 +102,10 @@ class MassageRoomDay extends React.Component {
             newOtItem: {
                 begin: this.props.day,
                 end: this.props.day
+            },
+            massageOrder: {
+                massage_room_id:this.props.massageRoomId,
+                begin: moment().startOf('day').add(7,'hours').toDate()
             }
         };
     }
@@ -174,6 +179,30 @@ class MassageRoomDay extends React.Component {
         });
     }
 
+
+
+    handleNewOrder = (d) => {
+        const order = {
+            massage_room_id:this.props.massageRoomId,
+            begin:d
+        }
+        this.setState({massageOrder:order})
+    }
+    handleEditOrder = (order) => {
+        
+    }
+
+    handleSaveOrder = () => {
+        console.log("handleSaveOrder")
+    }
+ 
+    handleMassageOrderChange = (f,v) => {
+        const {massageOrder} = this.state
+        massageOrder[f]=v;
+        this.setState({massageOrder:massageOrder});
+    }
+
+
     renderDayPlanNewOt() {
         const { classes } = this.props;
 
@@ -245,14 +274,23 @@ class MassageRoomDay extends React.Component {
         const pm = this.props.massageRoomDayPlan.massageRoomDayPlan?this.renderDayPlan():null;
         return (
             <div className={classes.root}>
-                <Toolbar classes={{root:classes.toolbar}}>
-                    <Typography type={"title"}><DateTimeView date={this.props.day}/></Typography>
-                    <Typography color="inherit" className={classes.flex}>&nbsp;</Typography>
-                    {this.renderSettingsSwitch()}
-                </Toolbar>  
-                <Paper>
-                    {this.state.planMode?pm:dd}    
-                </Paper>
+             <Grid container>
+                <Grid item xs={12} sm={12} md={12} lg={8}>
+                    <Toolbar classes={{root:classes.toolbar}}>
+                        <Typography type={"title"}><DateTimeView date={this.props.day}/></Typography>
+                        <Typography color="inherit" className={classes.flex}>&nbsp;</Typography>
+                        {this.renderSettingsSwitch()}
+                    </Toolbar>  
+                    <Paper>
+                        {this.state.planMode?pm:dd}    
+                    </Paper>
+                </Grid>
+                <Grid item xs={12} sm={12} md={12} lg={4}> 
+                    <Paper>     
+                    {this.state.massageOrder && <MassageOrder massageOrder={this.state.massageOrder} onMassageOrderChange={this.handleMassageOrderChange} onSave={this.handleSaveOrder}/>}
+                    </Paper>
+                </Grid>
+            </Grid>
             </div>
         )
     }
