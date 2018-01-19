@@ -1,7 +1,6 @@
 import React from 'react';
 import { withStyles } from 'material-ui/styles';
 import PropTypes from 'prop-types';
-import Typography from 'material-ui/Typography';
 import { compose } from 'react-apollo'
 import MassageTypeField from './MassageTypeField'
 import TimeField from './TimeField';
@@ -86,7 +85,7 @@ class MassageOrder extends React.Component {
                     // autoFocus§
                     //  margin="dense"
                     id="lt_name"
-                    label="Jmeno"
+                    label="Jméno"
                     type="text"
                     value={null2empty(this.props.massageOrder.customer_name)}
                     onChange={(e)=>this.props.onMassageOrderChange("customer_name",empty2null(e.target.value))}
@@ -95,7 +94,7 @@ class MassageOrder extends React.Component {
                     // autoFocus
                     //  margin="dense"
                     id="lt_comment"
-                    label="Poznamka"
+                    label="Poznámka"
                     type="text"
                     value={null2empty(this.props.massageOrder.comment)}
                     onChange={(e)=>this.props.onMassageOrderChange("comment",empty2null(e.target.value))}
