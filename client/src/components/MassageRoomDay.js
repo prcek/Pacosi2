@@ -448,7 +448,10 @@ class MassageRoomDay extends React.Component {
                         onDelete={this.handleDeleteOrder}
                     />
                 </Paper>
-           
+                <Typography type="caption"> 
+                MassageOrder id:{this.state.massageOrder.id}
+                </Typography>
+
             </div>
         )
     }

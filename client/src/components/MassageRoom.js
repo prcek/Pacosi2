@@ -85,7 +85,7 @@ class MassageRoom extends React.Component {
 
             <Typography type="caption"> 
                 MassageRoom id:{this.props.massageRoomId}
-                {this.state.currentDate && ", selected date: "+ moment(this.state.currentDate).format()} 
+                {this.state.calendarDay && ", selected date: "+ moment(this.state.calendarDay).format()} 
             </Typography>
             </div>
         )
