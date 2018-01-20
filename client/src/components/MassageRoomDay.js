@@ -510,7 +510,7 @@ class MassageRoomDay extends React.Component {
             <div className={classes.root}>
             {mod_dialog}
              <Grid container>
-                <Grid item xs={12} sm={12} md={12} lg={8}>
+                <Grid item xs={12} sm={12} md={12} lg={7}>
                     <Toolbar classes={{root:classes.toolbar}}>
                         <Typography type={"title"}><DateTimeView date={this.props.day}/></Typography>
                         <Typography color="inherit" className={classes.flex}>&nbsp;</Typography>
@@ -520,7 +520,7 @@ class MassageRoomDay extends React.Component {
                         {this.state.planMode?pm:dd}    
                     </Paper>
                 </Grid>
-                <Grid item xs={12} sm={12} md={12} lg={4}> 
+                <Grid item xs={12} sm={12} md={12} lg={5}> 
                     {mo}
                 </Grid>
             </Grid>

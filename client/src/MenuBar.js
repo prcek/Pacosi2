@@ -118,6 +118,7 @@ class MenuBar extends React.Component {
                 {this.props.locationInfo && this.renderMenu()} 
 
 
+                <Button color="contrast" component={Link} to="/orders">Prodej</Button>
                 <Button color="contrast" component={Link} to="/clients">Klienti</Button>
 
                 <Typography color="inherit" className={classes.flex}>
