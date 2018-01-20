@@ -3,6 +3,7 @@ import PropTypes from 'prop-types';
 import { withStyles } from 'material-ui/styles';
 import Typography from 'material-ui/Typography';
 import DateTimeView from './DateTimeView';
+import * as colors from 'material-ui/colors';
 import { compose } from 'react-apollo'
 var classNames = require('classnames');
 
@@ -47,10 +48,10 @@ const styles = theme => ({
         borderRight: '1px solid gray'
     },
     bgGreen: {
-        backgroundColor: 'green'
+        backgroundColor: colors['green'][500]
     },
     bgRed: {
-        backgroundColor: 'red'
+        backgroundColor: colors['red'][500]
     },
     break: {
         width:"100%",

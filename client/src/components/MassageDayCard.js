@@ -4,6 +4,8 @@ import PropTypes from 'prop-types';
 import Typography from 'material-ui/Typography';
 import { compose } from 'react-apollo'
 import DateTimeView from './DateTimeView';
+import * as colors from 'material-ui/colors';
+
 var classNames = require('classnames');
 
 
@@ -25,12 +27,12 @@ const styles = theme => ({
         borderColor: 'black'
     },
     selected1: {
-        backgroundColor:'green',
+        backgroundColor:colors['green'][500],
         borderStyle: 'solid',
         borderColor: 'black'
     },
     selected2: {
-        backgroundColor:'red',
+        backgroundColor:colors['red'][500],
         borderStyle: 'solid',
         borderColor: 'black'
     },
@@ -40,14 +42,14 @@ const styles = theme => ({
         borderColor: 'gray'
     },
     status1: {
-        backgroundColor:'green',
+        backgroundColor:colors['green'][500],
         borderStyle: 'solid',
-        borderColor: 'green',
+        borderColor: colors['green'][500],
     },
     status2: {
-        backgroundColor:'red',
+        backgroundColor:colors['red'][500],
         borderStyle: 'solid',
-        borderColor: 'red',
+        borderColor: colors['red'][500],
     }
 });
   
