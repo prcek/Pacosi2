@@ -18,6 +18,10 @@ import MassageRooms from './components/MassageRooms';
 import MassageTypes from './components/MassageTypes';
 import Clients from './components/Clients';
 import Orders from './components/Orders';
+import OrdersReport from './components/OrdersReport';
+import LessonsReport from './components/LessonsReport';
+import MassagesReport from './components/MassagesReport';
+
 import TestComponent from './components/TestComponent';
 
 
@@ -80,6 +84,24 @@ const PageOrders = ({ match }) => (
   </div>
 )
 
+const PageOrdersReport = ({ match }) => (
+  <div>
+    <OrdersReport />
+  </div>
+)
+
+const PageMassagesReport = ({ match }) => (
+  <div>
+    <MassagesReport />
+  </div>
+)
+
+const PageLessonsReport = ({ match }) => (
+  <div>
+    <LessonsReport />
+  </div>
+)
+
 const PageNoMatch = ({ match }) => (
   <div>
     <Typography> vyber z menu co chces delat </Typography>
@@ -118,6 +140,9 @@ class App extends Component {
           <Route path="/massagetypes" component={PageMassageTypes}/>
           <Route path="/clients" component={PageClients}/>
           <Route path="/orders" component={PageOrders}/>
+          <Route path="/ordersreport" component={PageOrdersReport}/>
+          <Route path="/massagesreport" component={PageMassagesReport}/>
+          <Route path="/lessonsreport" component={PageLessonsReport}/>
           <Route path="/test" component={PageTest}/>
           <Route component={PageNoMatch}/>
         </Switch>

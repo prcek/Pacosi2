@@ -8,6 +8,7 @@ import Button from 'material-ui/Button';
 import Select from 'material-ui/Select';
 import IconButton from 'material-ui/IconButton';
 import SettingsIcon from 'material-ui-icons/Settings';
+import ReceiptIcon from 'material-ui-icons/Receipt';
 import Menu, { MenuItem } from 'material-ui/Menu';
 import { Link } from 'react-router-dom';
 import { withRouter } from 'react-router';
@@ -76,16 +77,28 @@ class MenuBar extends React.Component {
     handleCfgMenu = event => {
       this.setState({ anchorEl: event.currentTarget });
     };
+    handleReportMenu = event => {
+      this.setState({ anchorElr: event.currentTarget });
+    };
   
     handleCfgClose = () => {
       this.setState({ anchorEl: null });
     };
+    handleReportClose = () => {
+      this.setState({ anchorElr: null });
+    };
+
 
     handleCfgClickTo = (url) => {
       this.setState({ anchorEl: null });
       this.props.history.push(url);
     };
 
+    handleReportClickTo = (url) => {
+      this.setState({ anchorElr: null });
+      this.props.history.push(url);
+    };
+    
     renderMenu() {
       if (!this.props.locationInfo.locationInfo) {
         return [];
@@ -110,6 +123,7 @@ class MenuBar extends React.Component {
     render() {
         const { classes } = this.props;
         const openCfg = Boolean(this.state.anchorEl);
+        const openReport = Boolean(this.state.anchorElr);
         return (
             <div className={classes.root}>
             <AppBar position="static">
@@ -130,6 +144,35 @@ class MenuBar extends React.Component {
                   <MenuItem value={""}>Žádná lokalita</MenuItem>
                   {this.props.locations.locations && this.renderLocations(this.props.locations.locations) }
                 </Select>
+
+                <IconButton
+                  aria-owns={openReport ? 'menu-appbar2' : null}
+                  aria-haspopup="true"
+                  onClick={this.handleReportMenu}
+                  color="contrast"
+                >
+                  <ReceiptIcon />
+                </IconButton>
+                <Menu
+                  id="menu-appbar2"
+                  anchorEl={this.state.anchorElr}
+                  anchorOrigin={{
+                    vertical: 'top',
+                    horizontal: 'right',
+                  }}
+                  transformOrigin={{
+                    vertical: 'top',
+                    horizontal: 'right',
+                  }}
+                  open={openReport}
+                  onClose={this.handleReportClose}
+                >
+                  <MenuItem onClick={()=>this.handleReportClickTo('/ordersreport')}>Přehled prodejů</MenuItem>
+                  <MenuItem onClick={()=>this.handleReportClickTo('/massagesreport')}>Přehled masáží</MenuItem>
+                  <MenuItem onClick={()=>this.handleReportClickTo('/lessonsreport')}>Přehled lekcí</MenuItem>
+                </Menu>
+
+
 
                 <IconButton
                   aria-owns={openCfg ? 'menu-appbar' : null}
