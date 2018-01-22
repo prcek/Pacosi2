@@ -5,6 +5,7 @@ class BaseController {
     constructor(model) {
         console.log("BaseController constructor for model",model.modelName)
         this.model = model;
+        this.defaultSort = {created_at: -1}
     }
 
     
@@ -12,7 +13,7 @@ class BaseController {
     index(filter={}) {
         console.log("BaseController index",this.model.modelName+"(",filter,")")
         return this.model.find(filter)
-            .sort('created_at')
+            .sort(this.defaultSort)
             .exec()
             .then( records => {
                 return records;
@@ -40,7 +41,7 @@ class BaseController {
                 const rem = c%pagination.pageLength;
                 const tp = (((c - rem) / pagination.pageLength))+(rem?1:0);
 
-                this.model.find(filter).sort('created_at').skip(offset).limit(limit).then(records=>{
+                this.model.find(filter).sort(this.defaultSort).skip(offset).limit(limit).then(records=>{
                     resolve({items:records,paginationInfo:{pageNo:pagination.pageNo,pageLength:pagination.pageLength,totalCount:c,totalPages:tp}});
                 }).catch(reject)
 
