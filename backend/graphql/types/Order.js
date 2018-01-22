@@ -56,7 +56,7 @@ const OrderType = new GraphQL.GraphQLObjectType({
             }
         },
         
-        price: {
+        total_price: {
             type: GraphQLInt,
             description: 'order price'
         },
@@ -64,14 +64,6 @@ const OrderType = new GraphQL.GraphQLObjectType({
         count: {
             type: GraphQLInt,
             description: 'unit count',
-        },
-
-        total_price: {
-            type: GraphQLInt,
-            description: 'total price = unit price * unit count',
-            resolve(parent) {
-                return parent.price * parent.count;
-            }
         },
 
         customer_name: {

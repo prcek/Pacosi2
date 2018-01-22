@@ -28,7 +28,7 @@ class OrderMutation extends BaseMutation {
                 type: new GraphQLNonNull(GraphQLID),
                 description: 'Enter order user id, Cannot be left empty',
             },
-            price: {
+            total_price: {
                 type: new GraphQLNonNull(GraphQLInt),
                 description: 'Enter order price, Cannot be left empty',
             },
@@ -37,7 +37,7 @@ class OrderMutation extends BaseMutation {
                 description: 'Enter order items count, Cannot be left empty',
             },
 
-            custumer_name: {
+            customer_name: {
                 type: GraphQLString,
                 description: 'Enter order customer name',
             },
@@ -50,23 +50,23 @@ class OrderMutation extends BaseMutation {
                 type: new GraphQLNonNull(GraphQLID),
                 description: 'Enter order item id',
             },
-            order_item: {
-                type: new GraphQLNonNull(GraphQLID),
+            order_item_id: {
+                type: GraphQLID,
                 description: 'Enter order item id, Cannot be left empty',
             },
-            user: {
-                type: new GraphQLNonNull(GraphQLID),
+            user_id: {
+                type: GraphQLID,
                 description: 'Enter order user id, Cannot be left empty',
             },
-            price: {
-                type: new GraphQLNonNull(GraphQLInt),
+            total_price: {
+                type: GraphQLInt,
                 description: 'Enter order price, Cannot be left empty',
             },
             count: {
-                type: new GraphQLNonNull(GraphQLInt),
+                type: GraphQLInt,
                 description: 'Enter order items count, Cannot be left empty',
             },
-            custumer_name: {
+            customer_name: {
                 type: GraphQLString,
                 description: 'Enter order customer name',
             },
