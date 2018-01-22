@@ -45,6 +45,7 @@ const RootQuery = new GraphQLObjectType({
         orders: OrderQuery.index(),
         orders_pages: OrderQuery.index_pages(),
         order: OrderQuery.single(),
+        orderReport: OrderQuery.report(),
         orderItems: OrderItemQuery.index(),
         orderItem: OrderItemQuery.single(),
         clients: ClientQuery.index(),
