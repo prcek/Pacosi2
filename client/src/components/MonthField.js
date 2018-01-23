@@ -7,9 +7,13 @@ import Input, { InputLabel } from 'material-ui/Input';
 import { MenuItem } from 'material-ui/Menu';
 import { FormControl } from 'material-ui/Form';
 import Select from 'material-ui/Select';
-import Moment from 'moment';
 import Lodash from 'lodash';
 
+const Moment = require('moment');
+const MomentRange = require('moment-range');
+const moment = MomentRange.extendMoment(Moment);
+require("moment/min/locales.min");
+moment.locale('cs');
 
 const styles = theme => ({
     root: {
@@ -27,33 +31,25 @@ class MonthField extends React.Component {
 
 
     getMenuItems() {
-        const r = this.props.ranges.map(r=>{
-            var items = []
-            var c = Moment(r.begin);
-            while (c.isBefore(r.end)) {
-                items.push(c.toDate());
-                c.add(this.props.rangeStep,'minutes');
-            }
-           return items;
-        })
-        return Lodash.flatten(r);
+        const months = Lodash.reverse(Array.from(moment.range(this.props.minMonth,this.props.maxMonth).by("month")));
+        return months;
     }
 
 
     renderMenuItems() {
         return this.getMenuItems().map((i,IDX)=>{
             return (
-                <MenuItem key={IDX} value={i.toISOString()}>{Moment(i).format('HH:mm')}</MenuItem>
+                <MenuItem key={IDX} value={i.toISOString()}>{Moment(i).format('MMMM YYYY')}</MenuItem>
             )
         })
     }
-    renderTimeValue = (v) => {
-        return v?Moment(v).format('HH:mm'):""
+    renderMonthValue = (v) => {
+        return v?Moment(v).format('MMMM YYYY'):""
     }
 
     handleChange = (e) => {
        const v = e.target.value;
-       const d = Moment(v).toDate();
+       const d = Moment(v).toISOString();
        this.props.onChange({target:{value:d}}); 
     }
 
@@ -64,10 +60,10 @@ class MonthField extends React.Component {
             <FormControl className={classes.textfield} margin={this.props.margin}>
                 <InputLabel htmlFor={this.props.id}>{this.props.label}</InputLabel>
                 <Select
-                    value={Moment(this.props.value).toISOString()}
+                    value={this.props.value}
                     onChange={this.handleChange}
-                    input={<Input name={this.props.name} id={this.props.id}  />}
-                    renderValue={this.renderTimeValue}
+                    input={<Input name={this.props.name} id={this.props.id} style={{minWidth:150}}  />}
+                    renderValue={this.renderMonthValue}
                 >
                 {mi}
                 </Select>
@@ -79,22 +75,22 @@ class MonthField extends React.Component {
 
 MonthField.propTypes = {
     classes: PropTypes.object.isRequired,
-    value: PropTypes.objectOf(Moment),
+    value: PropTypes.string,
     onChange: PropTypes.func,
     autoFocus: PropTypes.bool,
     margin: PropTypes.string,
     label: PropTypes.string,
     id: PropTypes.string,
     name: PropTypes.string,
-    ranges: PropTypes.arrayOf(PropTypes.shape({begin:PropTypes.objectOf(Date),end:PropTypes.objectOf(Date)})),
-    rangeStep: PropTypes.number
+    minMonth: PropTypes.objectOf(Moment),
+    maxMonth: PropTypes.objectOf(Moment)
 };
   
 MonthField.defaultProps = {
     autoFocus: false,
     name: "month",
-    rangeStep: 30,
-    ranges:[]
+    minMonth: moment().startOf('year').subtract(2,"years"),
+    maxMonth: moment().startOf('month').add(2,"months")
 }
 
 
