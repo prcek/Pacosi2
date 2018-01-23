@@ -13,7 +13,7 @@ import Lodash from 'lodash';
 
 const styles = theme => ({
     root: {
-      marginTop: theme.spacing.unit * 3,
+      //marginTop: theme.spacing.unit * 3,
       width: '100%',
     },
     textfield: {
@@ -66,7 +66,7 @@ class MonthField extends React.Component {
                 <Select
                     value={Moment(this.props.value).toISOString()}
                     onChange={this.handleChange}
-                    input={<Input name={this.props.name} id={this.props.id}  style={{minWidth:50}}/>}
+                    input={<Input name={this.props.name} id={this.props.id}  />}
                     renderValue={this.renderTimeValue}
                 >
                 {mi}
