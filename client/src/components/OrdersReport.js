@@ -90,7 +90,7 @@ class OrdersReport extends React.Component {
             <MonthField 
                 error={this.state.filter_err.month}
                 id="month"
-                label="Mesic"
+                label="Měsíc"
                 value={null2empty(this.state.filter.month)}
                 onChange={(e)=>this.handleFilterChange("month",empty2null(e.target.value))}
             />
