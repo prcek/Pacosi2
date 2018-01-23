@@ -2,12 +2,9 @@ import React from 'react';
 import { withStyles } from 'material-ui/styles';
 import Typography from 'material-ui/Typography';
 import { compose } from 'react-apollo'
-import { graphql } from 'react-apollo';
-import gql from 'graphql-tag';
 import MonthField from './MonthField';
 import UserField from './UserField';
-import Button from 'material-ui/Button';
-
+import OrdersReportTable from './OrdersReportTable';
 import Toolbar from 'material-ui/Toolbar';
 
 const styles = theme => ({
@@ -97,9 +94,9 @@ class OrdersReport extends React.Component {
                 value={null2empty(this.state.filter.month)}
                 onChange={(e)=>this.handleFilterChange("month",empty2null(e.target.value))}
             />
-            <Button className={classes.button} raised disabled={(!this.checkFilter()) || (this.state.wait)} onClick={this.handleShowReport} color="primary">Zobrazit</Button>
        
             </Toolbar>
+            {this.checkFilter() && <OrdersReportTable user_id={this.state.filter.user_id} month={this.state.filter.month} /> }  
             </div>
         )
     }

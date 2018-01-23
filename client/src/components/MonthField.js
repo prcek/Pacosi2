@@ -90,7 +90,7 @@ MonthField.defaultProps = {
     autoFocus: false,
     name: "month",
     minMonth: moment().startOf('year').subtract(2,"years"),
-    maxMonth: moment().startOf('month').add(2,"months")
+    maxMonth: moment().startOf('month')//.add(2,"months")
 }
 
 
