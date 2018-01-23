@@ -1,5 +1,4 @@
 import React, { Component } from 'react';
-import 'typeface-roboto';
 import Typography from 'material-ui/Typography';
 import MenuBar from './MenuBar';
 import { compose } from 'react-apollo'
