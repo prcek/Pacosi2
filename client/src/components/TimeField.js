@@ -64,7 +64,7 @@ class TimeField extends React.Component {
             <FormControl className={classes.textfield} margin={this.props.margin}>
                 <InputLabel htmlFor={this.props.id}>{this.props.label}</InputLabel>
                 <Select
-                    value={Moment(this.props.value).toISOString()}
+                    value={this.props.value.toISOString()}
                     onChange={this.handleChange}
                     input={<Input name={this.props.name} id={this.props.id}  style={{minWidth:50}}/>}
                     renderValue={this.renderTimeValue}
