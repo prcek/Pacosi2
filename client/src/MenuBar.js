@@ -104,10 +104,10 @@ class MenuBar extends React.Component {
         return [];
       }
       const lessons = this.props.locationInfo.locationInfo.lessonTypes.map(lt=> (
-        <Button color="contrast" key={lt.id} component={Link} to={"/lessons/"+lt.id}>{lt.name}</Button>
+        <Button color="contrast" key={lt.id} component={Link} to={"/r/lessons/"+lt.id}>{lt.name}</Button>
       ));
       const massages = this.props.locationInfo.locationInfo.massageRooms.map(mr=> (
-        <Button color="contrast" key={mr.id} component={Link} to={"/massages/"+mr.id}>{mr.name}</Button>
+        <Button color="contrast" key={mr.id} component={Link} to={"/r/massages/"+mr.id}>{mr.name}</Button>
       ));
       return [
         ...lessons,
@@ -132,8 +132,8 @@ class MenuBar extends React.Component {
                 {this.props.locationInfo && this.renderMenu()} 
 
 
-                <Button color="contrast" component={Link} to="/orders">Prodej</Button>
-                <Button color="contrast" component={Link} to="/clients">Klienti</Button>
+                <Button color="contrast" component={Link} to="/r/orders">Prodej</Button>
+                <Button color="contrast" component={Link} to="/r/clients">Klienti</Button>
 
                 <Typography color="inherit" className={classes.flex}>
                 &nbsp;
@@ -167,9 +167,9 @@ class MenuBar extends React.Component {
                   open={openReport}
                   onClose={this.handleReportClose}
                 >
-                  <MenuItem onClick={()=>this.handleReportClickTo('/ordersreport')}>Přehled prodejů</MenuItem>
-                  <MenuItem onClick={()=>this.handleReportClickTo('/massagesreport')}>Přehled masáží</MenuItem>
-                  <MenuItem onClick={()=>this.handleReportClickTo('/lessonsreport')}>Přehled lekcí</MenuItem>
+                  <MenuItem onClick={()=>this.handleReportClickTo('/r/ordersreport')}>Přehled prodejů</MenuItem>
+                  <MenuItem onClick={()=>this.handleReportClickTo('/r/massagesreport')}>Přehled masáží</MenuItem>
+                  <MenuItem onClick={()=>this.handleReportClickTo('/r/lessonsreport')}>Přehled lekcí</MenuItem>
                 </Menu>
 
 
@@ -196,11 +196,11 @@ class MenuBar extends React.Component {
                   open={openCfg}
                   onClose={this.handleCfgClose}
                 >
-                  <MenuItem onClick={()=>this.handleCfgClickTo('/users')}>Uživatelé</MenuItem>
-                  <MenuItem onClick={()=>this.handleCfgClickTo('/orderitems')}>Položky prodeje</MenuItem>
-                  <MenuItem onClick={()=>this.handleCfgClickTo('/lessontypes')}>Typy lekci</MenuItem>
-                  <MenuItem onClick={()=>this.handleCfgClickTo('/massagerooms')}>Masáže</MenuItem>
-                  <MenuItem onClick={()=>this.handleCfgClickTo('/massagetypes')}>Typy masáží</MenuItem>
+                  <MenuItem onClick={()=>this.handleCfgClickTo('/r/users')}>Uživatelé</MenuItem>
+                  <MenuItem onClick={()=>this.handleCfgClickTo('/r/orderitems')}>Položky prodeje</MenuItem>
+                  <MenuItem onClick={()=>this.handleCfgClickTo('/r/lessontypes')}>Typy lekci</MenuItem>
+                  <MenuItem onClick={()=>this.handleCfgClickTo('/r/massagerooms')}>Masáže</MenuItem>
+                  <MenuItem onClick={()=>this.handleCfgClickTo('/r/massagetypes')}>Typy masáží</MenuItem>
                 </Menu>
 
       

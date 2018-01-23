@@ -130,19 +130,19 @@ class App extends Component {
         {! this.props.current_location_id && <SnackbarContent message="není zvolena lokalita"/>}
 
         <Switch>
-          <Route path="/lessons/:id" component={PageLessons}/>
-          <Route path="/massages/:id" component={PageMassages}/>
-          <Route path="/users" component={PageUsers}/>
-          <Route path="/orderitems" component={PageOrderItems}/>
-          <Route path="/lessontypes" component={PageLessonTypes}/>
-          <Route path="/massagerooms" component={PageMassageRooms}/>
-          <Route path="/massagetypes" component={PageMassageTypes}/>
-          <Route path="/clients" component={PageClients}/>
-          <Route path="/orders" component={PageOrders}/>
-          <Route path="/ordersreport" component={PageOrdersReport}/>
-          <Route path="/massagesreport" component={PageMassagesReport}/>
-          <Route path="/lessonsreport" component={PageLessonsReport}/>
-          <Route path="/test" component={PageTest}/>
+          <Route path="/r/lessons/:id" component={PageLessons}/>
+          <Route path="/r/massages/:id" component={PageMassages}/>
+          <Route path="/r/users" component={PageUsers}/>
+          <Route path="/r/orderitems" component={PageOrderItems}/>
+          <Route path="/r/lessontypes" component={PageLessonTypes}/>
+          <Route path="/r/massagerooms" component={PageMassageRooms}/>
+          <Route path="/r/massagetypes" component={PageMassageTypes}/>
+          <Route path="/r/clients" component={PageClients}/>
+          <Route path="/r/orders" component={PageOrders}/>
+          <Route path="/r/ordersreport" component={PageOrdersReport}/>
+          <Route path="/r/massagesreport" component={PageMassagesReport}/>
+          <Route path="/r/lessonsreport" component={PageLessonsReport}/>
+          <Route path="/r/test" component={PageTest}/>
           <Route component={PageNoMatch}/>
         </Switch>
 
