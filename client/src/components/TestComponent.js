@@ -3,6 +3,7 @@ import { withStyles } from 'material-ui/styles';
 import Typography from 'material-ui/Typography';
 import { compose } from 'react-apollo'
 import Calendar from './Calendar';
+import Paper from 'material-ui/Paper';
 
 const styles = theme => ({
     root: {
@@ -11,9 +12,10 @@ const styles = theme => ({
     },
     cal: {
         width: 300,
-        borderStyle: 'solid',
-        borderColor: 'red',
-        borderWidth: 'thin',
+        margin: theme.spacing.unit
+        //borderStyle: 'solid',
+        //borderColor: 'red',
+        //borderWidth: 'thin',
     }
 });
   
@@ -25,9 +27,9 @@ class TestComponent extends React.Component {
         return (
             <div>
             <Typography> I Am TestComponent </Typography>
-            <div className={classes.cal}> 
+            <Paper className={classes.cal}> 
             <Calendar/>
-            </div>
+            </Paper>
             </div>
         )
     }
