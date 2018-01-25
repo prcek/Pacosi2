@@ -10,7 +10,7 @@ import gql from 'graphql-tag';
 import MassageRoomDay from './MassageRoomDay';
 import Switch from 'material-ui/Switch';
 import { FormGroup, FormControlLabel } from 'material-ui/Form';
-import MassageRoomCal2 from './MassageRoomCal2';
+import MassageRoomCal from './MassageRoomCal';
 import Toolbar from 'material-ui/Toolbar/Toolbar';
 
 var moment = require('moment');
@@ -96,7 +96,7 @@ class MassageRoom extends React.Component {
                         <Toolbar classes={{root:classes.toolbar}}> 
                         {this.props.massageroom.massageRoom  && <Typography type={"title"}>{this.props.massageroom.massageRoom.name}</Typography> }
                         </Toolbar>
-                        <MassageRoomCal2 massageRoomId={this.props.massageRoomId} begin={this.state.calendarStartDate} selected={this.state.calendarDay} onSelectDay={this.handleSelectDay} onMove={this.handleCalMove}/>
+                        <MassageRoomCal massageRoomId={this.props.massageRoomId} begin={this.state.calendarStartDate} selected={this.state.calendarDay} onSelectDay={this.handleSelectDay} onMove={this.handleCalMove}/>
                     </Grid>
                     <Grid item xs={12} sm={12} md={8} lg={9}>
                         {this.state.calendarDay && <MassageRoomDay massageRoomId={this.props.massageRoomId} day={this.state.calendarDay} onNew={this.handleNewOrder} onEdit={this.handleEditOrder}/>}

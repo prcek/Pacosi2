@@ -6,11 +6,7 @@ import { graphql } from 'react-apollo';
 import gql from 'graphql-tag';
 
 import Paper from 'material-ui/Paper';
-import Toolbar from 'material-ui/Toolbar';
-import Button from 'material-ui/Button';
-import ForwardIcon from 'material-ui-icons/FastForward';
-import RewindIcon from 'material-ui-icons/FastRewind';
-import {MassageDayCard, MassageDayCardHeader} from './MassageDayCard';
+import Calendar from './Calendar';
 
 var moment = require('moment');
 require("moment/min/locales.min");
@@ -69,78 +65,44 @@ class MassageRoomCal extends React.Component {
     };
 
 
-    renderDayCard(d) {
-        const { classes } = this.props;
-        const s = this.props.selected && moment(d.date).isSame(this.props.selected,'day');
-        var st = 0;
-        //console.log(d.status)
-        switch (d.status) {
-            case 'OFF': st=0; break;
-            case 'FREE': st=1; break;
-            case 'BUSY': st=2; break;
-            default:
-        }
-        return (
-            <MassageDayCard className={classes.daycard} onClick={this.handleSelectDay} status={st} date={d.date} selected={s}/>
-        );
-    }
-    renderWeek(weekNo) {
-        const { classes } = this.props;
+
+
+    getDaysInfo() {
         if (!this.props.massageRoomDayInfos.massageRoomDayInfos) {
-            return null;
+            return [];
         }
-        const d0 = this.props.massageRoomDayInfos.massageRoomDayInfos[weekNo*7+0]
-        const d1 = this.props.massageRoomDayInfos.massageRoomDayInfos[weekNo*7+1]
-        const d2 = this.props.massageRoomDayInfos.massageRoomDayInfos[weekNo*7+2]
-        const d3 = this.props.massageRoomDayInfos.massageRoomDayInfos[weekNo*7+3]
-        const d4 = this.props.massageRoomDayInfos.massageRoomDayInfos[weekNo*7+4]
-        return (
-            <div className={classes.weekline}>
-                {this.renderDayCard(d0)}
-                {this.renderDayCard(d1)}
-                {this.renderDayCard(d2)}
-                {this.renderDayCard(d3)}
-                {this.renderDayCard(d4)}
-            </div>
-        );
+        return this.props.massageRoomDayInfos.massageRoomDayInfos.filter(di=>{
+            return (di.status !=='OFF')
+        }).map(di=>{
+            let st = 0;
+            switch (di.status) {
+                case 'OFF': st=0; break;
+                case 'FREE': st=1; break;
+                case 'BUSY': st=2; break;
+                default:
+            }
+            return {day:moment(di.date),colorIndex:st}
+        })
+        
     }
-
-    renderWeekHeader() {
-        const { classes } = this.props;
-        return (
-            <div className={classes.weekline}>
-               <MassageDayCardHeader label={"Po"}/>
-               <MassageDayCardHeader label={"Út"}/>
-               <MassageDayCardHeader label={"St"}/>
-               <MassageDayCardHeader label={"Čt"}/>
-               <MassageDayCardHeader label={"Pá"}/>
-            </div>
-        );
-    }
-
-
- 
 
 
     render() {
         const { classes } = this.props;
-        const weekH = this.renderWeekHeader();
-        const week1 = this.renderWeek(0);
-        const week2 = this.renderWeek(1);
-        const week3 = this.renderWeek(2);
-        const week4 = this.renderWeek(3);
+        const  daysInfo = this.getDaysInfo();
+        console.log(daysInfo)
         return (
-            <div className={classes.root}>
-                <Toolbar classes={{root:classes.toolbar}} >
-                    <Button color={"primary"} onClick={this.handlePrevWeek}><RewindIcon/></Button>  
-                    <Button color={"primary"} className={classes.flex} onClick={this.handleTodayWeek}>dnes</Button>
-                    <Button color={"primary"} onClick={this.handleNextWeek}><ForwardIcon/></Button>  
-                </Toolbar>
-                <Paper>
-                    {weekH}
-                    {week1} {week2} {week3} {week4}      
-                </Paper>
-            </div>
+            <Paper className={classes.root}>
+                <Calendar 
+                    startDay={moment(this.props.begin)} 
+                    onForward={this.handleNextWeek} 
+                    onBackward={this.handlePrevWeek}
+                    onToday={this.handleTodayWeek}
+                    onSelect={this.handleSelectDay}
+                    daysInfo={daysInfo}
+                    selectedDay={moment(this.props.selected)}
+                />
+            </Paper>
         )
     }
 }
@@ -164,7 +126,7 @@ export default compose(
             variables:{
                 massage_room_id:massageRoomId,
                 begin_date: moment(begin).format('YYYY-MM-DD'),
-                end_date:moment(begin).add(27,'days').format('YYYY-MM-DD')
+                end_date:moment(begin).add(8,'weeks').format('YYYY-MM-DD')
             }
         })
     }),
