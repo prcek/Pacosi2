@@ -5,15 +5,17 @@ import Typography from 'material-ui/Typography';
 import { compose } from 'react-apollo'
 import Grid from 'material-ui/Grid';
 //import MassageRoomCal from './MassageRoomCal';
+import { graphql } from 'react-apollo';
+import gql from 'graphql-tag';
 import MassageRoomDay from './MassageRoomDay';
 import Switch from 'material-ui/Switch';
 import { FormGroup, FormControlLabel } from 'material-ui/Form';
 import MassageRoomCal2 from './MassageRoomCal2';
+import Toolbar from 'material-ui/Toolbar/Toolbar';
 
 var moment = require('moment');
 require("moment/min/locales.min");
 moment.locale('cs');
-
 
 
 
@@ -27,9 +29,25 @@ const styles = theme => ({
     },
     daycard: {
         
-    }
+    },
+    toolbar: {
+        minHeight:50
+    },
+
 });
   
+const CurrentMassageRoom = gql`
+  query MassageRoom($massage_room_id: ID!) {
+    massageRoom(id:$massage_room_id) {
+      id
+      name
+      location_id
+      location {
+          name
+      }
+    }
+  }
+`;
 
 
 class MassageRoom extends React.Component {
@@ -70,12 +88,14 @@ class MassageRoom extends React.Component {
 
     render() {
         const { classes } = this.props;
-      
         return (
             <div className={classes.root}>
 
                 <Grid container>
                     <Grid item xs={12} sm={12} md={4} lg={3}>
+                        <Toolbar classes={{root:classes.toolbar}}> 
+                        {this.props.massageroom.massageRoom  && <Typography type={"title"}>{this.props.massageroom.massageRoom.name}</Typography> }
+                        </Toolbar>
                         <MassageRoomCal2 massageRoomId={this.props.massageRoomId} begin={this.state.calendarStartDate} selected={this.state.calendarDay} onSelectDay={this.handleSelectDay} onMove={this.handleCalMove}/>
                     </Grid>
                     <Grid item xs={12} sm={12} md={8} lg={9}>
@@ -101,5 +121,9 @@ MassageRoom.propTypes = {
   
 
 export default compose(
-    withStyles(styles)
+    withStyles(styles),
+    graphql(CurrentMassageRoom,{
+        name: "massageroom",
+        options: ({massageRoomId})=>({variables:{massage_room_id:massageRoomId}})
+    }),
 )(MassageRoom)

@@ -6,11 +6,6 @@ import { graphql } from 'react-apollo';
 import gql from 'graphql-tag';
 
 import Paper from 'material-ui/Paper';
-import Toolbar from 'material-ui/Toolbar';
-import Button from 'material-ui/Button';
-import ForwardIcon from 'material-ui-icons/FastForward';
-import RewindIcon from 'material-ui-icons/FastRewind';
-import {MassageDayCard, MassageDayCardHeader} from './MassageDayCard';
 import Calendar from './Calendar';
 
 var moment = require('moment');
@@ -69,42 +64,6 @@ class MassageRoomCal extends React.Component {
         this.props.onMove(moment().startOf('week').toDate());
     };
 
-
-    renderDayCard(d) {
-        const { classes } = this.props;
-        const s = this.props.selected && moment(d.date).isSame(this.props.selected,'day');
-        var st = 0;
-        //console.log(d.status)
-        switch (d.status) {
-            case 'OFF': st=0; break;
-            case 'FREE': st=1; break;
-            case 'BUSY': st=2; break;
-            default:
-        }
-        return (
-            <MassageDayCard className={classes.daycard} onClick={this.handleSelectDay} status={st} date={d.date} selected={s}/>
-        );
-    }
-    renderWeek(weekNo) {
-        const { classes } = this.props;
-        if (!this.props.massageRoomDayInfos.massageRoomDayInfos) {
-            return null;
-        }
-        const d0 = this.props.massageRoomDayInfos.massageRoomDayInfos[weekNo*7+0]
-        const d1 = this.props.massageRoomDayInfos.massageRoomDayInfos[weekNo*7+1]
-        const d2 = this.props.massageRoomDayInfos.massageRoomDayInfos[weekNo*7+2]
-        const d3 = this.props.massageRoomDayInfos.massageRoomDayInfos[weekNo*7+3]
-        const d4 = this.props.massageRoomDayInfos.massageRoomDayInfos[weekNo*7+4]
-        return (
-            <div className={classes.weekline}>
-                {this.renderDayCard(d0)}
-                {this.renderDayCard(d1)}
-                {this.renderDayCard(d2)}
-                {this.renderDayCard(d3)}
-                {this.renderDayCard(d4)}
-            </div>
-        );
-    }
 
 
 
