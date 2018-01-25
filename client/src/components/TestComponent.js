@@ -71,6 +71,7 @@ class TestComponent extends React.Component {
                 onSelect={this.handleSelect}
                 daysInfo={this.state.daysInfo}
                 selectedDay={this.state.selectedDay}
+                
             />
             </Paper>
             </div>

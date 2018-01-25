@@ -214,7 +214,7 @@ class Calendar extends React.Component {
         let current = moment(this.props.startDay).startOf('week');
         const dhs=["Po","Út","St","Čt","Pá","So","Ne"].map((n,idx)=>{return this.renderHeader(n,"h"+idx)});
         const rd = [];
-        const rmax = 10;
+        const rmax = this.props.rows;
         for(let r=0; r<rmax; r++ ) {
             const week = this.renderWeek(current,current,"w"+r);
             rd.push(...week);
@@ -268,11 +268,13 @@ Calendar.propTypes = {
     onForward: PropTypes.func,
     onToday: PropTypes.func,
     onSelect: PropTypes.func,
-    daysInfo: PropTypes.array
+    daysInfo: PropTypes.array,
+    rows: PropTypes.number
 };
 
 Calendar.defaultProps = {
-   startDay: moment()
+   startDay: moment(),
+   rows: 8
 }
 
 
