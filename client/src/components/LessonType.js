@@ -6,9 +6,14 @@ import { compose } from 'react-apollo'
 import Calendar from './Calendar';
 import Grid from 'material-ui/Grid';
 import LessonTabs from './LessonTabs';
+import DateTimeView from './DateTimeView';
 import Paper from 'material-ui/Paper';
 import Switch from 'material-ui/Switch';
 import { FormGroup, FormControlLabel } from 'material-ui/Form';
+import Toolbar from 'material-ui/Toolbar/Toolbar';
+import { graphql } from 'react-apollo';
+import gql from 'graphql-tag';
+
 
 var moment = require('moment');
 require("moment/min/locales.min");
@@ -19,10 +24,25 @@ const styles = theme => ({
       marginTop: theme.spacing.unit * 3,
       width: '100%',
     },
+    toolbar: {
+        minHeight:50
+    },
 
 });
   
 
+const CurrentLessonType = gql`
+  query LessonType($lesson_type_id: ID!) {
+    lessonType(id:$lesson_type_id) {
+      id
+      name
+      location_id
+      location {
+          name
+      }
+    }
+  }
+`;
 
 class LessonType extends React.Component {
 
@@ -102,11 +122,17 @@ class LessonType extends React.Component {
             <div className={classes.root}>
             <Grid container>
                 <Grid item xs={12} sm={5} md={4} lg={3}>
+                    <Toolbar classes={{root:classes.toolbar}}> 
+                        {this.props.lessontype.lessonType  && <Typography type={"title"}>{this.props.lessontype.lessonType.name}</Typography> }
+                    </Toolbar>
                     <Paper>
                     {cal}
                     </Paper>
                 </Grid>
                 <Grid item xs={12} sm={7} md={8} lg={9}>
+                <Toolbar classes={{root:classes.toolbar}}> 
+                        {this.state.currentDate  && <Typography type={"title"}><DateTimeView date={this.state.currentDate}/></Typography> }
+                </Toolbar>
                 {lessons}
                 </Grid>
             </Grid>
@@ -129,5 +155,10 @@ LessonType.propTypes = {
   
 
 export default compose(
-    withStyles(styles)
+    withStyles(styles),
+    graphql(CurrentLessonType,{
+        name: "lessontype",
+        options: ({lessonTypeId})=>({variables:{lesson_type_id:lessonTypeId}})
+    }),
+
 )(LessonType)

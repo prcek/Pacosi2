@@ -30,7 +30,7 @@ class DateTimeView extends React.Component {
 
 DateTimeView.propTypes = {
     classes: PropTypes.object.isRequired,
-    date: PropTypes.oneOfType([PropTypes.string,PropTypes.instanceOf(Date)]),
+    date: PropTypes.oneOfType([PropTypes.string,PropTypes.instanceOf(Date),PropTypes.instanceOf(moment)]),
     format: PropTypes.string
 };
   
