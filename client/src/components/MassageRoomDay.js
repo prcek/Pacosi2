@@ -159,6 +159,12 @@ class MassageRoomDay extends React.Component {
  
     renderDayDetail(slots) {
 
+        if (slots.length === 0) {
+            return (
+                <Typography>v tento den není otvírací doba</Typography>
+            )
+        }
+
         const mds = slots.map((s,idx)=>{
             return (
                 <MassageDaySlot key={idx} break={s.break} time={moment(s.date).toDate()} order={s.order} length={s.len} clen={s.clen} onClick={this.handleSlotClick} /> 

@@ -10,6 +10,7 @@ import LessonTab from './LessonTab';
 import LessonTabEdit from './LessonTabEdit';
 import LessonTabAdd from './LessonTabAdd';
 import Paper from 'material-ui/Paper';
+import Typography from 'material-ui/Typography/Typography';
 
 var moment = require('moment');
 require("moment/min/locales.min");
@@ -63,6 +64,12 @@ class LessonTabs extends React.Component {
     }
 
     renderTabs() {
+        if (this.props.lessonsInfo.lessonsInfo.length === 0) {
+            return (
+                <Tab label={"V tento den není žádná lekce"} disabled/>
+            )
+        } 
+
         const tabs = this.props.lessonsInfo.lessonsInfo.map(li=> (
             <Tab key={li.id} value={li.id} label={this.lessonTitle(li)}/>
           ));
