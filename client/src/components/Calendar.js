@@ -127,6 +127,9 @@ class Calendar extends React.Component {
 
 
     getDayColorIndex(day) {
+        if (!this.props.daysInfo) {
+            return null;
+        }
         const di = this.props.daysInfo.find((x)=>{return x.day.isSame(day,'day')});
         if (di) {
             return di.colorIndex;

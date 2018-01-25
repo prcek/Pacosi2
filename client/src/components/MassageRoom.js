@@ -4,10 +4,11 @@ import { withStyles } from 'material-ui/styles';
 import Typography from 'material-ui/Typography';
 import { compose } from 'react-apollo'
 import Grid from 'material-ui/Grid';
-import MassageRoomCal from './MassageRoomCal';
+//import MassageRoomCal from './MassageRoomCal';
 import MassageRoomDay from './MassageRoomDay';
 import Switch from 'material-ui/Switch';
 import { FormGroup, FormControlLabel } from 'material-ui/Form';
+import MassageRoomCal2 from './MassageRoomCal2';
 
 var moment = require('moment');
 require("moment/min/locales.min");
@@ -75,7 +76,7 @@ class MassageRoom extends React.Component {
 
                 <Grid container>
                     <Grid item xs={12} sm={12} md={4} lg={3}>
-                       <MassageRoomCal massageRoomId={this.props.massageRoomId} begin={this.state.calendarStartDate} selected={this.state.calendarDay} onSelectDay={this.handleSelectDay} onMove={this.handleCalMove}/>
+                        <MassageRoomCal2 massageRoomId={this.props.massageRoomId} begin={this.state.calendarStartDate} selected={this.state.calendarDay} onSelectDay={this.handleSelectDay} onMove={this.handleCalMove}/>
                     </Grid>
                     <Grid item xs={12} sm={12} md={8} lg={9}>
                         {this.state.calendarDay && <MassageRoomDay massageRoomId={this.props.massageRoomId} day={this.state.calendarDay} onNew={this.handleNewOrder} onEdit={this.handleEditOrder}/>}
