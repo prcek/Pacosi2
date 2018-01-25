@@ -3,8 +3,7 @@ import PropTypes from 'prop-types';
 import { withStyles } from 'material-ui/styles';
 import Typography from 'material-ui/Typography';
 import { compose } from 'react-apollo'
-import InfiniteCalendar from 'react-infinite-calendar';
-import 'react-infinite-calendar/styles.css';
+import Calendar from './Calendar';
 import Grid from 'material-ui/Grid';
 import LessonTabs from './LessonTabs';
 import Paper from 'material-ui/Paper';
@@ -28,51 +27,52 @@ const styles = theme => ({
 class LessonType extends React.Component {
 
     state = {
-        currentDate:null,
+        day: moment().startOf('week'),
+        currentDate:moment(),
         editMode: false
     }
 
-    calSelected(d) {
-        this.setState({currentDate:d});
+    handleSelect = (day) => {
+        this.setState({currentDate:day});
     }
+
+    handleBackward = () => {
+        this.setState({day:moment(this.state.day).subtract(7,'days')})
+    };
+
+    handleForward = () => {
+        this.setState({day:moment(this.state.day).add(7,'days')})
+    };
+
+    handleToday = () => {
+        this.setState({
+            currentDate:moment(),
+            day:moment().startOf('week')
+        })
+    };
+
+
+
 
     onEditMode(val) {
         this.setState({editMode:val});
     }
 
+
     renderCal() {
+        const { classes } = this.props;
         return (
-            <InfiniteCalendar 
-                selected={null}
-                onSelect={(d)=>this.calSelected(d)}
-                width={"100%"}
-                height={400}
-                autoFocus={false} 
-                displayOptions={{
-                    showHeader: false
-                }}
-                locale={{
-                    locale: require('date-fns/locale/cs'), 
-                    weekStartsOn: 1,
-                    weekdays: ["Ne","Po","Út","St","Čt","Pá","So"],
-                    todayLabel: {
-                        long: "Dnes",
-                        short: "Dnes"
-                    }
-                }}
-                theme={{
-                    todayColor: '#3f51b5',
-                    weekdayColor: '#3f51b5',
-                    selectionColor: '#3f51b5',
-                    floatingNav: {
-                        background: '#3f51b5',
-                        color: '#FFF',
-                        chevron: '#FFF'
-                      }
-                }}
-                
-                />
-        );
+            
+            <Calendar 
+                startDay={this.state.day} 
+                onForward={this.handleForward} 
+                onBackward={this.handleBackward}
+                onToday={this.handleToday}
+                onSelect={this.handleSelect}
+                selectedDay={this.state.currentDate}
+            />
+            
+        )
     }
 
     renderLessons() {

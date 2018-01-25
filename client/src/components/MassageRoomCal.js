@@ -62,6 +62,7 @@ class MassageRoomCal extends React.Component {
     };
     handleTodayWeek = () => {
         this.props.onMove(moment().startOf('week').toDate());
+        this.props.onSelectDay(moment().toDate());
     };
 
 
