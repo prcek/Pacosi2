@@ -5,10 +5,14 @@ import PropTypes from 'prop-types';
 import Typography from 'material-ui/Typography';
 import { compose } from 'react-apollo'
 import classNames from 'classnames'
-import GridList, { GridListTile } from 'material-ui/GridList';
+import GridList /*, { GridListTile }  */ from 'material-ui/GridList';
 import Divider from 'material-ui/Divider';
 import Moment from 'moment';
-import Lodash from 'lodash';
+//import Lodash from 'lodash';
+//import Toolbar from 'material-ui/Toolbar';
+import Button from 'material-ui/Button';
+import ForwardIcon from 'material-ui-icons/FastForward';
+import RewindIcon from 'material-ui-icons/FastRewind';
 
 const MomentRange = require('moment-range');
 const moment = MomentRange.extendMoment(Moment);
@@ -76,6 +80,12 @@ const styles = theme => ({
         borderTopWidth: 1,
 
     },
+
+    header: {
+       // backgroundColor: theme.palette.action.disabledBackground,
+       //color:theme.palette.divider
+    },
+
     disabled: {
         color: theme.palette.action.disabled,
         backgroundColor: theme.palette.action.disabledBackground
@@ -87,9 +97,6 @@ const styles = theme => ({
 
 class Calendar extends React.Component {
 
-    state = {
-        startDay: moment()
-    }
 
     renderDay(x,key) {
         const { classes } = this.props;
@@ -108,14 +115,26 @@ class Calendar extends React.Component {
 
     renderBlank(key) {
         const { classes } = this.props;
-
         return (
             <div className={classes.wrapper} key={key}> 
             <div className={classes.blankCell}></div>
             </div>
         )
-        
     }
+
+    renderHeader(name,key) {
+        const { classes } = this.props;
+        const className = classNames([
+            classes.wrapper,
+            classes.header
+        ]);
+        return (
+            <div className={className} key={key}> 
+            <div className={classes.blankCell}><Typography type="caption" >{name}</Typography></div>
+            </div>
+        )
+    }
+
 
     renderMonth(label,key) {
         const { classes } = this.props;
@@ -146,8 +165,10 @@ class Calendar extends React.Component {
 
     render() {
         
-
-        let current = moment(this.state.startDay).startOf('week');
+        const { classes } = this.props;
+      
+        let current = moment(this.props.startDay).startOf('week');
+        const dhs=["Po","Út","St","Čt","Pá","So","Ne"].map((n,idx)=>{return this.renderHeader(n,"h"+idx)});
         const rd = [];
         const rmax = 10;
         for(let r=0; r<rmax; r++ ) {
@@ -176,8 +197,15 @@ class Calendar extends React.Component {
         
         return (
             <div>
-            <Typography> start day: {this.state.startDay.toISOString()}</Typography>
 
+            <div className={classes.wrapper}>
+                <Button color={"primary"} onClick={this.props.onBackward}><RewindIcon/></Button>  
+                <Button color={"primary"} onClick={this.props.onToday}>dnes</Button>
+                <Button color={"primary"} onClick={this.props.onForward}><ForwardIcon/></Button>  
+            </div>
+            <GridList cellHeight={30} cols={7}>
+            {dhs}
+            </GridList>
             <Divider/>
 
             <GridList cellHeight={40} cols={7}>
@@ -189,12 +217,15 @@ class Calendar extends React.Component {
 }
 
 Calendar.propTypes = {
-    disabled: PropTypes.bool,
+    classes: PropTypes.object.isRequired,
+    startDay: PropTypes.objectOf(moment),
+    onBackward: PropTypes.func,
+    onForward: PropTypes.func,
+    onToday: PropTypes.func,
 };
 
 Calendar.defaultProps = {
-   disabled:false,
-    
+   startDay: moment()
 }
 
 

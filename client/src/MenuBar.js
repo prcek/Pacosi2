@@ -104,10 +104,10 @@ class MenuBar extends React.Component {
         return [];
       }
       const lessons = this.props.locationInfo.locationInfo.lessonTypes.map(lt=> (
-        <Button color="contrast" key={lt.id} component={Link} to={"/r/lessons/"+lt.id}>{lt.name}</Button>
+        <Button color="inherit" key={lt.id} component={Link} to={"/r/lessons/"+lt.id}>{lt.name}</Button>
       ));
       const massages = this.props.locationInfo.locationInfo.massageRooms.map(mr=> (
-        <Button color="contrast" key={mr.id} component={Link} to={"/r/massages/"+mr.id}>{mr.name}</Button>
+        <Button color="inherit" key={mr.id} component={Link} to={"/r/massages/"+mr.id}>{mr.name}</Button>
       ));
       return [
         ...lessons,
@@ -132,8 +132,8 @@ class MenuBar extends React.Component {
                 {this.props.locationInfo && this.renderMenu()} 
 
 
-                <Button color="contrast" component={Link} to="/r/orders">Prodej</Button>
-                <Button color="contrast" component={Link} to="/r/clients">Klienti</Button>
+                <Button color="inherit" component={Link} to="/r/orders">Prodej</Button>
+                <Button color="inherit" component={Link} to="/r/clients">Klienti</Button>
 
                 <Typography color="inherit" className={classes.flex}>
                 &nbsp;
@@ -149,7 +149,7 @@ class MenuBar extends React.Component {
                   aria-owns={openReport ? 'menu-appbar2' : null}
                   aria-haspopup="true"
                   onClick={this.handleReportMenu}
-                  color="contrast"
+                  color="inherit"
                 >
                   <ReceiptIcon />
                 </IconButton>
@@ -178,7 +178,7 @@ class MenuBar extends React.Component {
                   aria-owns={openCfg ? 'menu-appbar' : null}
                   aria-haspopup="true"
                   onClick={this.handleCfgMenu}
-                  color="contrast"
+                  color="inherit"
                 >
                   <SettingsIcon />
                 </IconButton>
