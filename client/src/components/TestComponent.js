@@ -25,7 +25,24 @@ const styles = theme => ({
 class TestComponent extends React.Component {
 
     state = {
-        day: Moment().startOf('week')
+        day: Moment().startOf('week'),
+        daysInfo: [
+            {
+                day:Moment().startOf('week'),
+                colorIndex:0
+            },{
+                day:Moment().startOf('week').add(1,"day"),
+                colorIndex:1
+            },{
+                day:Moment().startOf('week').add(3,"day"),
+                colorIndex:2
+            }
+        ],
+        selectedDay:Moment()
+    }
+
+    handleSelect = (day) => {
+        this.setState({selectedDay:day});
     }
 
     handleBackward = () => {
@@ -51,6 +68,9 @@ class TestComponent extends React.Component {
                 onForward={this.handleForward} 
                 onBackward={this.handleBackward}
                 onToday={this.handleToday}
+                onSelect={this.handleSelect}
+                daysInfo={this.state.daysInfo}
+                selectedDay={this.state.selectedDay}
             />
             </Paper>
             </div>

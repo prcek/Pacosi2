@@ -13,6 +13,7 @@ import Moment from 'moment';
 import Button from 'material-ui/Button';
 import ForwardIcon from 'material-ui-icons/FastForward';
 import RewindIcon from 'material-ui-icons/FastRewind';
+import * as colors from 'material-ui/colors';
 
 const MomentRange = require('moment-range');
 const moment = MomentRange.extendMoment(Moment);
@@ -47,7 +48,7 @@ const styles = theme => ({
         display: "flex",
         justifyContent: "center", /* align horizontal */
         alignItems: "center",
-
+        cursor: "pointer",
         padding:0,
         borderRadius: '50%',
        // borderStyle: 'solid',
@@ -57,7 +58,9 @@ const styles = theme => ({
         boxShadow: theme.shadows[6],
        },
         '&:hover': {
-            backgroundColor: theme.palette.secondary.main,
+            //backgroundColor: theme.palette.primary.main,
+            //color: theme.palette.primary.contrastText,
+            boxShadow: theme.shadows[6],
             // Reset on mouse devices
             //'@media (hover: none)': {
             //    backgroundColor: theme.palette.grey[300],
@@ -86,6 +89,26 @@ const styles = theme => ({
        //color:theme.palette.divider
     },
 
+    selected: {
+        //boxShadow: theme.shadows[6] 
+           backgroundColor: theme.palette.primary.main,
+           color: theme.palette.primary.contrastText,
+         
+    },
+
+    colorClassNone:{
+
+    },
+    colorClass0: {
+        backgroundColor: 'gray'
+    },
+    colorClass1: {
+        backgroundColor: colors['green'][500]
+    },
+    colorClass2: {
+        backgroundColor: colors['red'][500]
+    },
+
     disabled: {
         color: theme.palette.action.disabled,
         backgroundColor: theme.palette.action.disabledBackground
@@ -98,17 +121,38 @@ const styles = theme => ({
 class Calendar extends React.Component {
 
 
+    handleSelect = (day) => {
+        this.props.onSelect(day);
+    }
+
+
+    getDayColorIndex(day) {
+        const di = this.props.daysInfo.find((x)=>{return x.day.isSame(day,'day')});
+        if (di) {
+            return di.colorIndex;
+        }
+        return null;
+    }
+    isSelectedDay(day) {
+        return this.props.selectedDay?day.isSame(this.props.selectedDay,"day"):false;
+    }
+
     renderDay(x,key) {
         const { classes } = this.props;
-
+        const colorIndex = this.getDayColorIndex(x);
+        const selected = this.isSelectedDay(x);
+        const colorClasses = [classes.colorClass0,classes.colorClass1,classes.colorClass2]
+        const colorClass = colorIndex?colorClasses[colorIndex]:classes.colorClassNone;
+      //  console.log(colorIndex)
         const className = classNames([
             classes.dayCell,
-            { [classes.disabled]: false }
+            { [classes.selected]: selected },
+            { [colorClass]: !selected}
         ]);
 
         return (
-            <div className={classes.wrapper} key={key}> 
-            <div className={className}><Typography type="body2">{x}</Typography></div>
+            <div className={classes.wrapper} key={key} onClick={()=>this.handleSelect(x)}> 
+            <div className={className}><Typography type="body2" color="inherit">{x.format("DD")}</Typography></div>
             </div>
         )
     }
@@ -154,7 +198,7 @@ class Calendar extends React.Component {
             return d.isSame(month,"month")?d:null;
         }).map((d,idx)=>{
             if (d) {
-                return this.renderDay(d.format("DD"),key+"d"+idx);
+                return this.renderDay(d,key+"d"+idx);
             } else {
                 return this.renderBlank(key+"d"+idx);
             }
@@ -219,9 +263,12 @@ class Calendar extends React.Component {
 Calendar.propTypes = {
     classes: PropTypes.object.isRequired,
     startDay: PropTypes.objectOf(moment),
+    selectedDay: PropTypes.objectOf(moment),
     onBackward: PropTypes.func,
     onForward: PropTypes.func,
     onToday: PropTypes.func,
+    onSelect: PropTypes.func,
+    daysInfo: PropTypes.array
 };
 
 Calendar.defaultProps = {
