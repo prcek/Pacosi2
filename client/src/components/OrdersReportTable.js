@@ -1,7 +1,7 @@
 import React from 'react';
 import { withStyles } from 'material-ui/styles';
 import PropTypes from 'prop-types';
-import Typography from 'material-ui/Typography';
+//import Typography from 'material-ui/Typography';
 import { compose } from 'react-apollo'
 import { graphql } from 'react-apollo';
 import gql from 'graphql-tag';
@@ -10,9 +10,9 @@ import Paper from 'material-ui/Paper';
 import Table, {
     TableBody,
     TableCell,
-    TableFooter,
+ //   TableFooter,
     TableHead,
-    TablePagination,
+ //   TablePagination,
     TableRow,
 } from 'material-ui/Table'
 
@@ -46,7 +46,7 @@ class OrdersReportTable extends React.Component {
 
 
     renderDocs(docs) {
-        const { classes } = this.props;
+       // const { classes } = this.props;
         return docs.map((doc,idx)=> (
           <TableRow key={idx}>
              <TableCell padding={"dense"}>{doc.user.name}</TableCell>

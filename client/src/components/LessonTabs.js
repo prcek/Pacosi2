@@ -10,7 +10,7 @@ import LessonTab from './LessonTab';
 import LessonTabEdit from './LessonTabEdit';
 import LessonTabAdd from './LessonTabAdd';
 import Paper from 'material-ui/Paper';
-import Typography from 'material-ui/Typography/Typography';
+//import Typography from 'material-ui/Typography/Typography';
 
 var moment = require('moment');
 require("moment/min/locales.min");

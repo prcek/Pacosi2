@@ -80,7 +80,7 @@ class LessonType extends React.Component {
 
 
     renderCal() {
-        const { classes } = this.props;
+       // const { classes } = this.props;
         return (
             
             <Calendar 
