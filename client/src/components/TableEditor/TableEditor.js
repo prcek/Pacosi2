@@ -1,16 +1,20 @@
 import React from 'react';
 //import { withStyles } from 'material-ui/styles';
-//import Typography from 'material-ui/Typography';
+import Typography from 'material-ui/Typography';
 import { compose } from 'react-apollo'
 //import Paper from 'material-ui/Paper';
 //import Moment from 'moment';
 import { SnackbarContent } from 'material-ui/Snackbar';
-
 import DeleteIcon from 'material-ui-icons/Delete';
 import EditIcon from 'material-ui-icons/Edit';
 import AddIcon from 'material-ui-icons/Add';
 import Toolbar from 'material-ui/Toolbar';
 import Button from 'material-ui/Button';
+import IconButton from 'material-ui/IconButton';
+import LeftIcon from 'material-ui-icons/ChevronLeft';
+import RightIcon from 'material-ui-icons/ChevronRight';
+import FirstPageIcon from 'material-ui-icons/FirstPage';
+import LastPageIcon from 'material-ui-icons/LastPage';
 
 import Table, {
     TableBody,
@@ -248,11 +252,12 @@ class TableEditor extends React.Component {
         }
     }
 
-    renderTablePaginator() {
+    renderPaginator() {
         if (this.props.docs.docs_pages) {
             const pi = this.props.docs.docs_pages.paginationInfo;
             return (
                 <TablePagination
+                component="div"
                 count={pi.totalCount}
                 rowsPerPage={pi.pageLength}
                 page={pi.pageNo}
@@ -265,11 +270,60 @@ class TableEditor extends React.Component {
         }
     }
 
+    renderPageInfo = ({ from, to, count }) => `záznamy ${from}-${to} z ${count}` 
+       
+    
+
+    renderMyPaginator() {
+        const { classes } = this.props;
+        if (this.props.docs.docs_pages) {
+            const pi = this.props.docs.docs_pages.paginationInfo;
+            return (
+                <Toolbar>
+                    <Typography type="caption">
+                        {this.renderPageInfo({
+                            from: pi.totalCount === 0 ? 0 : pi.pageNo * pi.pageLength + 1,
+                            to: Math.min(pi.totalCount, (pi.pageNo + 1) * pi.pageLength),
+                            count: pi.totalCount,
+                            current: pi.pageNo,
+                        })}
+                    </Typography>
+                    <IconButton
+                        onClick={(event)=>this.handleChangePage(event, 0)}
+                        disabled={pi.pageNo === 0}
+                    >
+                        <FirstPageIcon/>
+                    </IconButton>
+                    <IconButton
+                        onClick={(event)=>this.handleChangePage(event, pi.pageNo - 1)}
+                        disabled={pi.pageNo === 0}
+                    >
+                        <LeftIcon/>
+                    </IconButton>
+                    <IconButton
+                        onClick={(event)=>this.handleChangePage(event, pi.pageNo + 1)}
+                        disabled={pi.pageNo >= Math.ceil(pi.totalCount / pi.pageLength) - 1}
+                    >
+                        <RightIcon/>
+                    </IconButton>
+                    <IconButton
+                        onClick={(event)=>this.handleChangePage(event, Math.ceil(pi.totalCount / pi.pageLength)-1 )}
+                        disabled={pi.pageNo >= Math.ceil(pi.totalCount / pi.pageLength) - 1}
+                    >
+                        <LastPageIcon/>
+                    </IconButton>
+
+                </Toolbar>
+            )
+        }else {
+            return null;
+        }
+    }
+
     renderTable() {
         const { classes } = this.props;
         const headrow = this.renderTableHeadRow();
         const rows = this.renderTableBodyRows();
-        const paginator = this.renderTablePaginator();
         return (
             <Table className={classes.table}>
                 <TableHead>
@@ -278,12 +332,7 @@ class TableEditor extends React.Component {
                 <TableBody>
                     {rows}
                 </TableBody>
-                <TableFooter>
-                    <TableRow>
-                        {paginator}
-                    </TableRow>
-                </TableFooter>
-            </Table>
+               </Table>
 
         )
     }
@@ -291,10 +340,16 @@ class TableEditor extends React.Component {
         const { classes } = this.props;
         const dialogDel = this.renderAskDialog();
         const dialogEdit = this.renderEditDialog();
+        const paginator = null;//this.renderPaginator();
+        const myPaginator = this.renderMyPaginator();
         return (
             <div className={classes.root}>
             {dialogDel} {dialogEdit}
+            <Toolbar>
             <Button raised style={{minWidth:"38px"}} onClick={()=>this.onOpenAddDialog()}> <AddIcon/>  </Button>
+            {paginator}
+            {myPaginator}
+            </Toolbar>
             {this.renderTable()}
             </div>
         )

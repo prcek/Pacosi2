@@ -19,8 +19,7 @@ const TestComponentBaseStyles = theme => ({
     },
     textfield: {
         margin: theme.spacing.unit
-    }
-
+    },
 });
   
 export default TestComponentBaseStyles;
