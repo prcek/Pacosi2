@@ -70,10 +70,6 @@ const HideOrderItem = gql`
 
 
 class OrderItems extends TableEditor {
-    constructor() {
-        super();
-        this.pager=false;
-    }
 
     renderAskDialogTitle(doc) {
         return "Opravdu smazat položku prodeje?";
