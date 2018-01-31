@@ -208,8 +208,8 @@ class TableEditor extends React.Component {
 
     renderAskDialog() {
         //const { classes } = this.props;
-        const dt = this.renderAskDialogTitle(this.state.doc);
-        const dc = this.renderAskDialogContent(this.state.doc);
+        const dt = this.state.doc.id?this.renderAskDialogTitle(this.state.doc):"";
+        const dc = this.state.doc.id?this.renderAskDialogContent(this.state.doc):"";
         return (
             <Dialog open={this.state.delAsk} onClose={this.handleCancelDelDialog}  aria-labelledby="del-dialog-title">
                 <DialogTitle id="del-dialog-title">{dt}</DialogTitle>
