@@ -1,63 +1,39 @@
 import React from 'react';
-import PropTypes from 'prop-types';
 import { withStyles } from 'material-ui/styles';
-import Typography from 'material-ui/Typography';
 import { compose } from 'react-apollo'
 import { graphql } from 'react-apollo';
 import gql from 'graphql-tag';
-import DeleteIcon from 'material-ui-icons/Delete';
-import EditIcon from 'material-ui-icons/Edit';
-import AddIcon from 'material-ui-icons/Add';
-import Toolbar from 'material-ui/Toolbar';
-import Button from 'material-ui/Button';
 import TextField from 'material-ui/TextField';
-import { SnackbarContent } from 'material-ui/Snackbar';
 import StatusView from './StatusView';
 import LocationField from './LocationField';
 import StatusField from './StatusField';
 
-import Dialog, {
-    DialogActions,
-    DialogContent,
-    DialogContentText,
-    DialogTitle,
-} from 'material-ui/Dialog';
-
-
-import Table, {
-    TableBody,
+import TableEditor, { TableEditorStyles, JoinStyles } from './TableEditor';
+import  {
     TableCell,
-    TableHead,
     TableRow,
 } from 'material-ui/Table'
 
 
-const styles = theme => ({
-    root: {
-      marginTop: theme.spacing.unit * 3,
-      width: '100%',
-    },
-    table: {
-        minWidth: 800,
-    },
-    tableWrapper: {
-        overflowX: 'auto',
-    },
-    toolbar: {
-        minHeight:0
-    },
-    form: {
-        display: 'flex',
-        flexWrap: 'wrap',
-    },
-    textfield: {
-        margin: theme.spacing.unit
+
+const LocalStyles = (theme) => ({
+    xbase: {
+        width: 300,
+        margin: theme.spacing.unit,
+        borderStyle: 'solid',
+        borderColor: 'green',
+        borderWidth: 'thin',
     }
 });
-  
+   
+
+
+const styles = JoinStyles([TableEditorStyles,LocalStyles]);
+
+
 const CurrentLessonTypes = gql`
   query LessonTypes {
-    lessonTypes {
+    docs: lessonTypes {
       id
       name
       status
@@ -72,7 +48,7 @@ const CurrentLessonTypes = gql`
 
 const UpdateLessonType = gql`
     mutation UpdateLessonType($id: ID!, $name: String!, $status: Status, $location_id:ID) {
-        updateLessonType(id:$id,name:$name,status:$status,location_id:$location_id) {
+        update_doc: updateLessonType(id:$id,name:$name,status:$status,location_id:$location_id) {
             id
         }
     }
@@ -80,7 +56,7 @@ const UpdateLessonType = gql`
 
 const AddLessonType = gql`
     mutation AddLessonType($name: String!, $status: Status!, $location_id:ID!) {
-        addLessonType(name:$name,status:$status,location_id:$location_id) {
+        add_doc: addLessonType(name:$name,status:$status,location_id:$location_id) {
             id
         }
     }
@@ -89,286 +65,152 @@ const AddLessonType = gql`
 
 const HideLessonType = gql`
     mutation HideLessonType($id: ID!) {
-        hideLessonType(id:$id) {
+        remove_doc: hideLessonType(id:$id) {
             id
         }
     }
 `;
 
-function null2empty(v) {
-    if ((v === null) || (v === undefined)) {return ""}
-    return v;
-}
-function empty2null(v) {
-    if (v === "") { return null} 
-    return v;
-}
 
 
-class LessonTypes extends React.Component {
-
-    state = {
-        editOpen:false,
-        addOpen:false,
-        delOpen:false,
-        doc: {},
-        doc_err: {},
-        doc_error_msg:null
-    }
-
-    handleCancelDialog = () => {
-        this.setState({ editOpen: false, addOpen:false, doc:{},doc_err:{} });
-    };
-
-    handleCancelDelDialog = () => {
-        this.setState({ delOpen: false, doc:{},doc_err:{} });
-    };
-    
-    handleCancelOkDialog = () => {
-        const {doc} = this.state;
-        this.setState({doc_error_msg:null});
-        this.props.hideDoc({
-            variables: {
-                id:doc.id,
-            }
-        }).then(r=>{
-            this.setState({ delOpen: false, doc:{},doc_err:{} });
-        }).catch(e=>{
-            console.error(e);
-            this.setState({ doc_error_msg:"Chyba mazání: "+e})
-        })     
-       
-    };
-    
-
-    handleSaveAndCloseDialog = () => {
-        const {doc} = this.state;
-        this.setState({doc_error_msg:null});
-        if (doc.id) {
-            this.props.updateDoc({
-                variables: {
-                    id:doc.id,
-                    name:doc.name,
-                    status:doc.status,
-                    location_id: doc.location_id
-                },
-            }).then(r=>{
-                console.log(r);
-                this.setState({ editOpen: false, addOpen:false });
-            }).catch(e=>{
-                console.error(e);
-                this.setState({ doc_error_msg:"Chyba ukládání: "+e})
-            })
-        } else {
-            this.props.addDoc({
-                variables: {
-                    name:doc.name,
-                    status:doc.status,
-                    location_id: doc.location_id
-                },
-            }).then(r=>{
-                console.log(r);
-                this.setState({ editOpen: false, addOpen:false });
-            }).catch(e=>{
-                console.error(e);
-                this.setState({ doc_error_msg:"Chyba ukládání: "+e})
-            })
-        }
 
 
-      
-    };
-
-    onOpenEditDialog(doc) {
-        const cl = {
-            id: doc.id,
-            name:doc.name,
-            status:doc.status,
-            location_id:doc.location_id
-        };
-      
-        this.setState({editOpen:true,addOpen:false,doc:cl,doc_error_msg:null})
-    }
-
-    onOpenDeleteDialog(doc) {
-        const cl = {
-            id: doc.id,
-            name:doc.name,
-            status:doc.status,
-            location_id:doc.location_id
-        };
-      
-        this.setState({editOpen:false,addOpen:false,delOpen:true,doc:cl,doc_error_msg:null})
-    }
+class LessonTypes extends TableEditor {
  
-    onOpenAddDialog() {
-        this.setState({addOpen:true,editOpen:false,doc:{status:"ACTIVE"},doc_error_msg:null})
+    renderAskDialogTitle(doc) {
+        return "Opravdu smazat typ lekce?";
     }
 
-    checkDocField(name,value) {
-        switch(name) {
-        case 'name': return ((value!==null) && (value!==undefined));
-        case 'status': return ((value!==null) && (value!==undefined));
-        case 'location_id': return ((value!==null) && (value!==undefined));
-        default: return true;
+    renderAskDialogContent(doc) {
+        return (
+            <div>
+            Typ lekce {doc.name} bude odstranen
+            </div>
+        )
+    }
+    renderEditDialogTitle(doc,addMode) {
+        if (addMode) {
+            return "Přidání typu lekce"
+        } else {
+            return "Editace typu lekce"
         }
     }
 
-    checkDoc() {
-        return this.checkDocField('name',this.state.doc.name) && this.checkDocField('status',this.state.doc.status) && this.checkDocField('location_id',this.state.doc.location_id)
+    renderEditDialogContentText(doc,addMode) {
+        if (addMode) {
+            return "Nový typ lekce, musí byt vyplňen stav, název a lokalita."
+        } else {
+            return "Úprava typu lekce, musí byt vyplňen stav, název a lokalita."
+        }  
+       
     }
 
-    handleDocChange(name,value){
-        let { doc,  doc_err } = this.state;
-        doc[name]=value;
-        doc_err[name]=!this.checkDocField(name,value);
-        this.setState({
-          doc:doc,
-          doc_err:doc_err
-        });
-    }
-
-
-
-    renderAskDialog() {
-        //const { classes } = this.props;
-        return (
-            <Dialog open={this.state.delOpen} onClose={this.handleCancelDelDialog}  aria-labelledby="del-dialog-title">
-                <DialogTitle id="del-dialog-title">Opravdu smazat typ lekce z evidence?</DialogTitle>
-                <DialogContent>
-                    Typ lekce {this.state.doc.name} bude odstraněn
-                </DialogContent>
-                <DialogActions>
-                    <Button onClick={this.handleCancelDelDialog} color="primary">
-                    Nemazat
-                    </Button>
-                    <Button  onClick={this.handleCancelOkDialog} color="primary">
-                    Opravdu smazat
-                    </Button>
-                </DialogActions>
-            </Dialog>
-        );
-    }
-
-    renderDialog() {
+    renderEditDialogContent(doc,err,addMode) {
         const { classes } = this.props;
-        const dialogCaption = this.state.addOpen?"Přidání nového typu lekce":"Editace typu lekce";
-        const dialogDesc = this.state.addOpen?"Nový typ lekce":"Úprava typu lekce";
         return (
-        <Dialog
-            open={this.state.editOpen || this.state.addOpen}
-            onClose={this.handleCancelDialog}
-            aria-labelledby="form-dialog-title"
-            >
-            <DialogTitle id="form-dialog-title">{dialogCaption}</DialogTitle>
-            <DialogContent>
-                <DialogContentText>
-                {dialogDesc}, musí byt vyplňen alespoň název a lokalita
-                </DialogContentText>
-                <form className={classes.form}  noValidate autoComplete="off">
-                    
+            <form className={classes.form}  noValidate autoComplete="off">  
 
-                    <StatusField
+                    <StatusField 
+                        error={err.status}
                         margin="dense"
-                        id="lt_status-simple"
-                        name="status"
+                        id="status"
                         label="Stav"
-                        value={this.state.doc.status?this.state.doc.status:""}
-                        onChange={(e)=>this.handleDocChange("status",empty2null(e.target.value))}
+                        value={TableEditor.null2empty(doc.status)}
+                        onChange={(e)=>this.handleDocChange("status",TableEditor.empty2null(e.target.value))}
                     />
 
 
                     <TextField className={classes.textfield}
                         autoFocus
+                        error={err.name}
                         margin="dense"
-                        id="lt_name"
+                        id="name"
                         label="Název"
                         type="text"
-                        value={null2empty(this.state.doc.name)}
-                        onChange={(e)=>this.handleDocChange("name",empty2null(e.target.value))}
+                        value={TableEditor.null2empty(doc.name)}
+                        onChange={(e)=>this.handleDocChange("name",TableEditor.empty2null(e.target.value))}
                     />
 
+              
                     <LocationField
                         margin="dense"
                         id="lt_location-simple"
                         name="location"
                         label="Lokalita"
-                        value={this.state.doc.location_id?this.state.doc.location_id:""}
-                        onChange={(e)=>this.handleDocChange("location_id",empty2null(e.target.value))}
+                        value={TableEditor.null2empty(doc.location_id)}
+                        onChange={(e)=>this.handleDocChange("location_id",TableEditor.empty2null(e.target.value))}
                     />
            
-
-                </form>
-                {this.state.doc_error_msg && <SnackbarContent message={this.state.doc_error_msg}/>}
-            </DialogContent>
-            <DialogActions>
-                <Button onClick={this.handleCancelDialog} color="primary">
-                Neukládat
-                </Button>
-                <Button disabled={!this.checkDoc()} onClick={this.handleSaveAndCloseDialog} color="primary">
-                Uložit
-                </Button>
-            </DialogActions>
-
-        </Dialog>
-        );
-    }
-    
-
-    renderDocs(docs) {
-        const { classes } = this.props;
-        return docs.map(doc=> (
-          <TableRow key={doc.id}>
-             <TableCell padding={"dense"} style={{width:"0px"}}><StatusView status={doc.status}/></TableCell>
-             <TableCell padding={"dense"}>{doc.name}</TableCell>
-             <TableCell padding={"dense"}>{doc.location.name}</TableCell>
-             <TableCell padding={"dense"} classes={{root:classes.cell}}>
-                <Toolbar disableGutters={true} classes={{root:classes.toolbar}} >
-                    <Button raised style={{minWidth:"38px"}} onClick={()=>this.onOpenEditDialog(doc)}> <EditIcon/>  </Button>
-                    <Button raised style={{minWidth:"38px"}} onClick={()=>this.onOpenDeleteDialog(doc)}> <DeleteIcon/>  </Button>
-                </Toolbar>
-            </TableCell>
-
-          </TableRow>
-        ));
-    }
-
-    render() {
-        const { classes } = this.props;
-        const rows = !this.props.docs.lessonTypes ?[]:this.renderDocs(this.props.docs.lessonTypes);
-        const dialog = this.renderDialog();
-        const dialogDel = this.renderAskDialog();
-        return (
-            <div>
-                {dialog} {dialogDel}
-
-                <Typography> I Am LessonTypes page </Typography>
-
-                <Button raised style={{minWidth:"38px"}} onClick={()=>this.onOpenAddDialog()}> <AddIcon/>  </Button>
-                <Table className={classes.table}>
-                    <TableHead>
-                        <TableRow>
-                            <TableCell padding={"dense"} style={{width:"0px"}}>Stav</TableCell>
-                            <TableCell padding={"dense"}>Název</TableCell>
-                            <TableCell padding={"dense"}>Lokalita</TableCell>
-                            <TableCell padding={"dense"}></TableCell>
-                        </TableRow>
-                    </TableHead>
-                    <TableBody>
-                        {rows}
-                    </TableBody>
-                </Table>
-
-            </div>
+             
+            </form>
+   
         )
     }
+
+    checkDocField(name,value) {
+        switch(name) {
+            case 'name': return ((value!==null) && (value!==undefined));
+            case 'status': return ((value!==null) && (value!==undefined));
+            case 'location_id': return ((value!==null) && (value!==undefined));
+            default: return true;
+            }
+        }
+
+    checkDoc(doc) {
+        return this.checkDocField('name',doc.name) && 
+            this.checkDocField('status',doc.status)  &&
+            this.checkDocField('location_id',doc.location_id)
+    }
+
+
+    newDocTemplate() {
+        return {status:"ACTIVE"}
+    }
+
+    renderTableHeadRow() {
+        return (
+            <TableRow>
+                <TableCell padding={"dense"} style={{width:"0px"}}>Stav</TableCell>
+                <TableCell padding={"dense"}>Název</TableCell>
+                <TableCell padding={"dense"}>Lokalita</TableCell>
+                <TableCell padding={"dense"}></TableCell>
+            </TableRow>
+        )
+    }
+
+    renderTableBodyRow(doc,idx) {
+        const { classes } = this.props;
+        const toolbar = this.renderTableBodyRowToolbar(doc,idx);
+        return (
+
+            <TableRow key={doc.id}>
+            <TableCell padding={"dense"} style={{width:"0px"}}><StatusView status={doc.status}/></TableCell>
+            <TableCell padding={"dense"}>{doc.name}</TableCell>
+            <TableCell padding={"dense"}>{doc.location.name}</TableCell>
+            <TableCell padding={"dense"} classes={{root:classes.cell}}>
+                {toolbar}
+            </TableCell>
+            </TableRow>
+
+         
+        )
+    }
+
+    renderTableBodyLoadingRow() {
+        return (
+            <TableRow><TableCell> loading </TableCell></TableRow>
+        )
+    }
+
+
+    renderHeaderLabel() {
+        return "Typy lekcí"
+    }
+  
 }
 
 
-LessonTypes.propTypes = {
-    classes: PropTypes.object.isRequired,
-};
-  
+
 
 export default compose(
     withStyles(styles),
@@ -379,23 +221,24 @@ export default compose(
         name:"updateDoc",
         options: {
             refetchQueries: [
-                'LessonTypes','LocationInfo'
+                'LessonTypes',
               ],
         }
     }),
+
     graphql(AddLessonType,{
         name:"addDoc",
         options: {
             refetchQueries: [
-                'LessonTypes','LocationInfo'
+                'LessonTypes',
               ],
         }
     }),
     graphql(HideLessonType,{
-        name:"hideDoc",
+        name:"removeDoc",
         options: {
             refetchQueries: [
-                'LessonTypes','LocationInfo'
+                'LessonTypes',
               ],
         }
     }),

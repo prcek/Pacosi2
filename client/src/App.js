@@ -49,7 +49,6 @@ const PageOrderItems = ({ match }) => (
 )
 const PageLessonTypes = ({ match }) => (
   <div>
-    <h3>LessonTypes</h3>
     <LessonTypes />
   </div>
 )

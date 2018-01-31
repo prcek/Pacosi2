@@ -198,7 +198,7 @@ class MenuBar extends React.Component {
                 >
                   <MenuItem onClick={()=>this.handleCfgClickTo('/r/users')}>Uživatelé</MenuItem>
                   <MenuItem onClick={()=>this.handleCfgClickTo('/r/orderitems')}>Položky prodeje</MenuItem>
-                  <MenuItem onClick={()=>this.handleCfgClickTo('/r/lessontypes')}>Typy lekci</MenuItem>
+                  <MenuItem onClick={()=>this.handleCfgClickTo('/r/lessontypes')}>Typy lekcí</MenuItem>
                   <MenuItem onClick={()=>this.handleCfgClickTo('/r/massagerooms')}>Masáže</MenuItem>
                   <MenuItem onClick={()=>this.handleCfgClickTo('/r/massagetypes')}>Typy masáží</MenuItem>
                 </Menu>
