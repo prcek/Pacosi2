@@ -8,6 +8,8 @@ import Moment from 'moment';*/
 const TestComponentBaseStyles = theme => ({
     root: {
       marginTop: theme.spacing.unit * 3,
+      paddingLeft: theme.spacing.unit * 3,
+      paddingRight: theme.spacing.unit * 3,
       width: '100%',
     },
 
@@ -19,6 +21,29 @@ const TestComponentBaseStyles = theme => ({
     },
     textfield: {
         margin: theme.spacing.unit
+    },
+    input: {
+        fontSize: 'inherit',
+        flexShrink: 0,
+    },
+    button: {
+        marginLeft: theme.spacing.unit,
+        marginRight: theme.spacing.unit * 2,
+    },
+    selectRoot: {
+        marginRight: theme.spacing.unit * 4,
+        marginLeft: theme.spacing.unit,
+        color: theme.palette.text.secondary,
+    },
+    select: {
+        paddingLeft: theme.spacing.unit,
+        paddingRight: theme.spacing.unit * 2,
+    },
+    selectIcon: {
+        top: 1,
+    },
+    spacer: {
+        flex: '1',
     },
 });
   

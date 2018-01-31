@@ -2,7 +2,7 @@ import React from 'react';
 //import { withStyles } from 'material-ui/styles';
 import Typography from 'material-ui/Typography';
 import { compose } from 'react-apollo'
-//import Paper from 'material-ui/Paper';
+import Paper from 'material-ui/Paper';
 //import Moment from 'moment';
 import { SnackbarContent } from 'material-ui/Snackbar';
 import DeleteIcon from 'material-ui-icons/Delete';
@@ -16,13 +16,20 @@ import RightIcon from 'material-ui-icons/ChevronRight';
 import FirstPageIcon from 'material-ui-icons/FirstPage';
 import LastPageIcon from 'material-ui-icons/LastPage';
 
+import Input from 'material-ui/Input';
+import { MenuItem } from 'material-ui/Menu';
+import Select from 'material-ui/Select';
+
+
+
+
 import Table, {
     TableBody,
   //  TableCell,
-    TableFooter,
+ //   TableFooter,
     TableHead,
-    TablePagination,
-    TableRow,
+//    TablePagination,
+//    TableRow,
 } from 'material-ui/Table'
 
 import Dialog, {
@@ -252,34 +259,54 @@ class TableEditor extends React.Component {
         }
     }
 
-    renderPaginator() {
-        if (this.props.docs.docs_pages) {
-            const pi = this.props.docs.docs_pages.paginationInfo;
-            return (
-                <TablePagination
-                component="div"
-                count={pi.totalCount}
-                rowsPerPage={pi.pageLength}
-                page={pi.pageNo}
-                onChangePage={this.handleChangePage}
-                onChangeRowsPerPage={this.handleChangeRowsPerPage}
-                /> 
-            )
-        }else {
-            return null;
-        }
-    }
 
     renderPageInfo = ({ from, to, count }) => `záznamy ${from}-${to} z ${count}` 
        
-    
+    renderHeaderLabel() {
+        return "no label";
+    }
 
-    renderMyPaginator() {
+    renderHeader() {
         const { classes } = this.props;
         if (this.props.docs.docs_pages) {
             const pi = this.props.docs.docs_pages.paginationInfo;
             return (
                 <Toolbar>
+                    <Typography type="title">
+                        {this.renderHeaderLabel()}
+                    </Typography>
+                    <Button raised className={classes.button} style={{minWidth:"38px"}} onClick={()=>this.onOpenAddDialog()}> <AddIcon/>  </Button>
+                    <div className={classes.spacer} />
+                    <Typography type="caption">
+                        Délka stránky:
+                        <Select
+                            classes={{
+                                root: classes.selectRoot,
+                                select: classes.select,
+                                icon: classes.selectIcon,
+                            }}
+                            input={
+                                <Input
+                                classes={{
+                                    root: classes.input,
+                                }}
+                                disableUnderline
+                                />
+                            }
+                            value={pi.pageLength}
+                            onChange={(event)=>this.props.onSelectPageLength(event.target.value)}
+                        >
+                            <MenuItem key={5} value={5}>
+                                {5}
+                            </MenuItem>
+                            <MenuItem key={10} value={10}>
+                                {10}
+                            </MenuItem>
+                            <MenuItem key={25} value={25}>
+                                {25}
+                            </MenuItem>
+                        </Select>
+                        </Typography>
                     <Typography type="caption">
                         {this.renderPageInfo({
                             from: pi.totalCount === 0 ? 0 : pi.pageNo * pi.pageLength + 1,
@@ -340,17 +367,14 @@ class TableEditor extends React.Component {
         const { classes } = this.props;
         const dialogDel = this.renderAskDialog();
         const dialogEdit = this.renderEditDialog();
-        const paginator = null;//this.renderPaginator();
-        const myPaginator = this.renderMyPaginator();
+        const header = this.renderHeader();
         return (
             <div className={classes.root}>
             {dialogDel} {dialogEdit}
-            <Toolbar>
-            <Button raised style={{minWidth:"38px"}} onClick={()=>this.onOpenAddDialog()}> <AddIcon/>  </Button>
-            {paginator}
-            {myPaginator}
-            </Toolbar>
+            {header}
+            <Paper>
             {this.renderTable()}
+            </Paper>
             </div>
         )
     }

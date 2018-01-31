@@ -225,7 +225,12 @@ class TestComponent extends TableEditor {
             <TableRow><TableCell> loading </TableCell></TableRow>
         )
     }
- 
+
+
+    renderHeaderLabel() {
+        return "Evidence klientů"
+    }
+  
 }
 
 
