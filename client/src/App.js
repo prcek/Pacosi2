@@ -37,7 +37,6 @@ const PageMassages = ({ match }) => (
 
 const PageUsers = ({ match }) => (
   <div>
-    <h3>Users</h3>
     <Users />
   </div>
 )
