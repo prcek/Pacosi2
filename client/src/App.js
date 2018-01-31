@@ -71,7 +71,6 @@ const PageMassageTypes = ({ match }) => (
 
 const PageClients = ({ match }) => (
   <div>
-    <h3>Clients</h3>
     <Clients />
   </div>
 )
