@@ -4,7 +4,7 @@ import App from './App';
 import registerServiceWorker from './registerServiceWorker';
 import { BrowserRouter } from 'react-router-dom';
 
-import { createStore } from 'redux';
+import { applyMiddleware, createStore } from 'redux';
 import { Provider } from 'react-redux';
 import reducer from './reducers';
 import { persistStore, persistReducer } from 'redux-persist';
@@ -15,6 +15,11 @@ import { ApolloProvider } from 'react-apollo';
 import { ApolloClient } from 'apollo-client';
 import { HttpLink } from 'apollo-link-http';
 import { InMemoryCache } from 'apollo-cache-inmemory';
+
+
+import LogRocket from 'logrocket';
+LogRocket.init('evmn92/pacosi');
+
 
 const client = new ApolloClient({
   // By default, this client will send queries to the
@@ -41,7 +46,8 @@ const psconfig = {
 const preducer = persistReducer(psconfig, reducer)
 
 const store = createStore(preducer,
-    window.__REDUX_DEVTOOLS_EXTENSION__ && window.__REDUX_DEVTOOLS_EXTENSION__()
+    window.__REDUX_DEVTOOLS_EXTENSION__ && window.__REDUX_DEVTOOLS_EXTENSION__(),
+    applyMiddleware( LogRocket.reduxMiddleware()),
 );
 
 let persistor = persistStore(store);
