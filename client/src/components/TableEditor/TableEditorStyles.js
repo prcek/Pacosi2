@@ -45,6 +45,9 @@ const TestComponentBaseStyles = theme => ({
     spacer: {
         flex: '1',
     },
+    pager: {
+        width:"100%",
+    },
 });
   
 export default TestComponentBaseStyles;
