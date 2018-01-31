@@ -1,65 +1,38 @@
 import React from 'react';
-import PropTypes from 'prop-types';
 import { withStyles } from 'material-ui/styles';
-import Typography from 'material-ui/Typography';
 import { compose } from 'react-apollo'
 import { graphql } from 'react-apollo';
 import gql from 'graphql-tag';
-import DeleteIcon from 'material-ui-icons/Delete';
-import EditIcon from 'material-ui-icons/Edit';
-import AddIcon from 'material-ui-icons/Add';
-import Toolbar from 'material-ui/Toolbar';
-import Button from 'material-ui/Button';
 import TextField from 'material-ui/TextField';
-import { SnackbarContent } from 'material-ui/Snackbar';
+import StatusField from './StatusField';
 import StatusView from './StatusView';
-import Input, { InputLabel } from 'material-ui/Input';
-import { MenuItem } from 'material-ui/Menu';
-import { FormControl } from 'material-ui/Form';
-import Select from 'material-ui/Select';
 
-import Dialog, {
-    DialogActions,
-    DialogContent,
-    DialogContentText,
-    DialogTitle,
-} from 'material-ui/Dialog';
-
-
-import Table, {
-    TableBody,
+import TableEditor, { TableEditorStyles, JoinStyles } from './TableEditor';
+import  {
     TableCell,
-    TableHead,
     TableRow,
 } from 'material-ui/Table'
 
 
-const styles = theme => ({
-    root: {
-      marginTop: theme.spacing.unit * 3,
-      width: '100%',
-    },
-    table: {
-        minWidth: 800,
-    },
-    tableWrapper: {
-        overflowX: 'auto',
-    },
-    toolbar: {
-        minHeight:0
-    },
-    form: {
-        display: 'flex',
-        flexWrap: 'wrap',
-    },
-    textfield: {
-        margin: theme.spacing.unit
+
+const LocalStyles = (theme) => ({
+    xbase: {
+        width: 300,
+        margin: theme.spacing.unit,
+        borderStyle: 'solid',
+        borderColor: 'green',
+        borderWidth: 'thin',
     }
 });
-  
+   
+
+
+const styles = JoinStyles([TableEditorStyles,LocalStyles]);
+
+
 const CurrentOrderItems = gql`
   query OrderItems {
-    orderItems {
+    docs: orderItems {
       id
       name
       status
@@ -70,7 +43,7 @@ const CurrentOrderItems = gql`
 
 const UpdateOrderItem = gql`
     mutation UpdateOrderItem($id: ID!, $name: String!, $status: Status) {
-        updateOrderItem(id:$id,name:$name,status:$status) {
+        update_doc: updateOrderItem(id:$id,name:$name,status:$status) {
             id
         }
     }
@@ -78,7 +51,7 @@ const UpdateOrderItem = gql`
 
 const AddOrderItem = gql`
     mutation AddOrderItem($name: String!, $status: Status!) {
-        addOrderItem(name:$name,status:$status) {
+        add_doc: addOrderItem(name:$name,status:$status) {
             id
         }
     }
@@ -87,272 +60,142 @@ const AddOrderItem = gql`
 
 const HideOrderItem = gql`
     mutation HideOrderItem($id: ID!) {
-        hideOrderItem(id:$id) {
+        remove_doc: hideOrderItem(id:$id) {
             id
         }
     }
 `;
 
-function null2empty(v) {
-    if ((v === null) || (v === undefined)) {return ""}
-    return v;
-}
-function empty2null(v) {
-    if (v === "") { return null} 
-    return v;
-}
 
 
-class OrderItems extends React.Component {
 
-    state = {
-        editOpen:false,
-        addOpen:false,
-        delOpen:false,
-        doc: {},
-        doc_err: {},
-        doc_error_msg:null
+class OrderItems extends TableEditor {
+    constructor() {
+        super();
+        this.pager=false;
     }
 
-    handleCancelDialog = () => {
-        this.setState({ editOpen: false, addOpen:false, doc:{},doc_err:{} });
-    };
+    renderAskDialogTitle(doc) {
+        return "Opravdu smazat položku prodeje?";
+    }
 
-    handleCancelDelDialog = () => {
-        this.setState({ delOpen: false, doc:{},doc_err:{} });
-    };
-    
-    handleCancelOkDialog = () => {
-        const {doc} = this.state;
-        this.setState({doc_error_msg:null});
-        this.props.hideDoc({
-            variables: {
-                id:doc.id,
-            }
-        }).then(r=>{
-            this.setState({ delOpen: false, doc:{},doc_err:{} });
-        }).catch(e=>{
-            console.error(e);
-            this.setState({ doc_error_msg:"Chyba mazání: "+e})
-        })     
-       
-    };
-    
-
-    handleSaveAndCloseDialog = () => {
-        const {doc} = this.state;
-        this.setState({doc_error_msg:null});
-        if (doc.id) {
-            this.props.updateDoc({
-                variables: {
-                    id:doc.id,
-                    name:doc.name,
-                    status:doc.status
-                },
-            }).then(r=>{
-                console.log(r);
-                this.setState({ editOpen: false, addOpen:false });
-            }).catch(e=>{
-                console.error(e);
-                this.setState({ doc_error_msg:"Chyba ukládání: "+e})
-            })
+    renderAskDialogContent(doc) {
+        return (
+            <div>
+            Položka prodeje {doc.name} bude odstranena
+            </div>
+        )
+    }
+    renderEditDialogTitle(doc,addMode) {
+        if (addMode) {
+            return "Přidání položky prodeje"
         } else {
-            this.props.addDoc({
-                variables: {
-                    name:doc.name,
-                    status:doc.status
-                },
-            }).then(r=>{
-                console.log(r);
-                this.setState({ editOpen: false, addOpen:false });
-            }).catch(e=>{
-                console.error(e);
-                this.setState({ doc_error_msg:"Chyba ukládání: "+e})
-            })
-        }
-
-
-      
-    };
-
-    onOpenEditDialog(doc) {
-        const cl = {
-            id: doc.id,
-            name:doc.name,
-            status:doc.status
-        };
-      
-        this.setState({editOpen:true,addOpen:false,doc:cl,doc_error_msg:null})
-    }
-
-    onOpenDeleteDialog(doc) {
-        const cl = {
-            id: doc.id,
-            name:doc.name,
-            status:doc.status
-        };
-      
-        this.setState({editOpen:false,addOpen:false,delOpen:true,doc:cl,doc_error_msg:null})
-    }
- 
-    onOpenAddDialog() {
-        this.setState({addOpen:true,editOpen:false,doc:{status:"ACTIVE"},doc_error_msg:null})
-    }
-
-    checkDocField(name,value) {
-        switch(name) {
-        case 'name': return ((value!==null) && (value!==undefined));
-        case 'status': return ((value!==null) && (value!==undefined));
-        default: return true;
+            return "Editace položky prodeje"
         }
     }
 
-    checkDoc() {
-        return this.checkDocField('name',this.state.doc.name) && this.checkDocField('status',this.state.doc.status) 
+    renderEditDialogContentText(doc,addMode) {
+        if (addMode) {
+            return "Nová položka prodeje, musí byt vyplňen alespoň název."
+        } else {
+            return "Úprava položky prodeje, musí byt vyplňen alespoň název."
+        }  
+       
     }
 
-    handleDocChange(name,value){
-        let { doc,  doc_err } = this.state;
-        doc[name]=value;
-        doc_err[name]=!this.checkDocField(name,value);
-        this.setState({
-          doc:doc,
-          doc_err:doc_err
-        });
-    }
-
-
-
-    renderAskDialog() {
-        //const { classes } = this.props;
-        return (
-            <Dialog open={this.state.delOpen} onClose={this.handleCancelDelDialog}  aria-labelledby="del-dialog-title">
-                <DialogTitle id="del-dialog-title">Opravdu smazat typ prodeje z evidence?</DialogTitle>
-                <DialogContent>
-                    Typ prodeje {this.state.doc.name} bude odstraněn
-                </DialogContent>
-                <DialogActions>
-                    <Button onClick={this.handleCancelDelDialog} color="primary">
-                    Nemazat
-                    </Button>
-                    <Button  onClick={this.handleCancelOkDialog} color="primary">
-                    Opravdu smazat
-                    </Button>
-                </DialogActions>
-            </Dialog>
-        );
-    }
-
-    renderDialog() {
+    renderEditDialogContent(doc,err,addMode) {
         const { classes } = this.props;
-        const dialogCaption = this.state.addOpen?"Přidání nového typu prodeje":"Editace typu prodeje";
-        const dialogDesc = this.state.addOpen?"Nový typ prodeje":"Úprava typu prodeje";
         return (
-        <Dialog
-            open={this.state.editOpen || this.state.addOpen}
-            onClose={this.handleCancelDialog}
-            aria-labelledby="form-dialog-title"
-            >
-            <DialogTitle id="form-dialog-title">{dialogCaption}</DialogTitle>
-            <DialogContent>
-                <DialogContentText>
-                {dialogDesc}, musí byt vyplňen alespoň název
-                </DialogContentText>
-                <form className={classes.form}  noValidate autoComplete="off">
-                    
+            <form className={classes.form}  noValidate autoComplete="off">  
 
-                    <FormControl className={classes.textfield}>
-                    <InputLabel htmlFor="oi_status-simple">stav</InputLabel>
-                    <Select
-                        value={this.state.doc.status?this.state.doc.status:""}
-                        onChange={(e)=>this.handleDocChange("status",empty2null(e.target.value))}
-                        input={<Input name="status" id="oi_status-simple" />}
-                    >
-                        <MenuItem value={"ACTIVE"}>aktivní</MenuItem>
-                        <MenuItem value={"DISABLED"}>neaktivní</MenuItem>
-                    </Select>
-                    </FormControl>
+                    <StatusField 
+                        error={err.status}
+                        margin="dense"
+                        id="status"
+                        label="Stav"
+                        value={TableEditor.null2empty(doc.status)}
+                        onChange={(e)=>this.handleDocChange("status",TableEditor.empty2null(e.target.value))}
+                    />
 
 
                     <TextField className={classes.textfield}
                         autoFocus
+                        error={err.name}
                         margin="dense"
                         id="name"
                         label="Název"
                         type="text"
-                        value={null2empty(this.state.doc.name)}
-                        onChange={(e)=>this.handleDocChange("name",empty2null(e.target.value))}
+                        value={TableEditor.null2empty(doc.name)}
+                        onChange={(e)=>this.handleDocChange("name",TableEditor.empty2null(e.target.value))}
                     />
 
-                </form>
-                {this.state.doc_error_msg && <SnackbarContent message={this.state.doc_error_msg}/>}
-            </DialogContent>
-            <DialogActions>
-                <Button onClick={this.handleCancelDialog} color="primary">
-                Neukládat
-                </Button>
-                <Button disabled={!this.checkDoc()} onClick={this.handleSaveAndCloseDialog} color="primary">
-                Uložit
-                </Button>
-            </DialogActions>
-
-        </Dialog>
-        );
-    }
-    
-
-    renderDocs(docs) {
-        const { classes } = this.props;
-        return docs.map(doc=> (
-          <TableRow key={doc.id}>
-             <TableCell padding={"dense"} style={{width:"0px"}}><StatusView status={doc.status}/></TableCell>
-             <TableCell padding={"dense"}>{doc.name}</TableCell>
-             <TableCell padding={"dense"} classes={{root:classes.cell}}>
-                <Toolbar disableGutters={true} classes={{root:classes.toolbar}} >
-                    <Button raised style={{minWidth:"38px"}} onClick={()=>this.onOpenEditDialog(doc)}> <EditIcon/>  </Button>
-                    <Button raised style={{minWidth:"38px"}} onClick={()=>this.onOpenDeleteDialog(doc)}> <DeleteIcon/>  </Button>
-                </Toolbar>
-            </TableCell>
-
-          </TableRow>
-        ));
-    }
-
-    render() {
-        const { classes } = this.props;
-        const rows = !this.props.docs.orderItems ?[]:this.renderDocs(this.props.docs.orderItems);
-        const dialog = this.renderDialog();
-        const dialogDel = this.renderAskDialog();
-        return (
-            <div>
-                {dialog} {dialogDel}
-
-                <Typography> I Am OrderItem page </Typography>
-
-                <Button raised style={{minWidth:"38px"}} onClick={()=>this.onOpenAddDialog()}> <AddIcon/>  </Button>
-                <Table className={classes.table}>
-                    <TableHead>
-                        <TableRow>
-                            <TableCell padding={"dense"} style={{width:"0px"}}>Stav</TableCell>
-                            <TableCell padding={"dense"}>Název</TableCell>
-                            <TableCell padding={"dense"}></TableCell>
-                        </TableRow>
-                    </TableHead>
-                    <TableBody>
-                        {rows}
-                    </TableBody>
-                </Table>
-
-            </div>
+              
+ 
+             
+            </form>
+   
         )
     }
+
+    checkDocField(name,value) {
+        switch(name) {
+            case 'name': return ((value!==null) && (value!==undefined));
+            case 'status': return ((value!==null) && (value!==undefined));
+            default: return true;
+        }
+    }
+
+    checkDoc(doc) {
+        return this.checkDocField('name',doc.name) && this.checkDocField('status',doc.status) 
+    }
+
+
+    newDocTemplate() {
+        return {status:"ACTIVE"}
+    }
+
+    renderTableHeadRow() {
+        return (
+            <TableRow>
+                <TableCell padding={"dense"} style={{width:"0px"}}>Stav</TableCell>
+                <TableCell padding={"dense"}>Název</TableCell>
+                <TableCell padding={"dense"}></TableCell>
+            </TableRow>
+        )
+    }
+
+    renderTableBodyRow(doc,idx) {
+        const { classes } = this.props;
+        const toolbar = this.renderTableBodyRowToolbar(doc,idx);
+        return (
+
+            <TableRow key={doc.id}>
+            <TableCell padding={"dense"} style={{width:"0px"}}><StatusView status={doc.status}/></TableCell>
+            <TableCell padding={"dense"}>{doc.name}</TableCell>
+            <TableCell padding={"dense"} classes={{root:classes.cell}}>
+                {toolbar}
+            </TableCell>
+            </TableRow>
+
+         
+        )
+    }
+
+    renderTableBodyLoadingRow() {
+        return (
+            <TableRow><TableCell> loading </TableCell></TableRow>
+        )
+    }
+
+
+    renderHeaderLabel() {
+        return "Položky prodeje"
+    }
+  
 }
 
 
-OrderItems.propTypes = {
-    classes: PropTypes.object.isRequired,
-};
-  
+
 
 export default compose(
     withStyles(styles),
@@ -367,6 +210,7 @@ export default compose(
               ],
         }
     }),
+
     graphql(AddOrderItem,{
         name:"addDoc",
         options: {
@@ -376,7 +220,7 @@ export default compose(
         }
     }),
     graphql(HideOrderItem,{
-        name:"hideDoc",
+        name:"removeDoc",
         options: {
             refetchQueries: [
                 'OrderItems',

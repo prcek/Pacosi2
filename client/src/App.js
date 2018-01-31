@@ -44,7 +44,6 @@ const PageUsers = ({ match }) => (
 
 const PageOrderItems = ({ match }) => (
   <div>
-    <h3>OrderItems</h3>
     <OrderItems />
   </div>
 )
@@ -77,7 +76,6 @@ const PageClients = ({ match }) => (
 
 const PageOrders = ({ match }) => (
   <div>
-    <h3>Orders</h3>
     <Orders />
   </div>
 )

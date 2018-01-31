@@ -42,6 +42,7 @@ import Dialog, {
 
 class TableEditor extends React.Component {
 
+
     state = {
         docOpen: false,
         addMode: false,
@@ -87,8 +88,12 @@ class TableEditor extends React.Component {
         this.setState({docOpen:false,delAsk:true,doc:doc,doc_error_msg:null})
     }
  
+    newDocTemplate() {
+        return {};
+    }
+
     onOpenAddDialog() {
-        this.setState({docOpen:true,addMode:true,doc:{},doc_error_msg:null})
+        this.setState({docOpen:true,addMode:true,doc:this.newDocTemplate(),doc_error_msg:null})
     }
 
 
@@ -254,6 +259,8 @@ class TableEditor extends React.Component {
 
         if (this.props.docs.docs_pages) {
             return this.props.docs.docs_pages.items.map((doc,idx)=>{return this.renderTableBodyRow(doc,idx)});
+        } else if (this.props.docs.docs) { 
+            return this.props.docs.docs.map((doc,idx)=>{return this.renderTableBodyRow(doc,idx)});
         } else {
             return this.renderTableBodyLoadingRow();
         }
@@ -266,6 +273,7 @@ class TableEditor extends React.Component {
         return "no label";
     }
 
+ 
     renderHeader() {
         const { classes } = this.props;
         if (this.props.docs.docs_pages) {
@@ -306,7 +314,7 @@ class TableEditor extends React.Component {
                                 {25}
                             </MenuItem>
                         </Select>
-                        </Typography>
+                    </Typography>
                     <Typography type="caption">
                         {this.renderPageInfo({
                             from: pi.totalCount === 0 ? 0 : pi.pageNo * pi.pageLength + 1,
@@ -340,6 +348,15 @@ class TableEditor extends React.Component {
                         <LastPageIcon/>
                     </IconButton>
 
+                </Toolbar>
+            )
+        } else if (this.props.docs.docs) {
+            return (
+                <Toolbar>
+                    <Typography type="title">
+                        {this.renderHeaderLabel()}
+                    </Typography>
+                    <Button raised className={classes.button} style={{minWidth:"38px"}} onClick={()=>this.onOpenAddDialog()}> <AddIcon/>  </Button>
                 </Toolbar>
             )
         }else {
