@@ -61,7 +61,6 @@ const PageMassageRooms = ({ match }) => (
 
 const PageMassageTypes = ({ match }) => (
   <div>
-    <h3>MassageTypes</h3>
     <MassageTypes />
   </div>
 )

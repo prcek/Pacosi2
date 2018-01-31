@@ -61,7 +61,17 @@ class TableEditor extends React.Component {
         if (v === "") { return null} 
         return v;
     }
-       
+
+    static null2zero(v) {
+        if ((v === null) || (v === undefined)) {return 0}
+        return v;
+    }
+    static zero2null(v) {
+        if (v === 0) { return null} 
+        return v;
+    }
+
+
     handleChangePage = (event, page) => {
         this.props.onSelectPageNo(page)
     };
