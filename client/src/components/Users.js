@@ -189,7 +189,7 @@ class Users extends TableEditor {
         const toolbar = this.renderTableBodyRowToolbar(doc,idx);
         return (
 
-            <TableRow key={doc.id}>
+            <TableRow hover key={doc.id}>
             <TableCell padding={"dense"} style={{width:"0px"}}><StatusView status={doc.status}/></TableCell>
             <TableCell padding={"dense"}>{doc.name}</TableCell>
             <TableCell padding={"dense"}><RoleView role={doc.role}/></TableCell>
