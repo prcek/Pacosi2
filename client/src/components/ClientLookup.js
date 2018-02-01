@@ -1,7 +1,7 @@
 import React from 'react';
 import { withStyles } from 'material-ui/styles';
 import PropTypes from 'prop-types';
-//import Typography from 'material-ui/Typography';
+import Typography from 'material-ui/Typography';
 import { compose } from 'react-apollo'
 //import { graphql } from 'react-apollo';
 import gql from 'graphql-tag';
@@ -46,7 +46,7 @@ const styles = theme => ({
 const ClientsLookup = gql`
   query ClientsLookup($text: String!) {
     clientsLookup(text:$text) {
-        id,name,surname
+        id,name,surname,no,phone
     }
   }
 `;
@@ -76,6 +76,11 @@ class ClientLookup extends React.Component {
         console.log("handleSuggestionsClearRequested")
     }
 
+    handleSuggestionSelected = (event,s) => {
+        console.log("handleSuggestionSelected",s);
+        this.props.onSelect(s.suggestion);
+    }
+
     renderInput(inputProps) {
         const { classes, autoFocus, value, ref, ...other } = inputProps;
         console.log("renderInput",inputProps);
@@ -103,16 +108,22 @@ class ClientLookup extends React.Component {
         console.log("renderSuggestion")
         return (
             <MenuItem selected={isHighlighted} component="div">
-              <div>
-                    <span>
-                      {suggestion.name}
-                    </span>
-             
+              <Typography type="body2">
+                    
                     <span>
                       {suggestion.surname}
                     </span>
-                  
-              </div>
+                    &nbsp;
+                    <span>
+                      {suggestion.name}
+                    </span>
+                    &nbsp;
+                    <em>
+                      {suggestion.no}
+                    </em>
+                    
+
+              </Typography>
             </MenuItem>
           );
     }
@@ -129,7 +140,7 @@ class ClientLookup extends React.Component {
 
     getSuggestionValue(suggestion) {
         console.log("getSuggestionValue")
-        return suggestion.id;
+        return suggestion.surname+" "+suggestion.name+" "+suggestion.no;
     }
 
     render() {
@@ -148,14 +159,14 @@ class ClientLookup extends React.Component {
                 inputProps={{
                     autoFocus: true,
                     classes,
-                    placeholder: 'Search a country (start with a)',
+                    placeholder: 'Hledání v evidenci klientů',
                     value: this.state.value,
                     onChange: this.handleChange,
                   }}
                 suggestions={this.state.suggestions}
                 onSuggestionsFetchRequested={this.handleSuggestionsFetchRequested}
                 onSuggestionsClearRequested={this.handleSuggestionsClearRequested}
-
+                onSuggestionSelected={this.handleSuggestionSelected}
                 renderSuggestionsContainer={(o)=>this.renderSuggestionsContainer(o)}
                 getSuggestionValue={(s)=>this.getSuggestionValue(s)}
                 renderSuggestion={(s,op)=>this.renderSuggestion(s,op)}
@@ -167,6 +178,7 @@ class ClientLookup extends React.Component {
 
 ClientLookup.propTypes = {
     classes: PropTypes.object.isRequired,
+    onSelect: PropTypes.func.isRequired
 }
 
 export default withApollo(compose(

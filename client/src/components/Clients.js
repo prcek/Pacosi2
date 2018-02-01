@@ -203,7 +203,7 @@ class Clients extends TableEditor {
         const { classes } = this.props;
         const toolbar = this.renderTableBodyRowToolbar(doc,idx);
         return (
-            <TableRow key={doc.id}>
+            <TableRow hover key={doc.id}>
             <TableCell padding={"dense"} style={{width:"0px"}}>{doc.no}</TableCell>
             <TableCell padding={"dense"}>{doc.surname}</TableCell>
             <TableCell padding={"dense"}>{doc.name}</TableCell>

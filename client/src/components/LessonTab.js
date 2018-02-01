@@ -11,6 +11,16 @@ import Button from 'material-ui/Button';
 import DeleteIcon from 'material-ui-icons/Delete';
 import DateTimeView from './DateTimeView';
 import Checkbox from 'material-ui/Checkbox';
+import ClientLookup from './ClientLookup';
+import TextField from 'material-ui/TextField';
+import TableEditor from './TableEditor';
+
+import Dialog, {
+    DialogActions,
+    DialogContent,
+    DialogContentText,
+    DialogTitle,
+} from 'material-ui/Dialog';
 
 var moment = require('moment');
 require("moment/min/locales.min");
@@ -36,6 +46,22 @@ const LessonInfo = gql`
   }
 `;
 
+
+const AddLessonMember = gql`
+    mutation AddLessonMember($lesson_id: ID!, $client_id: ID!) {
+        add_doc: addLessonMember(lesson_id:$lesson_id,client_id:$client_id) {
+            id
+        }
+    }
+`;
+
+const DeleteLessonMember = gql`
+    mutation DeleteLessonMember($id: ID!) {
+        remove_doc: deleteLessonMember(id:$id) {
+            id
+        }
+    }
+`;
 
 
 
@@ -67,21 +93,180 @@ const styles = theme => ({
     },
     toolbar: {
         minHeight:0
-    }
-    
+    },
+    panel: {
+        padding: theme.spacing.unit*2
+    },
+    textfield: {
+        margin: theme.spacing.unit
+    },
 });
   
 
 
 class LessonTab extends React.Component {
 
-    
+
+    state = {
+        addMode:false,
+        doc: {},
+        doc_err: {},
+        doc_error_msg:null,
+        todel: {},
+        delAsk:false
+    }
+    handleAdd = () => {
+        this.setState({addMode:true});
+    }
+
+    handleCancelAdd = () => {
+        this.setState({addMode:false});
+    }
+    handleDoAdd = () => {
+
+        this.props.addDoc({
+            variables: {
+                lesson_id:this.props.lessonId,
+                client_id:this.state.doc.id
+            },
+        }).then(r=>{
+            console.log(r);
+            this.setState({ addMode: false, doc:{} , doc_err:{}});
+        }).catch(e=>{
+            console.error(e);
+            this.setState({ doc_error_msg:"Chyba ukládání: "+e})
+        })
+
+
+    }
+    handleSelect = (c) => {
+        const newdoc = {
+            id:c.id,
+            surname:c.surname,
+            name:c.name,
+            phone:c.phone
+        }
+        this.setState({doc:newdoc,doc_err:{}})
+
+    }
+    handleDocChange(name,value){
+        let { doc, doc_err } = this.state;
+        doc[name]=value;
+        doc_err[name]=!this.checkDocField(name,value);
+        this.setState({
+          doc:doc,
+          doc_err:doc_err
+        });
+    }
+
+    handleOpenDeleteDialog = (m) => {
+        this.setState({delAsk:true,todel:m});
+    }
+    handleCloseDeleteDialog = () => {
+        this.setState({delAsk:false,todel:{}});
+    }
+
+    handleDoDelete = () => {
+
+        this.props.removeDoc({
+            variables: {
+                id:this.state.todel.id,
+            },
+        }).then(r=>{
+            console.log(r);
+            this.setState({delAsk:false,todel:{}});
+        }).catch(e=>{
+            console.error(e);
+            this.setState({ doc_error_msg:"Chyba ukládání: "+e})
+        })
+       
+    }
+
+    checkDocField(name,value) {
+        switch(name) {
+            case 'surname': return ((value!==null) && (value!==undefined));
+            case 'id': return ((value!==null) && (value!==undefined));
+            default: return true;
+            }
+        }
+
+    checkDoc(doc) {
+        return this.checkDocField('surname',this.state.doc.surname)  && this.checkDocField('id',this.state.doc.id)
+    }
+
+
+    renderDelAskDialog() {
+        //const { classes } = this.props;
+        return (
+            <Dialog open={this.state.delAsk} onClose={this.handleCancelDelDialog}  aria-labelledby="del-dialog-title">
+                <DialogTitle id="del-dialog-title">Odhlášení</DialogTitle>
+                <DialogContent>
+                    <DialogContentText>
+                        Opravdu odhlásit klienta {this.state.todel.client && this.state.todel.client.surname}?
+                    </DialogContentText>
+                </DialogContent>
+                <DialogActions>
+                    <Button onClick={this.handleCloseDeleteDialog} color="primary">
+                    Neodhlásit
+                    </Button>
+                    <Button  onClick={this.handleDoDelete} color="primary">
+                    Odhlásit
+                    </Button>
+                </DialogActions>
+            </Dialog>
+        );
+    }
+
+
+    renderAddPanel() {
+        const { classes } = this.props;
+        return (
+            <div> 
+                <ClientLookup onSelect={this.handleSelect}/>
+                <form className={classes.form}  noValidate autoComplete="off">  
+                    <TextField className={classes.textfield}
+                        error={this.state.doc_err.surname}
+                        margin="dense"
+                        id="surname"
+                        label="Přijmení"
+                        type="text"
+                        value={TableEditor.null2empty(this.state.doc.surname)}
+                        onChange={(e)=>this.handleDocChange("surname",TableEditor.empty2null(e.target.value))}
+                    />
+                    <TextField className={classes.textfield}
+                        margin="dense"
+                        id="name"
+                        label="Jméno"
+                        type="text"
+                        value={TableEditor.null2empty(this.state.doc.name)}
+                        onChange={(e)=>this.handleDocChange("name",TableEditor.empty2null(e.target.value))}
+                    />
+                    <TextField className={classes.textfield}
+                        margin="dense"
+                        id="phone"
+                        label="Telefon"
+                        type="text"
+                        value={TableEditor.null2empty(this.state.doc.phone)}
+                        onChange={(e)=>this.handleDocChange("phone",TableEditor.empty2null(e.target.value))}
+                    />
+
+                </form>
+
+                <Button raised className={classes.button}  disabled={!this.checkDoc(this.state.doc)} onClick={this.handleDoAdd}> Uložit </Button>
+                <Button raised className={classes.button} onClick={this.handleCancelAdd}> Zrušit </Button>
+
+            </div>
+
+        )
+    }
+
+
     renderMembers(members) {
         const { classes } = this.props;
         return members.map((m,i)=>(
             <TableRow hover key={m.id} classes={{root:classes.row}}>
                 <TableCell padding={"dense"} classes={{root:classes.cell}}>{i+1}</TableCell>
-                <TableCell padding={"dense"} classes={{root:classes.cell}}>12345</TableCell>
+                <TableCell padding={"dense"} classes={{root:classes.cell}}>{m.client.no}</TableCell>
                 <TableCell padding={"dense"} classes={{root:classes.cell}}>{m.client.surname}</TableCell>
                 <TableCell padding={"dense"} classes={{root:classes.cell}}>{m.client.name}</TableCell>
                 <TableCell padding={"dense"} classes={{root:classes.cell}}>{m.client.phone}</TableCell>
@@ -91,28 +276,17 @@ class LessonTab extends React.Component {
                 </TableCell>
                 <TableCell padding={"dense"} classes={{root:classes.cell}}>
                     <Toolbar disableGutters={true} classes={{root:classes.toolbar}} >
-                        <Button raised style={{minWidth:"38px"}}> <DeleteIcon/>  </Button>
-                        
+                        <Button raised style={{minWidth:"38px"}} onClick={()=>this.handleOpenDeleteDialog(m)}> <DeleteIcon/>  </Button>
                     </Toolbar>
                 </TableCell>
             </TableRow>
         ));  
     }
 
-    render() {
+    renderMembersTable() {
         const { classes } = this.props;
-        if (!(this.props.lessonInfo && this.props.lessonInfo.lessonInfo)) {
-            return null;
-        } 
-        const members = this.renderMembers(this.props.lessonInfo.lessonInfo.members)
-        const lessonInfo = this.props.lessonInfo.lessonInfo;
+        const members = this.renderMembers(this.props.lessonInfo.lessonInfo.members);
         return (
-            <div className={classes.root}>
-            <Toolbar>
-                <Typography type="title" className={classes.flex} noWrap> Lekce {lessonInfo.lesson_type.name} - {lessonInfo.lesson_type.location.name}, <DateTimeView date={lessonInfo.datetime} format="LLLL"/> </Typography>
-                <Button raised className={classes.button} > přihlásit </Button>
-                <Button raised className={classes.button} > docházka </Button>
-            </Toolbar>
             <Table className={classes.table}>
                 <TableHead>
                     <TableRow classes={{root:classes.row}}>
@@ -130,6 +304,28 @@ class LessonTab extends React.Component {
                 <TableFooter>
                 </TableFooter>
             </Table>
+        )
+    }
+
+    render() {
+        const { classes } = this.props;
+        if (!(this.props.lessonInfo && this.props.lessonInfo.lessonInfo)) {
+            return null;
+        } 
+        const lessonInfo = this.props.lessonInfo.lessonInfo;
+        const panel = this.state.addMode?this.renderAddPanel():this.renderMembersTable();
+        const delAsk= this.renderDelAskDialog();
+        return (
+            <div className={classes.root}>
+            {delAsk}
+            <Toolbar>
+                <Typography type="title" className={classes.flex} noWrap> Lekce {lessonInfo.lesson_type.name} - {lessonInfo.lesson_type.location.name}, <DateTimeView date={lessonInfo.datetime} format="LLLL"/> </Typography>
+                <Button raised disabled={this.state.addMode} className={classes.button} onClick={this.handleAdd}> přihlásit </Button>
+                <Button raised disabled={this.state.addMode} className={classes.button} > docházka </Button>
+            </Toolbar>
+            <div className={classes.panel}>
+            {panel}
+            </div>
             <Typography type="caption"> Lesson Id: {this.props.lessonId} </Typography>
             </div>
         );
@@ -148,6 +344,24 @@ export default compose(
     graphql(LessonInfo,{
         name: "lessonInfo",
         options: ({lessonId})=>({variables:{lesson_id:lessonId}})
+    }),
+    graphql(AddLessonMember,{
+        name:"addDoc",
+        options: {
+            refetchQueries: [
+                'LessonInfo',
+              ],
+        }
+    }),
+
+
+    graphql(DeleteLessonMember,{
+        name:"removeDoc",
+        options: {
+            refetchQueries: [
+                'LessonInfo',
+              ],
+        }
     }),
 
 )(LessonTab)
