@@ -1,7 +1,7 @@
 import React from 'react';
 import { withStyles } from 'material-ui/styles';
 import { compose } from 'react-apollo';
-import ClientLookup from './ClientLookup';
+import Login from './../Login';
 const styles = theme => ({
     root: {
       marginTop: theme.spacing.unit * 3,
@@ -18,7 +18,7 @@ class TestComponent extends React.Component {
 
     render() {
        return (
-           <div> <ClientLookup onSelect={this.handleSelect}/> </div>
+           <div> <Login /> </div>
        )
     }
 }
