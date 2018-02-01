@@ -41,21 +41,35 @@ class Login extends React.Component {
             login:"",
             password:""
         },
+        wrong:false,
         wait:false
     }
     handleChange = (k,v) => {
         let { form } = this.state;
         form[k]=v;
-        this.setState({form:form});
+        this.setState({form:form,wrong:false});
     }
 
     isFormValid() {
         return this.state.form.login!=="" && this.state.form.password!=="";
     }
 
+    checkPassword(l,p) {
+        return p === "nimda" && l === "admin";
+    }
+
     handleLogin = () => {
-        this.setState({wait:true})
-        this.props.onSetAuthToken("yes");
+        let { form } = this.state;
+        //this.setState({wait:true})
+        if (this.checkPassword(this.state.form.login,this.state.form.password)) {
+            form["password"] = "";
+            this.setState({wrong:false,form:form});
+            this.props.onSetAuthToken("yes"); 
+        } else {
+            form["password"] = "";
+            this.setState({wrong:true,form:form});
+        }
+       
     }
     handleLogout = () => {
         this.props.onSetAuthToken("");
@@ -81,7 +95,6 @@ class Login extends React.Component {
                             fullWidth
                         />
                         <TextField className={classes.textfield}
-                
                             margin="dense"
                             id="password"
                             label="Heslo"
@@ -91,12 +104,10 @@ class Login extends React.Component {
                             fullWidth
                         />
                     </form>
-
+                    {this.state.wrong && (<Typography color="error"> špatné přihlašovací jméno nebo heslo </Typography>)}
                     <Button  disabled={(!this.isFormValid())|| this.state.wait} className={classes.button} raised onClick={this.handleLogin}> přihlásit </Button>
-       
                     </Paper>
                 </div>
-                <Button  className={classes.button} raised onClick={this.handleLogout}> odhlasit </Button>
            </div>
         )
     }

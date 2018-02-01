@@ -22,7 +22,7 @@ import LessonsReport from './components/LessonsReport';
 import MassagesReport from './components/MassagesReport';
 
 import TestComponent from './components/TestComponent';
-
+import Login from "./Login";
 
 
 const PageLessons = ({ match }) => (
@@ -110,9 +110,23 @@ const PageTest = ({ match }) => (
 
 class App extends Component {
 
-  
+  isAuth() {
+    return this.props.auth && this.props.auth.token!=="";
+  }
 
   render() {
+    if (this.isAuth()) {
+      return this.renderApp();
+    } else {
+      return (
+        <div className="App">
+        <Reboot />
+        <Login/>
+        </div>      
+      )
+    }
+  }
+  renderApp() {
     return (
       <div className="App">
         <Reboot />
@@ -145,7 +159,7 @@ class App extends Component {
 }
 
 function mapStateToProps(state) {
-  return { current_location_id: state.location }
+  return { current_location_id: state.location, auth:state.auth }
 }
 
 

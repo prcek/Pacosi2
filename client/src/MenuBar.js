@@ -9,6 +9,7 @@ import Select from 'material-ui/Select';
 import IconButton from 'material-ui/IconButton';
 import SettingsIcon from 'material-ui-icons/Settings';
 import ReceiptIcon from 'material-ui-icons/Receipt';
+import PowerIcon from 'material-ui-icons/PowerSettingsNew';
 import Menu, { MenuItem } from 'material-ui/Menu';
 import { Link } from 'react-router-dom';
 import { withRouter } from 'react-router';
@@ -18,7 +19,7 @@ import { connect } from 'react-redux'
 import { graphql } from 'react-apollo';
 import gql from 'graphql-tag';
 
-import { setLocation } from './actions'
+import { setLocation, setAuthToken } from './actions'
 
 const CurrentLocations = gql`
   query CurrentLocations {
@@ -84,6 +85,11 @@ class MenuBar extends React.Component {
     handleCfgClose = () => {
       this.setState({ anchorEl: null });
     };
+
+    handleLogout = () => {
+      this.props.onSetAuthToken("");
+    };
+
     handleReportClose = () => {
       this.setState({ anchorElr: null });
     };
@@ -203,6 +209,13 @@ class MenuBar extends React.Component {
                   <MenuItem onClick={()=>this.handleCfgClickTo('/r/massagetypes')}>Typy masáží</MenuItem>
                 </Menu>
 
+                <IconButton
+                  onClick={this.handleLogout}
+                  color="inherit"
+                >
+                  <PowerIcon />
+                </IconButton>
+               
       
                 </Toolbar>
             </AppBar>
@@ -224,9 +237,14 @@ const mapDispatchToProps = dispatch => {
   return {
     onSelectLocation: id => {
       dispatch(setLocation(id))
-    }
+    },
+    onSetAuthToken: token => {
+      dispatch(setAuthToken(token))
+    },
   }
 }
+
+
 
 export default withRouter(compose(
   withStyles(styles),
