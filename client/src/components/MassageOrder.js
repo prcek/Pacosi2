@@ -104,9 +104,9 @@ class MassageOrder extends React.Component {
 
             </form>
             <Toolbar>
-                <Button className={classes.button} raised disabled={(!this.props.correct) || (this.props.wait)} onClick={this.props.onSave} color="primary">Uložit</Button>
+                <Button className={classes.button} raised disabled={(!this.props.correct) || (this.props.wait)} onClick={this.props.onSave} >Uložit</Button>
                 {this.props.massageOrder.id && 
-                <Button className={classes.button} raised onClick={this.props.onDelete} color="primary">Smazat</Button>
+                <Button className={classes.button} raised onClick={this.props.onDelete} >Smazat</Button>
                 }
             </Toolbar>
             </div>
