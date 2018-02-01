@@ -62,11 +62,6 @@ const LessonMemberType = new GraphQL.GraphQLObjectType({
             type: GraphQLBoolean,
             description: 'presence'
         },
-
-        reg_datetime: {
-            type: GraphQLDateTime,
-            description: 'registration datetime',
-        },
         
         created_at: {
             type: GraphQLDateTime,

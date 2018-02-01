@@ -40,11 +40,7 @@ class LessonMemberMutation extends BaseMutation {
             presence: {
                 type: GraphQLBoolean,
                 description: 'Enter lesson  member presence',
-            },
-            reg_datetime: {
-                type: GraphQLDateTime,
-                description: 'Enter lesson registration datetime',
-            },
+            }
             
         }
     }
@@ -66,11 +62,7 @@ class LessonMemberMutation extends BaseMutation {
             presence: {
                 type: GraphQLBoolean,
                 description: 'Enter presence',
-            },
-            reg_datetime: {
-                type: GraphQLDateTime,
-                description: 'Enter registration datetime',
-            },
+            }
             
         }
     }

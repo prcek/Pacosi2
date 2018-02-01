@@ -8,6 +8,7 @@ class LessonMemberController extends BaseController {
 
     constructor() {
         super(LessonMember);
+        this.defaultSort = {created_at: 1}
     }
 
 };

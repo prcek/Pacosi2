@@ -34,7 +34,7 @@ const LessonInfo = gql`
         id,datetime,capacity,members {
             id,presence,client {
               id,name,surname,phone
-            }
+            } created_at
         }
         lesson_type {
             name
@@ -270,7 +270,7 @@ class LessonTab extends React.Component {
                 <TableCell padding={"dense"} classes={{root:classes.cell}}>{m.client.surname}</TableCell>
                 <TableCell padding={"dense"} classes={{root:classes.cell}}>{m.client.name}</TableCell>
                 <TableCell padding={"dense"} classes={{root:classes.cell}}>{m.client.phone}</TableCell>
-                <TableCell padding={"dense"} classes={{root:classes.cell}}><DateTimeView date={new Date()} format="LLL"/></TableCell>
+                <TableCell padding={"dense"} classes={{root:classes.cell}}><DateTimeView date={m.created_at} format="LLL"/></TableCell>
                 <TableCell padding={"checkbox"} classes={{root:classes.cell}}>
                     <Checkbox checked={m.presence} disabled />
                 </TableCell>

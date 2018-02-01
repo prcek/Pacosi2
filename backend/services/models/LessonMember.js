@@ -23,10 +23,6 @@ const LessonMemberSchema = mongoose.Schema(
             default:false
         },
 
-        reg_datetime: {
-            type: Date,
-            default: Date.now
-        }
     },
     {
         timestamps: { createdAt: 'created_at', updatedAt: 'updated_at' },
