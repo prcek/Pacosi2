@@ -33,7 +33,7 @@ const LessonInfo = gql`
     lessonInfo(id:$lesson_id) {
         id,datetime,capacity,members {
             id,presence,client {
-              id,name,surname,phone
+              id,name,surname,phone,no
             } created_at
         }
         lesson_type {
