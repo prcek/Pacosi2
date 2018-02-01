@@ -20,6 +20,11 @@ const setOrderPageLength = (page_length) => ({
     page_length
 })
 
+const setAuthToken = (auth_token) => ({
+    type: 'SET_AUTH_TOKEN',
+    auth_token
+})
+
 
 export {
     setLocation,
@@ -27,4 +32,5 @@ export {
     setClientPageLength,
     setOrderPageNo,
     setOrderPageLength,
+    setAuthToken,
 }

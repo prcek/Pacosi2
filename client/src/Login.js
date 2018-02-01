@@ -1,11 +1,13 @@
 import React from 'react';
 import { withStyles } from 'material-ui/styles';
 import { compose } from 'react-apollo';
+import { connect } from 'react-redux'
 import Typography from 'material-ui/Typography';
 import Button from 'material-ui/Button';
 import Paper from 'material-ui/Paper';
 import Divider from 'material-ui/Divider';
 import TextField from 'material-ui/TextField';
+import { setAuthToken } from './actions'
 
 const styles = theme => ({
     root: {
@@ -53,6 +55,10 @@ class Login extends React.Component {
 
     handleLogin = () => {
         this.setState({wait:true})
+        this.props.onSetAuthToken("yes");
+    }
+    handleLogout = () => {
+        this.props.onSetAuthToken("");
     }
 
     render() {
@@ -90,14 +96,29 @@ class Login extends React.Component {
        
                     </Paper>
                 </div>
+                <Button  className={classes.button} raised onClick={this.handleLogout}> odhlasit </Button>
            </div>
         )
     }
 }
 
 
+function mapStateToProps(state) {
+    return { 
+        auth_token: state.auth.token,
+    }
+}
+
+const mapDispatchToProps = dispatch => {
+    return {
+      onSetAuthToken: token => {
+        dispatch(setAuthToken(token))
+      },
+    }
+}
 
 
 export default compose(
     withStyles(styles),
+    connect(mapStateToProps,mapDispatchToProps),
 )(Login)
