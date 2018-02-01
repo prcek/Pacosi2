@@ -48,7 +48,7 @@ class OrdersReportTable extends React.Component {
     renderDocs(docs) {
        // const { classes } = this.props;
         return docs.map((doc,idx)=> (
-          <TableRow key={idx}>
+          <TableRow hover key={idx}>
              <TableCell padding={"dense"}>{doc.user.name}</TableCell>
              <TableCell padding={"dense"}>{doc.order_item.name}</TableCell>
              <TableCell padding={"dense"}>{doc.count}</TableCell>
