@@ -15,7 +15,7 @@ import { Link } from 'react-router-dom';
 import { withRouter } from 'react-router';
 import { compose } from 'react-apollo'
 import { connect } from 'react-redux'
-
+import Cookies from 'js-cookie';
 import { graphql } from 'react-apollo';
 import gql from 'graphql-tag';
 
@@ -87,6 +87,7 @@ class MenuBar extends React.Component {
     };
 
     handleLogout = () => {
+      Cookies.remove('auth');
       this.props.onSetAuthToken("");
     };
 
