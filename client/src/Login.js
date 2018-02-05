@@ -60,7 +60,26 @@ class Login extends React.Component {
 
     handleLogin = () => {
         let { form } = this.state;
+        fetch("/auth/login",{
+            method:'POST',
+            body:JSON.stringify({login:form.login,password:form.password}), 
+            headers: new Headers({
+                'Content-Type': 'application/json'
+            })
+        }).then((resp) => resp.json()).then(data=>{
+            console.log("data:",data);
+            if (data.auth_ok) {
+                this.setState({wrong:false,form:form});
+                this.props.onSetAuthToken("yes"); 
+            } else {
+                form["password"] = "";
+                this.setState({wrong:true,form:form});
+            }
+        }).catch(err=>{
+            console.error("do login",err);
+        })
         //this.setState({wait:true})
+        /*
         if (this.checkPassword(this.state.form.login,this.state.form.password)) {
             form["password"] = "";
             this.setState({wrong:false,form:form});
@@ -69,7 +88,7 @@ class Login extends React.Component {
             form["password"] = "";
             this.setState({wrong:true,form:form});
         }
-       
+       */
     }
     handleLogout = () => {
         this.props.onSetAuthToken("");
@@ -105,7 +124,7 @@ class Login extends React.Component {
                         />
                     </form>
                     {this.state.wrong && (<Typography color="error"> špatné přihlašovací jméno nebo heslo </Typography>)}
-                    <Button  disabled={(!this.isFormValid())|| this.state.wait} className={classes.button} raised onClick={this.handleLogin}> přihlásit </Button>
+                    <Button  disabled={(!this.isFormValid())|| this.state.wait} className={classes.button} variant="raised" onClick={this.handleLogin}> přihlásit </Button>
                     </Paper>
                 </div>
            </div>

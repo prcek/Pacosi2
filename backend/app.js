@@ -10,7 +10,7 @@ var qraphql_se = require('graphql-server-express');
 const GraphQLSchema = require('./graphql');
 
 //var index = require('./routes/index');
-var users = require('./routes/users');
+var auth_route = require('./routes/auth');
 
 var app = express();
 
@@ -27,7 +27,7 @@ app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'client/build')));
 
 //app.use('/', index);
-app.use('/users', users);
+app.use('/auth',auth_route);
 
 app.use(
   '/graphiql',
