@@ -21,6 +21,9 @@ const UserSchema = mongoose.Schema(
             type: Number,
             required: true
         },
+        login: {
+            type:String,
+        },
         email: {
             type: String,
         },

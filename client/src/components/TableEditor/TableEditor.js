@@ -248,12 +248,18 @@ class TableEditor extends React.Component {
         return null;
     }
 
+    renderTableBodyRowToolbarExtra(doc,idx) {
+        return null;
+    }
+
     renderTableBodyRowToolbar(doc,idx) {
         const { classes } = this.props;
+        const extra = this.renderTableBodyRowToolbarExtra(doc,idx);
         return (
             <Toolbar disableGutters={true} classes={{root:classes.toolbar}} >
-                <Button variant="raised" style={{minWidth:"38px"}} onClick={()=>this.onOpenEditDialog(doc)}> <EditIcon/>  </Button>
-                <Button variant="raised" style={{minWidth:"38px"}} onClick={()=>this.onOpenDeleteDialog(doc)}> <DeleteIcon/>  </Button>
+                {extra}
+                <Button variant="raised" key="rt_edit" style={{minWidth:"38px"}} onClick={()=>this.onOpenEditDialog(doc)}> <EditIcon/>  </Button>
+                <Button variant="raised" key="rt_del" style={{minWidth:"38px"}} onClick={()=>this.onOpenDeleteDialog(doc)}> <DeleteIcon/>  </Button>
             </Toolbar>
         )
     }
@@ -290,7 +296,7 @@ class TableEditor extends React.Component {
             const pi = this.props.docs.docs_pages.paginationInfo;
             return (
                 <Toolbar>
-                    <Typography type="title">
+                    <Typography variant="title">
                         {this.renderHeaderLabel()}
                     </Typography>
                     <Button variant="raised" className={classes.button} style={{minWidth:"38px"}} onClick={()=>this.onOpenAddDialog()}> <AddIcon/>  </Button>
@@ -325,7 +331,7 @@ class TableEditor extends React.Component {
                             </MenuItem>
                         </Select>
                     </Typography>
-                    <Typography type="caption">
+                    <Typography variant="caption">
                         {this.renderPageInfo({
                             from: pi.totalCount === 0 ? 0 : pi.pageNo * pi.pageLength + 1,
                             to: Math.min(pi.totalCount, (pi.pageNo + 1) * pi.pageLength),
@@ -363,7 +369,7 @@ class TableEditor extends React.Component {
         } else if (this.props.docs.docs) {
             return (
                 <Toolbar>
-                    <Typography type="title">
+                    <Typography variant="title">
                         {this.renderHeaderLabel()}
                     </Typography>
                     <Button variant="raised" className={classes.button} style={{minWidth:"38px"}} onClick={()=>this.onOpenAddDialog()}> <AddIcon/>  </Button>
@@ -390,14 +396,20 @@ class TableEditor extends React.Component {
 
         )
     }
+
+    renderExtraDialogs() {
+        return null;
+    }
+
     render() {
         const { classes } = this.props;
         const dialogDel = this.renderAskDialog();
         const dialogEdit = this.renderEditDialog();
         const header = this.renderHeader();
+        const extraDlgs = this.renderExtraDialogs();
         return (
             <div className={classes.root}>
-            {dialogDel} {dialogEdit}
+            {dialogDel} {dialogEdit} {extraDlgs}
             {header}
             <Paper>
             {this.renderTable()}

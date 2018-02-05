@@ -38,6 +38,10 @@ const UserType = new GraphQL.GraphQLObjectType({
             type: GraphQLString,
             description: 'Full name of the user',
         },
+        login: {
+            type: GraphQLString,
+            description: 'Login name of the user, must unique',
+        },
         email: {
             type: GraphQLString,
             description: 'Email address of the user, must be valid and unique',

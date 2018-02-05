@@ -29,6 +29,10 @@ class UserMutation extends BaseMutation {
                 type: new GraphQLNonNull(UserRoleType),
                 description: 'User role - Admin,Reception,Doctor'
             },
+            login: {
+                type: GraphQLString,
+                description: 'Enter users login name, Must be unique',
+            },
             email: {
                 type: GraphQLString,
                 description: 'Enter users email address, Must be valid and unique',
@@ -56,6 +60,10 @@ class UserMutation extends BaseMutation {
             role: {
                 type: UserRoleType,
                 description: 'User role - Admin,Reception,Doctor'
+            },
+            login: {
+                type: GraphQLString,
+                description: 'Enter users login name, Must be unique',
             },
             email: {
                 type: GraphQLString,

@@ -3,6 +3,8 @@ import { withStyles } from 'material-ui/styles';
 import { compose } from 'react-apollo'
 import { graphql } from 'react-apollo';
 import gql from 'graphql-tag';
+import PasswordIcon from 'material-ui-icons/Https';
+import Button from 'material-ui/Button';
 import TextField from 'material-ui/TextField';
 import StatusView from './StatusView';
 import RoleView from './RoleView';
@@ -15,7 +17,17 @@ import  {
     TableRow,
 } from 'material-ui/Table'
 
+import Dialog, {
+    DialogActions,
+    DialogContent,
+    DialogContentText,
+    DialogTitle,
+} from 'material-ui/Dialog';
+import Typography from 'material-ui/Typography/Typography';
 
+
+var taiPasswordStrength = require("tai-password-strength")
+var strengthTester = new taiPasswordStrength.PasswordStrength();
 
 const LocalStyles = (theme) => ({
     xbase: {
@@ -38,6 +50,7 @@ const CurrentUsers = gql`
       id
       role
       name
+      login
       email
       status
     }
@@ -70,9 +83,27 @@ const HideUser = gql`
     }
 `;
 
+const UpdatePwdUser = gql`
+    mutation UpdatePwdUser($id: ID!, $login: String!, $password: String!) {
+        update_pwd: updateUser(id:$id,login:$login,password:$password) {
+            id
+        }
+    }
+`;
+
 
 class Users extends TableEditor {
  
+
+    constructor(props) {
+        super(props);
+        this.state.pwdOpen = false;
+        this.state.pwd = {};
+        this.state.pwd_err = {};
+        this.state.pwd_error_msg = null;
+    }
+
+
     renderAskDialogTitle(doc) {
         return "Opravdu smazat uživatele?";
     }
@@ -178,11 +209,18 @@ class Users extends TableEditor {
                 <TableCell padding={"dense"} style={{width:"0px"}}>Stav</TableCell>
                 <TableCell padding={"dense"}>Jméno</TableCell>
                 <TableCell padding={"dense"}>Role</TableCell>
-                <TableCell padding={"dense"}>Email</TableCell>
+                <TableCell padding={"dense"}>Login</TableCell>
                 <TableCell padding={"dense"}></TableCell>
             </TableRow>
         )
     }
+
+    renderTableBodyRowToolbarExtra(doc,idx) {
+        return (
+            <Button variant="raised" key="rt_password" style={{minWidth:"38px"}} onClick={()=>this.onOpenPasswordDialog(doc)}> <PasswordIcon/>  </Button>
+        )
+    }
+
 
     renderTableBodyRow(doc,idx) {
         const { classes } = this.props;
@@ -193,7 +231,7 @@ class Users extends TableEditor {
             <TableCell padding={"dense"} style={{width:"0px"}}><StatusView status={doc.status}/></TableCell>
             <TableCell padding={"dense"}>{doc.name}</TableCell>
             <TableCell padding={"dense"}><RoleView role={doc.role}/></TableCell>
-            <TableCell padding={"dense"}>{doc.email}</TableCell>
+            <TableCell padding={"dense"}>{doc.login}</TableCell>
             <TableCell padding={"dense"} classes={{root:classes.cell}}>
                 {toolbar}
             </TableCell>
@@ -214,6 +252,146 @@ class Users extends TableEditor {
         return "Uživatelé"
     }
   
+
+    onOpenPasswordDialog(doc) {
+        let nd = {}
+        Object.assign(nd,doc);
+        this.setState({pwdOpen:true,docOpen:false,delAsk:false,pwd:nd,pwd_error_msg:null})
+    }
+
+    handleCancelPwdDialog = () => {
+        this.setState({ pwdOpen: false, pwd:{},pwd_err:{} });
+    };
+
+    handleSavePwdDialog = () => {
+
+        const {pwd} = this.state;
+        this.setState({pwd_error_msg:null});
+        
+        this.props.updatePwd({
+            variables: {
+                id:pwd.id,
+                login:pwd.login,
+                password:pwd.password
+            },
+        }).then(r=>{
+            console.log(r);
+            this.setState({ pwdOpen: false, pwd:{},pwd_err:{} });
+        }).catch(e=>{
+            console.error(e);
+            this.setState({ pwd_error_msg:"Chyba ukládání: "+e})
+        })
+
+
+
+    }
+
+    checkPwdField(name,value) {
+        switch(name) {
+           // case 'login': return ((value!==null) && (value!==undefined));
+            case 'password': return ((value!==null) && (value!==undefined));
+            case 'password2': return ((value!==null) && (value!==undefined));
+                default: return true;
+            }
+        }
+
+    getPwdStrength(pwd) {
+        var results = strengthTester.check(pwd);
+        console.log(results);
+        if (results.strengthCode.indexOf('VERY_WEAK') >= 0) {
+            return false;
+        } else {
+            return true;
+        }
+    }
+    weakPwd(pwd) {
+        if (this.checkPwdField('password',pwd.password)) {
+            return !this.getPwdStrength(pwd.password);
+        }   
+        return false;
+    }
+
+    checkPwd(pwd) {
+
+        if ((pwd.login!==null) && (pwd.login!==undefined)) {
+            return this.checkPwdField('password',pwd.password)  &&
+            this.checkPwdField('password2',pwd.password2) && (pwd.password === pwd.password2) && (this.getPwdStrength(pwd.password))
+        } else {
+            return true;
+        }
+
+    }
+
+
+    handlePwdChange(name,value){
+        let { pwd, pwd_err } = this.state;
+        pwd[name]=value;
+        pwd_err[name]=!this.checkPwdField(name,value);
+        this.setState({
+          pwd:pwd,
+          pwd_err:pwd_err
+        });
+    }
+
+
+    renderExtraDialogs() {
+        const { classes } = this.props;
+        const { pwd , pwd_err} = this.state; 
+        return (
+            <Dialog open={this.state.pwdOpen} onClose={this.handleCancelPwdDialog}  aria-labelledby="pwd-dialog-title">
+                <DialogTitle id="pwd-dialog-title">Nastavení přihlášení</DialogTitle>
+                <DialogContent>
+                    <DialogContentText>
+                    Nastavení přihlašovacího jména a hesla pro uživatele {pwd.name}
+                    </DialogContentText>
+
+                    <form className={classes.form}  noValidate autoComplete="off">  
+                        <TextField className={classes.textfield}
+                            error={pwd_err.login}
+                            margin="dense"
+                            id="login"
+                            label="Přihlašovací jméno"
+                            type="text"
+                            value={TableEditor.null2empty(pwd.login)}
+                            onChange={(e)=>this.handlePwdChange("login",TableEditor.empty2null(e.target.value))}
+                        />
+                        <TextField className={classes.textfield}
+                            error={pwd_err.password}
+                            margin="dense"
+                            id="password"
+                            label="Heslo"
+                            type="password"
+                            value={TableEditor.null2empty(pwd.password)}
+                            onChange={(e)=>this.handlePwdChange("password",TableEditor.empty2null(e.target.value))}
+                        />
+                        <TextField className={classes.textfield}
+                            error={pwd_err.password2}
+                            margin="dense"
+                            id="password2"
+                            label="Heslo - opakování"
+                            type="password"
+                            value={TableEditor.null2empty(pwd.password2)}
+                            onChange={(e)=>this.handlePwdChange("password2",TableEditor.empty2null(e.target.value))}
+                        />
+                    </form>
+                    {this.weakPwd(pwd) && (<Typography color="error"> slabé heslo </Typography>)}
+                    
+
+                </DialogContent>
+                <DialogActions>
+                    <Button onClick={this.handleCancelPwdDialog} color="primary">
+                    Neukládat
+                    </Button>
+                    <Button  disabled={!this.checkPwd(this.state.pwd)} onClick={this.handleSavePwdDialog} color="primary">
+                    Uložit
+                    </Button>
+                </DialogActions>
+            </Dialog>
+        );
+
+    }
+
+
 }
 
 
@@ -226,6 +404,15 @@ export default compose(
     }),
     graphql(UpdateUser,{
         name:"updateDoc",
+        options: {
+            refetchQueries: [
+                'Users',
+              ],
+        }
+    }),
+
+    graphql(UpdatePwdUser,{
+        name:"updatePwd",
         options: {
             refetchQueries: [
                 'Users',
