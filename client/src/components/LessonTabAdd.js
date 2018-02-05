@@ -119,7 +119,7 @@ class LessonTabAdd extends React.Component {
                     helperText="maximální počet účastníků lekce, např. 10"
                 />
                 </div>
-                <Button raised disabled={!capacityvalid || !timevalid} onClick={()=>this.submitNew()}> Přidat lekci</Button>
+                <Button variant="raised" disabled={!capacityvalid || !timevalid} onClick={()=>this.submitNew()}> Přidat lekci</Button>
                 <Typography type="caption"> LessonType Id: {this.props.lessonTypeId} </Typography>
             </div>
         );

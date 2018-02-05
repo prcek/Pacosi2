@@ -385,7 +385,7 @@ class MassageRoomDay extends React.Component {
                 <Toolbar> 
                     <TimeField label={"OD"} ranges={ranges} value={this.state.newOtItem.begin} onChange={(e)=>this.handleNewOtTime("begin",e.target.value)} />
                     <TimeField label={"DO"} ranges={ranges} value={this.state.newOtItem.end} onChange={(e)=>this.handleNewOtTime("end",e.target.value)} />
-                    <Button className={classes.button} disabled={this.checkNewOt()!==null}raised onClick={this.handleNewOtTimeSave}> přidat </Button>
+                    <Button className={classes.button} disabled={this.checkNewOt()!==null} variant="raised" onClick={this.handleNewOtTimeSave}> přidat </Button>
                 </Toolbar>
                 <Typography className={classes.warn}> {this.checkNewOt()} </Typography>
             </div>
@@ -396,7 +396,7 @@ class MassageRoomDay extends React.Component {
         return (
             <Toolbar key={ot.id}> 
                 <Typography> <DateTimeView date={ot.begin} format={"HH:mm"} /> - <DateTimeView date={ot.end} format={"HH:mm"} /> </Typography>
-                <Button  className={classes.button} raised onClick={()=>this.handleOtTimeDelete(ot.id)}> smazat </Button>
+                <Button  className={classes.button} variant="raised" onClick={()=>this.handleOtTimeDelete(ot.id)}> smazat </Button>
             </Toolbar>
         )
     }

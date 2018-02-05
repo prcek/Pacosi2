@@ -252,8 +252,8 @@ class TableEditor extends React.Component {
         const { classes } = this.props;
         return (
             <Toolbar disableGutters={true} classes={{root:classes.toolbar}} >
-                <Button raised style={{minWidth:"38px"}} onClick={()=>this.onOpenEditDialog(doc)}> <EditIcon/>  </Button>
-                <Button raised style={{minWidth:"38px"}} onClick={()=>this.onOpenDeleteDialog(doc)}> <DeleteIcon/>  </Button>
+                <Button variant="raised" style={{minWidth:"38px"}} onClick={()=>this.onOpenEditDialog(doc)}> <EditIcon/>  </Button>
+                <Button variant="raised" style={{minWidth:"38px"}} onClick={()=>this.onOpenDeleteDialog(doc)}> <DeleteIcon/>  </Button>
             </Toolbar>
         )
     }
@@ -293,9 +293,9 @@ class TableEditor extends React.Component {
                     <Typography type="title">
                         {this.renderHeaderLabel()}
                     </Typography>
-                    <Button raised className={classes.button} style={{minWidth:"38px"}} onClick={()=>this.onOpenAddDialog()}> <AddIcon/>  </Button>
+                    <Button variant="raised" className={classes.button} style={{minWidth:"38px"}} onClick={()=>this.onOpenAddDialog()}> <AddIcon/>  </Button>
                     <div className={classes.spacer} />
-                    <Typography type="caption">
+                    <Typography component="div" type="caption">
                         Délka stránky:
                         <Select
                             classes={{
@@ -366,7 +366,7 @@ class TableEditor extends React.Component {
                     <Typography type="title">
                         {this.renderHeaderLabel()}
                     </Typography>
-                    <Button raised className={classes.button} style={{minWidth:"38px"}} onClick={()=>this.onOpenAddDialog()}> <AddIcon/>  </Button>
+                    <Button variant="raised" className={classes.button} style={{minWidth:"38px"}} onClick={()=>this.onOpenAddDialog()}> <AddIcon/>  </Button>
                 </Toolbar>
             )
         }else {

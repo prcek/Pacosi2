@@ -136,7 +136,7 @@ class LessonType extends React.Component {
                 {lessons}
                 </Grid>
             </Grid>
-            <Typography type="caption"> 
+            <Typography component="div" type="caption"> 
                 {sets}
                 LessonType id:{this.props.lessonTypeId}
                 {this.state.currentDate && ", selected date: "+ moment(this.state.currentDate).format()} 
