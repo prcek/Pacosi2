@@ -14,16 +14,29 @@ router.post('/login', function(req, res, next) {
   User.findOne({ login: login, hidden: {$ne: true}, status:1 }).then(r=>{
     console.log(r);
     const ok = r.comparePassword(password);
-    console.log("password is",ok);
-    res.json({
-      login:login,
-      auth_ok:ok,
-      role:r.role,
-    });
+    console.log("password ok",ok);
+    var rr = "";
+    switch (r.role) {
+      case 0: rr = "ADMIN"; break;
+      case 1: rr = "RECEPTION"; break;
+      case 2: rr = "DOCTOR"; break;
+      default: rr= "?";
+    }
+    if (ok) {
+      res.json({
+        login:login,
+        auth_ok:true,
+        role:rr,
+        name:r.name,
+      });
+    } else {
+      res.json({
+        auth_ok: false,
+      });
+    }
   }).catch(err=>{
     console.log("catch")
     res.json({
-      login: login,
       auth_ok: false,
     });
   })
