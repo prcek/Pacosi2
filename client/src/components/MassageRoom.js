@@ -94,7 +94,7 @@ class MassageRoom extends React.Component {
                 <Grid container>
                     <Grid item xs={12} sm={12} md={4} lg={3}>
                         <Toolbar classes={{root:classes.toolbar}}> 
-                        {this.props.massageroom.massageRoom  && <Typography type={"title"}>{this.props.massageroom.massageRoom.name}</Typography> }
+                        {this.props.massageroom.massageRoom  && <Typography variant="title">{this.props.massageroom.massageRoom.name}</Typography> }
                         </Toolbar>
                         <MassageRoomCal massageRoomId={this.props.massageRoomId} begin={this.state.calendarStartDate} selected={this.state.calendarDay} onSelectDay={this.handleSelectDay} onMove={this.handleCalMove}/>
                     </Grid>
@@ -104,7 +104,7 @@ class MassageRoom extends React.Component {
                 </Grid>
 
 
-            <Typography type="caption"> 
+            <Typography variant="caption"> 
                 MassageRoom id:{this.props.massageRoomId}
                 {this.state.calendarDay && ", selected date: "+ moment(this.state.calendarDay).format()} 
             </Typography>

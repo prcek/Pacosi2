@@ -155,7 +155,7 @@ class Calendar extends React.Component {
 
         return (
             <div className={classes.wrapper} key={key} onClick={()=>this.handleSelect(x)}> 
-            <div className={className}><Typography type="body2" color="inherit">{x.format("DD")}</Typography></div>
+            <div className={className}><Typography variant="body2" color="inherit">{x.format("DD")}</Typography></div>
             </div>
         )
     }
@@ -177,7 +177,7 @@ class Calendar extends React.Component {
         ]);
         return (
             <div className={className} key={key}> 
-            <div className={classes.blankCell}><Typography type="caption" >{name}</Typography></div>
+            <div className={classes.blankCell}><Typography variant="caption" >{name}</Typography></div>
             </div>
         )
     }
@@ -187,7 +187,7 @@ class Calendar extends React.Component {
         const { classes } = this.props;
         return (
             <div className={classes.wrapper} key={key} cols={7}> 
-            <div className={classes.monthRow}><Typography type="caption">{label}</Typography></div>
+            <div className={classes.monthRow}><Typography variant="caption">{label}</Typography></div>
             </div>
             
         )

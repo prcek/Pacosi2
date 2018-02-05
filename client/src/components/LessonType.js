@@ -123,7 +123,7 @@ class LessonType extends React.Component {
             <Grid container>
                 <Grid item xs={12} sm={5} md={4} lg={3}>
                     <Toolbar classes={{root:classes.toolbar}}> 
-                        {this.props.lessontype.lessonType  && <Typography type={"title"}>{this.props.lessontype.lessonType.name}</Typography> }
+                        {this.props.lessontype.lessonType  && <Typography variant="title">{this.props.lessontype.lessonType.name}</Typography> }
                     </Toolbar>
                     <Paper>
                     {cal}
@@ -131,7 +131,7 @@ class LessonType extends React.Component {
                 </Grid>
                 <Grid item xs={12} sm={7} md={8} lg={9}>
                 <Toolbar classes={{root:classes.toolbar}}> 
-                        {this.state.currentDate  && <Typography type={"title"}><DateTimeView date={this.state.currentDate}/></Typography> }
+                        {this.state.currentDate  && <Typography variant="title"><DateTimeView date={this.state.currentDate}/></Typography> }
                 </Toolbar>
                 {lessons}
                 </Grid>

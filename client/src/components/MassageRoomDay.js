@@ -409,7 +409,7 @@ class MassageRoomDay extends React.Component {
         return (
             <div>
                 <Toolbar > 
-                        <Typography type={"subheading"}> Nastavení provozní doby </Typography>
+                        <Typography variant={"subheading"}> Nastavení provozní doby </Typography>
                 </Toolbar>
                 <Divider/>
                 {ot}
@@ -436,7 +436,7 @@ class MassageRoomDay extends React.Component {
             <div>
 
                 <Toolbar classes={{root:classes.toolbar}}>
-                    <Typography type={"title"}>{this.state.massageOrder.id?"Editace masáže":"Nová masáž"}</Typography>
+                    <Typography variant="title">{this.state.massageOrder.id?"Editace masáže":"Nová masáž"}</Typography>
                     <Typography color="inherit" className={classes.flex}>&nbsp;</Typography>
                
                     <IconButton color="primary" onClick={this.handleCancelOrder} aria-label="Close">
@@ -454,7 +454,7 @@ class MassageRoomDay extends React.Component {
                         onDelete={this.handleDeleteOrder}
                     />
                 </Paper>
-                <Typography type="caption"> 
+                <Typography variant="caption"> 
                 MassageOrder id:{this.state.massageOrder.id}
                 </Typography>
 
@@ -518,7 +518,7 @@ class MassageRoomDay extends React.Component {
              <Grid container>
                 <Grid item xs={12} sm={12} md={12} lg={7}>
                     <Toolbar classes={{root:classes.toolbar}}>
-                        <Typography type={"title"}><DateTimeView date={this.props.day}/></Typography>
+                        <Typography variant="title"><DateTimeView date={this.props.day}/></Typography>
                         <Typography color="inherit" className={classes.flex}>&nbsp;</Typography>
                         {this.renderSettingsSwitch()}
                     </Toolbar>  

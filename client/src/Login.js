@@ -81,7 +81,7 @@ class Login extends React.Component {
             <div className={classes.root}> 
                 <div className={classes.wrapper}>
                     <Paper className={classes.paper}>
-                    <Typography type="title"> Přihlášení do evidence </Typography>
+                    <Typography variant="title"> Přihlášení do evidence </Typography>
                     <Divider/>
                     <form className={classes.form}  noValidate autoComplete="off">  
                         <TextField className={classes.textfield}
