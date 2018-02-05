@@ -8,6 +8,8 @@ import Paper from 'material-ui/Paper';
 import Divider from 'material-ui/Divider';
 import TextField from 'material-ui/TextField';
 import { setAuthToken } from './actions'
+import Cookies from 'js-cookie';
+import Jwt from 'jsonwebtoken';
 
 const styles = theme => ({
     root: {
@@ -54,10 +56,6 @@ class Login extends React.Component {
         return this.state.form.login!=="" && this.state.form.password!=="";
     }
 
-    checkPassword(l,p) {
-        return p === "nimda" && l === "admin";
-    }
-
     handleLogin = () => {
         let { form } = this.state;
         fetch("/auth/login",{
@@ -67,10 +65,13 @@ class Login extends React.Component {
                 'Content-Type': 'application/json'
             })
         }).then((resp) => resp.json()).then(data=>{
-            console.log("data:",data);
+            //console.log("data:",data);
             if (data.auth_ok) {
                 this.setState({wrong:false,form:form});
-                this.props.onSetAuthToken("yes"); 
+                const dt = Jwt.decode(data.auth_token);
+                console.log("auth:",dt);
+                Cookies.set('auth',data.auth_token,{ expires: new Date(dt.exp*1000)});
+                this.props.onSetAuthToken(data.auth_token); 
             } else {
                 form["password"] = "";
                 this.setState({wrong:true,form:form});

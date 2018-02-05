@@ -1,7 +1,14 @@
 var express = require('express');
 var router = express.Router();
+var jwt = require('jsonwebtoken');
+const config = require('../config');
 
 const User = require('../services/models/User');
+
+
+function gen_jwt(dict) {  
+  return jwt.sign(dict,config.auth.secret,{expiresIn: '1h'});
+}
 
 
 /* login. */
@@ -26,6 +33,7 @@ router.post('/login', function(req, res, next) {
       res.json({
         login:login,
         auth_ok:true,
+        auth_token: gen_jwt({user_id:r.id,role:rr,login:r.login}),
         role:rr,
         name:r.name,
       });
@@ -35,7 +43,7 @@ router.post('/login', function(req, res, next) {
       });
     }
   }).catch(err=>{
-    console.log("catch")
+    console.log("notfound")
     res.json({
       auth_ok: false,
     });

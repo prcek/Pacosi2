@@ -67,6 +67,7 @@ class BaseQuery {
             type: new GraphQLList(this.type),
             description: 'List all '+this.type+' records present in the database',
             resolve: (parent, args, context, info) => {
+                //console.log("context",context);
                 return this.resolver.index();
             }
         }

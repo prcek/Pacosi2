@@ -20,19 +20,21 @@ import Raven from 'raven-js';
 import LogRocket from 'logrocket';
 LogRocket.init('evmn92/pacosi');
 
-
+/*
 Raven.setDataCallback(function (data) {
     data.extra.sessionURL = LogRocket.sessionURL;
     return data;
 });
 
 Raven.config('https://168a490cc82a405caf610da4cd224ea5@sentry.io/280940').install();
+*/
+
 
 
 const client = new ApolloClient({
   // By default, this client will send queries to the
   //  `/graphql` endpoint on the same host
-  link: new HttpLink(),
+  link: new HttpLink({credentials: 'same-origin'}),
   cache: new InMemoryCache()
 });
 

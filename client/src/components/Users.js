@@ -315,7 +315,7 @@ class Users extends TableEditor {
 
         if ((pwd.login!==null) && (pwd.login!==undefined)) {
             return this.checkPwdField('password',pwd.password)  &&
-            this.checkPwdField('password2',pwd.password2) && (pwd.password === pwd.password2) && (this.getPwdStrength(pwd.password))
+            this.checkPwdField('password2',pwd.password2) && (pwd.password === pwd.password2) ;//&& (this.getPwdStrength(pwd.password))
         } else {
             return true;
         }

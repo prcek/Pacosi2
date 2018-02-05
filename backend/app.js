@@ -4,7 +4,8 @@ var favicon = require('serve-favicon');
 var logger = require('morgan');
 var cookieParser = require('cookie-parser');
 var bodyParser = require('body-parser');
-
+var jwt = require('express-jwt');
+const config = require('./config');
 
 var qraphql_se = require('graphql-server-express');
 const GraphQLSchema = require('./graphql');
@@ -35,7 +36,26 @@ app.use(
     endpointURL: '/graphql'
   })
 );
-app.use('/graphql', bodyParser.json(), qraphql_se.graphqlExpress({ schema: GraphQLSchema }));
+
+app.use('/graphql',jwt({
+  secret: config.auth.secret,
+  requestProperty: 'auth',
+  getToken: function (req) {
+    //console.log(req);
+    if (req.headers.authorization && req.headers.authorization.split(' ')[0] === 'Bearer') {
+      return req.headers.authorization.split(' ')[1];
+    } else if (req.query && req.query.token) {
+      return req.query.token;
+    } else if (req.cookies && req.cookies.auth) {
+      return req.cookies.auth;
+    }
+    return null;
+    //return "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyX2lkIjoiNWEzYmRmMTQ3YjkzMDI2MmY0YmY4YjdlIiwicm9sZSI6IlJFQ0VQVElPTiIsIm5hbWUiOiJFdmlkZW5jZSIsImxvZ2luIjoiZXZpZGVuY2UiLCJpYXQiOjE1MTc4NjEyMDgsImV4cCI6MTUxNzg2NDgwOH0.lxkGYp3wagvVevOhBuRSUxCzavz_UUiqf-RLlzW89fw";
+  },
+}));
+app.use('/graphql', bodyParser.json(), 
+  qraphql_se.graphqlExpress(req=>({ schema: GraphQLSchema, context: {auth:req.auth} }))
+);
 
 
 app.get('/r/*', (req, res) => {
