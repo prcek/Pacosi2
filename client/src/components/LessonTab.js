@@ -319,14 +319,14 @@ class LessonTab extends React.Component {
             <div className={classes.root}>
             {delAsk}
             <Toolbar>
-                <Typography type="title" className={classes.flex} noWrap> Lekce {lessonInfo.lesson_type.name} - {lessonInfo.lesson_type.location.name}, <DateTimeView date={lessonInfo.datetime} format="LLLL"/> </Typography>
+                <Typography variant="title" className={classes.flex} noWrap> Lekce {lessonInfo.lesson_type.name} - {lessonInfo.lesson_type.location.name}, <DateTimeView date={lessonInfo.datetime} format="LLLL"/> </Typography>
                 <Button raised disabled={this.state.addMode} className={classes.button} onClick={this.handleAdd}> přihlásit </Button>
                 <Button raised disabled={this.state.addMode} className={classes.button} > docházka </Button>
             </Toolbar>
             <div className={classes.panel}>
             {panel}
             </div>
-            <Typography type="caption"> Lesson Id: {this.props.lessonId} </Typography>
+            <Typography variant="caption"> Lesson Id: {this.props.lessonId} </Typography>
             </div>
         );
         

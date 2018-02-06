@@ -97,7 +97,7 @@ class LessonTabAdd extends React.Component {
 
         return (
             <div className={classes.root}>
-                <Typography type="title"> Přidání nové lekce 
+                <Typography variant="title"> Přidání nové lekce 
                     {lessonType && (<span>{" "+lessonType.name + " - " +lessonType.location.name+", "}</span>)}
                     <DateTimeView date={this.props.date} format="LL" />
                 </Typography>
@@ -120,7 +120,7 @@ class LessonTabAdd extends React.Component {
                 />
                 </div>
                 <Button variant="raised" disabled={!capacityvalid || !timevalid} onClick={()=>this.submitNew()}> Přidat lekci</Button>
-                <Typography type="caption"> LessonType Id: {this.props.lessonTypeId} </Typography>
+                <Typography variant="caption"> LessonType Id: {this.props.lessonTypeId} </Typography>
             </div>
         );
         

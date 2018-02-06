@@ -108,7 +108,7 @@ class ClientLookup extends React.Component {
         console.log("renderSuggestion")
         return (
             <MenuItem selected={isHighlighted} component="div">
-              <Typography type="body2">
+              <Typography variant="body2">
                     
                     <span>
                       {suggestion.surname}

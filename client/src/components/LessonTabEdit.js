@@ -151,8 +151,8 @@ class LessonTabEdit extends React.Component {
         return (
             <div className={classes.root}>
                 <Toolbar>
-                    <Typography type="title" className={classes.flex} noWrap> Editace lekce {lessonInfo.lesson_type.name} - {lessonInfo.lesson_type.location.name}, <DateTimeView date={lessonInfo.datetime} format="LLLL"/> </Typography>
-                    <Button raised className={classes.button} disabled={this.props.lessonInfo.lessonInfo.members_count>0} onClick={()=>this.submitDelete()}> Smazat lekci </Button>
+                    <Typography variant="title" className={classes.flex} noWrap> Editace lekce {lessonInfo.lesson_type.name} - {lessonInfo.lesson_type.location.name}, <DateTimeView date={lessonInfo.datetime} format="LLLL"/> </Typography>
+                    <Button variant="raised" className={classes.button} disabled={this.props.lessonInfo.lessonInfo.members_count>0} onClick={()=>this.submitDelete()}> Smazat lekci </Button>
                 </Toolbar>
                 <div className={classes.container}>
                 <TextField className={classes.field}
@@ -176,7 +176,7 @@ class LessonTabEdit extends React.Component {
                 <Button raised disabled={!capacityvalid || !timevalid} onClick={()=>this.submitUpdate()}>Uložit</Button>
                 </div>
 
-                <Typography type="caption"> Lesson Id: {this.props.lessonId} </Typography>
+                <Typography variant="caption"> Lesson Id: {this.props.lessonId} </Typography>
             </div>
         );
         
