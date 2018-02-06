@@ -15,11 +15,13 @@ import { Link } from 'react-router-dom';
 import { withRouter } from 'react-router';
 import { compose } from 'react-apollo'
 import { connect } from 'react-redux'
-import Cookies from 'js-cookie';
+//import Cookies from 'js-cookie';
 import { graphql } from 'react-apollo';
 import gql from 'graphql-tag';
 
-import { setLocation, setAuthToken } from './actions'
+
+import {doLogout} from './auth';
+import { setLocation } from './actions'
 
 const CurrentLocations = gql`
   query CurrentLocations {
@@ -87,8 +89,7 @@ class MenuBar extends React.Component {
     };
 
     handleLogout = () => {
-      Cookies.remove('auth');
-      this.props.onSetAuthToken("");
+      doLogout();
     };
 
     handleReportClose = () => {
@@ -238,9 +239,6 @@ const mapDispatchToProps = dispatch => {
   return {
     onSelectLocation: id => {
       dispatch(setLocation(id))
-    },
-    onSetAuthToken: token => {
-      dispatch(setAuthToken(token))
     },
   }
 }

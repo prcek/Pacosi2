@@ -4,11 +4,11 @@ import App from './App';
 import registerServiceWorker from './registerServiceWorker';
 import { BrowserRouter } from 'react-router-dom';
 
-import { applyMiddleware, createStore } from 'redux';
+//import { applyMiddleware, createStore } from 'redux';
 import { Provider } from 'react-redux';
-import reducer from './reducers';
-import { persistStore, persistReducer } from 'redux-persist';
-import storage from 'redux-persist/es/storage';
+//import reducer from './reducers';
+//import { persistStore, persistReducer } from 'redux-persist';
+//import storage from 'redux-persist/es/storage';
 import { PersistGate } from 'redux-persist/lib/integration/react';
 
 import { ApolloProvider } from 'react-apollo';
@@ -16,7 +16,7 @@ import { ApolloClient } from 'apollo-client';
 import { HttpLink } from 'apollo-link-http';
 import { InMemoryCache } from 'apollo-cache-inmemory';
 import Raven from 'raven-js';
-
+import {store,persistor} from './store';
 import LogRocket from 'logrocket';
 LogRocket.init('evmn92/pacosi');
 
@@ -38,6 +38,8 @@ const client = new ApolloClient({
   cache: new InMemoryCache()
 });
 
+
+/*
 const redux_state_version = 4;
 const psconfig = {
     key: 'root',
@@ -60,7 +62,9 @@ const store = createStore(preducer,
     applyMiddleware( LogRocket.reduxMiddleware()),
 );
 
-let persistor = persistStore(store);
+const persistor = persistStore(store);
+*/
+
 
 ReactDOM.render(
     <Provider store={store}>

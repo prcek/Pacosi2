@@ -1,15 +1,17 @@
 import React from 'react';
 import { withStyles } from 'material-ui/styles';
 import { compose } from 'react-apollo';
-import { connect } from 'react-redux'
+//import { connect } from 'react-redux'
 import Typography from 'material-ui/Typography';
 import Button from 'material-ui/Button';
 import Paper from 'material-ui/Paper';
 import Divider from 'material-ui/Divider';
 import TextField from 'material-ui/TextField';
-import { setAuthToken } from './actions'
-import Cookies from 'js-cookie';
-import Jwt from 'jsonwebtoken';
+//import { setAuthToken } from './actions'
+//import Cookies from 'js-cookie';
+//import Jwt from 'jsonwebtoken';
+
+import {doLogin} from './auth';
 
 const styles = theme => ({
     root: {
@@ -58,20 +60,9 @@ class Login extends React.Component {
 
     handleLogin = () => {
         let { form } = this.state;
-        fetch("/auth/login",{
-            method:'POST',
-            body:JSON.stringify({login:form.login,password:form.password}), 
-            headers: new Headers({
-                'Content-Type': 'application/json'
-            })
-        }).then((resp) => resp.json()).then(data=>{
-            //console.log("data:",data);
-            if (data.auth_ok) {
-                this.setState({wrong:false,form:form});
-                const dt = Jwt.decode(data.auth_token);
-                console.log("auth:",dt);
-                Cookies.set('auth',data.auth_token,{ expires: new Date(dt.exp*1000)});
-                this.props.onSetAuthToken(data.auth_token); 
+        doLogin(form.login,form.password).then(ok=>{
+            if (ok) { 
+                //this.setState({wrong:false,form:form});
             } else {
                 form["password"] = "";
                 this.setState({wrong:true,form:form});
@@ -79,20 +70,6 @@ class Login extends React.Component {
         }).catch(err=>{
             console.error("do login",err);
         })
-        //this.setState({wait:true})
-        /*
-        if (this.checkPassword(this.state.form.login,this.state.form.password)) {
-            form["password"] = "";
-            this.setState({wrong:false,form:form});
-            this.props.onSetAuthToken("yes"); 
-        } else {
-            form["password"] = "";
-            this.setState({wrong:true,form:form});
-        }
-       */
-    }
-    handleLogout = () => {
-        this.props.onSetAuthToken("");
     }
 
     render() {
@@ -134,22 +111,6 @@ class Login extends React.Component {
 }
 
 
-function mapStateToProps(state) {
-    return { 
-        auth_token: state.auth.token,
-    }
-}
-
-const mapDispatchToProps = dispatch => {
-    return {
-      onSetAuthToken: token => {
-        dispatch(setAuthToken(token))
-      },
-    }
-}
-
-
 export default compose(
     withStyles(styles),
-    connect(mapStateToProps,mapDispatchToProps),
 )(Login)

@@ -23,7 +23,7 @@ import MassagesReport from './components/MassagesReport';
 
 import TestComponent from './components/TestComponent';
 import Login from "./Login";
-
+import {isAuth} from './auth';
 
 const PageLessons = ({ match }) => (
  
@@ -110,12 +110,15 @@ const PageTest = ({ match }) => (
 
 class App extends Component {
 
-  isAuth() {
-    return this.props.auth && this.props.auth.token!=="";
+  checkAuth() {
+
+
+
+    return this.props.auth && isAuth(this.props.auth.token);
   }
 
   render() {
-    if (this.isAuth()) {
+    if (this.checkAuth()) {
       return this.renderApp();
     } else {
       return (
