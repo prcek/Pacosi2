@@ -192,12 +192,13 @@ class LessonTab extends React.Component {
         switch(name) {
             case 'surname': return ((value!==null) && (value!==undefined));
             case 'id': return ((value!==null) && (value!==undefined));
+            case 'payment': return ((value!==null) && (value!==undefined));
             default: return true;
             }
         }
 
     checkDoc(doc) {
-        return this.checkDocField('surname',this.state.doc.surname)  && this.checkDocField('id',this.state.doc.id)
+        return this.checkDocField('surname',this.state.doc.surname)  && this.checkDocField('id',this.state.doc.id) && this.checkDocField('payment',this.state.doc.payment);
     }
 
 
