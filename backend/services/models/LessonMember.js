@@ -22,6 +22,16 @@ const LessonMemberSchema = mongoose.Schema(
             type: Boolean,
             default:false
         },
+        
+        comment: {
+            type: String,
+        },
+
+        payment: {
+            type: Number,
+            default: 0,
+            required: true
+        },
 
     },
     {

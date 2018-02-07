@@ -20,6 +20,7 @@ const {
 const LessonMemberType = require('../types/LessonMember');
 const LessonMemberResolver = require('../resolvers/LessonMember');
 const BaseMutation = require('./BaseMutation');
+const PaymentType = require('../types/Payment');
 
 
 class LessonMemberMutation extends BaseMutation {
@@ -37,11 +38,22 @@ class LessonMemberMutation extends BaseMutation {
                 type: new GraphQLNonNull(GraphQLID),
                 description: 'Enter client id, Cannot be left empty',
             },
+
+            comment: {
+                type: GraphQLString,
+                description: 'Enter comment',
+            },
+
             presence: {
                 type: GraphQLBoolean,
                 description: 'Enter lesson  member presence',
-            }
-            
+            },
+
+            payment: {
+                type: new GraphQLNonNull(PaymentType),
+                description: 'Enters payment type',
+            },
+
         }
     }
 
@@ -62,8 +74,18 @@ class LessonMemberMutation extends BaseMutation {
             presence: {
                 type: GraphQLBoolean,
                 description: 'Enter presence',
-            }
+            },
             
+            payment: {
+                type: PaymentType,
+                description: 'Enters payment type',
+            },
+
+            comment: {
+                type: GraphQLString,
+                description: 'Enter comment',
+            },
+
         }
     }
 }

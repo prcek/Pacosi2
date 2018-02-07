@@ -19,6 +19,7 @@ const {
 const MassageOrderType = require('../types/MassageOrder');
 const MassageOrderResolver = require('../resolvers/MassageOrder');
 const BaseMutation = require('./BaseMutation');
+const PaymentType = require('../types/Payment');
 
 
 class MassageOrderMutation extends BaseMutation {
@@ -43,6 +44,12 @@ class MassageOrderMutation extends BaseMutation {
                 type: GraphQLString,
                 description: 'Enter order customer name',
             },
+            
+            payment: {
+                type: new GraphQLNonNull(PaymentType),
+                description: 'Enters payment type',
+            },
+
             comment: {
                 type: GraphQLString,
                 description: 'Enter comment',
@@ -72,6 +79,12 @@ class MassageOrderMutation extends BaseMutation {
                 type: GraphQLString,
                 description: 'Enter order customer name',
             },
+
+            payment: {
+                type: PaymentType,
+                description: 'Enters payment type',
+            },
+
             comment: {
                 type: GraphQLString,
                 description: 'Enter comment',

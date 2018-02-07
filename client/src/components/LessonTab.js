@@ -10,9 +10,11 @@ import Typography from 'material-ui/Typography';
 import Button from 'material-ui/Button';
 import DeleteIcon from 'material-ui-icons/Delete';
 import DateTimeView from './DateTimeView';
+import PaymentView from './PaymentView';
 import Checkbox from 'material-ui/Checkbox';
 import ClientLookup from './ClientLookup';
 import TextField from 'material-ui/TextField';
+import PaymentField from './PaymentField';
 import TableEditor from './TableEditor';
 
 import Dialog, {
@@ -32,7 +34,7 @@ const LessonInfo = gql`
   query LessonInfo($lesson_id: ID!) {
     lessonInfo(id:$lesson_id) {
         id,datetime,capacity,members {
-            id,presence,client {
+            id,presence,comment,payment,client {
               id,name,surname,phone,no
             } created_at
         }
@@ -48,8 +50,8 @@ const LessonInfo = gql`
 
 
 const AddLessonMember = gql`
-    mutation AddLessonMember($lesson_id: ID!, $client_id: ID!) {
-        add_doc: addLessonMember(lesson_id:$lesson_id,client_id:$client_id) {
+    mutation AddLessonMember($lesson_id: ID!, $client_id: ID!, $payment: Payment!, $comment:String) {
+        add_doc: addLessonMember(lesson_id:$lesson_id,client_id:$client_id,payment:$payment, comment:$comment) {
             id
         }
     }
@@ -127,7 +129,9 @@ class LessonTab extends React.Component {
         this.props.addDoc({
             variables: {
                 lesson_id:this.props.lessonId,
-                client_id:this.state.doc.id
+                client_id:this.state.doc.id,
+                payment:this.state.doc.payment,
+                comment:this.state.doc.comment
             },
         }).then(r=>{
             console.log(r);
@@ -144,7 +148,9 @@ class LessonTab extends React.Component {
             id:c.id,
             surname:c.surname,
             name:c.name,
-            phone:c.phone
+            phone:c.phone,
+            payment:c.payment,
+            comment:c.comment
         }
         this.setState({doc:newdoc,doc_err:{}})
 
@@ -250,10 +256,18 @@ class LessonTab extends React.Component {
                         onChange={(e)=>this.handleDocChange("phone",TableEditor.empty2null(e.target.value))}
                     />
 
+                    <PaymentField 
+                        // margin="dense"
+                        id="payment"
+                        label="Platba"
+                        value={TableEditor.null2empty(this.state.doc.payment)}
+                        onChange={(e)=>this.handleDocChange("payment",TableEditor.empty2null(e.target.value))}
+                    />
+
                 </form>
 
-                <Button raised className={classes.button}  disabled={!this.checkDoc(this.state.doc)} onClick={this.handleDoAdd}> Uložit </Button>
-                <Button raised className={classes.button} onClick={this.handleCancelAdd}> Zrušit </Button>
+                <Button variant="raised" className={classes.button}  disabled={!this.checkDoc(this.state.doc)} onClick={this.handleDoAdd}> Uložit </Button>
+                <Button variant="raised" className={classes.button} onClick={this.handleCancelAdd}> Zrušit </Button>
 
             </div>
 
@@ -266,17 +280,19 @@ class LessonTab extends React.Component {
         return members.map((m,i)=>(
             <TableRow hover key={m.id} classes={{root:classes.row}}>
                 <TableCell padding={"dense"} classes={{root:classes.cell}}>{i+1}</TableCell>
+                <TableCell padding={"dense"} classes={{root:classes.cell}}><DateTimeView date={m.created_at} format="LLL"/></TableCell>
                 <TableCell padding={"dense"} classes={{root:classes.cell}}>{m.client.no}</TableCell>
                 <TableCell padding={"dense"} classes={{root:classes.cell}}>{m.client.surname}</TableCell>
                 <TableCell padding={"dense"} classes={{root:classes.cell}}>{m.client.name}</TableCell>
                 <TableCell padding={"dense"} classes={{root:classes.cell}}>{m.client.phone}</TableCell>
-                <TableCell padding={"dense"} classes={{root:classes.cell}}><DateTimeView date={m.created_at} format="LLL"/></TableCell>
+                <TableCell padding={"dense"} classes={{root:classes.cell}}><PaymentView payment={m.payment}/></TableCell>
+                <TableCell padding={"dense"} classes={{root:classes.cell}}>{m.comment}</TableCell>
                 <TableCell padding={"checkbox"} classes={{root:classes.cell}}>
                     <Checkbox checked={m.presence} disabled />
                 </TableCell>
                 <TableCell padding={"dense"} classes={{root:classes.cell}}>
                     <Toolbar disableGutters={true} classes={{root:classes.toolbar}} >
-                        <Button raised style={{minWidth:"38px"}} onClick={()=>this.handleOpenDeleteDialog(m)}> <DeleteIcon/>  </Button>
+                        <Button variant="raised" style={{minWidth:"38px"}} onClick={()=>this.handleOpenDeleteDialog(m)}> <DeleteIcon/>  </Button>
                     </Toolbar>
                 </TableCell>
             </TableRow>
@@ -291,11 +307,13 @@ class LessonTab extends React.Component {
                 <TableHead>
                     <TableRow classes={{root:classes.row}}>
                         <TableCell padding={"dense"} className={classes.cell}>#</TableCell>
+                        <TableCell padding={"dense"} className={classes.cell}>Zapsán</TableCell>
                         <TableCell padding={"dense"} className={classes.cell}>Číslo</TableCell>
                         <TableCell padding={"dense"} className={classes.cell}>Přijmení</TableCell>
                         <TableCell padding={"dense"} className={classes.cell}>Jméno</TableCell>
                         <TableCell padding={"dense"} className={classes.cell}>Telefon</TableCell>
-                        <TableCell padding={"dense"} className={classes.cell}>Zapsán</TableCell>
+                        <TableCell padding={"dense"} className={classes.cell}>Platba</TableCell>
+                        <TableCell padding={"dense"} className={classes.cell}>Poznámka</TableCell>
                         <TableCell padding={"dense"} className={classes.cell}>Účast</TableCell>
                         <TableCell padding={"dense"} className={classes.cell}></TableCell>
                     </TableRow>
@@ -320,8 +338,8 @@ class LessonTab extends React.Component {
             {delAsk}
             <Toolbar>
                 <Typography variant="title" className={classes.flex} noWrap> Lekce {lessonInfo.lesson_type.name} - {lessonInfo.lesson_type.location.name}, <DateTimeView date={lessonInfo.datetime} format="LLLL"/> </Typography>
-                <Button raised disabled={this.state.addMode} className={classes.button} onClick={this.handleAdd}> přihlásit </Button>
-                <Button raised disabled={this.state.addMode} className={classes.button} > docházka </Button>
+                <Button variant="raised" disabled={this.state.addMode} className={classes.button} onClick={this.handleAdd}> přihlásit </Button>
+                <Button variant="raised" disabled={this.state.addMode} className={classes.button} > docházka </Button>
             </Toolbar>
             <div className={classes.panel}>
             {panel}

@@ -21,6 +21,9 @@ const MassageRoomResolver = require('../resolvers/MassageRoom');
 const MassageTypeType = require('./MassageType');
 const MassageTypeResolver = require('../resolvers/MassageType');
 
+const PaymentType = require('./Payment');
+
+
 const MassageOrderType = new GraphQL.GraphQLObjectType({
     name: 'MassageOrder',
     description: 'MassageOrder type for managing all the orders in our application.',
@@ -85,6 +88,11 @@ const MassageOrderType = new GraphQL.GraphQLObjectType({
             description: 'comment'
         },
  
+        payment: {
+            type: PaymentType,
+            description: 'payment type',
+        },
+
         created_at: {
             type: GraphQLDateTime,
             description: 'Date and time when this order was created',

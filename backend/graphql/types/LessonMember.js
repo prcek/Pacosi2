@@ -20,6 +20,7 @@ const LessonType = require('./Lesson');
 const LessonResolver = require('../resolvers/Lesson');
 const ClientType = require('./Client');
 const ClientResolver = require('../resolvers/Client');
+const PaymentType = require('./Payment');
 
 
 const LessonMemberType = new GraphQL.GraphQLObjectType({
@@ -62,7 +63,18 @@ const LessonMemberType = new GraphQL.GraphQLObjectType({
             type: GraphQLBoolean,
             description: 'presence'
         },
-        
+      
+        comment: {
+            type: GraphQLString,
+            description: 'comment'
+        },
+ 
+    
+        payment: {
+            type: PaymentType,
+            description: 'payment type',
+        },
+
         created_at: {
             type: GraphQLDateTime,
             description: 'Date and time when this lesson was created',

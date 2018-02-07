@@ -173,7 +173,7 @@ class LessonTabEdit extends React.Component {
                 />
                 </div>
                 <div className={classes.container}>
-                <Button raised disabled={!capacityvalid || !timevalid} onClick={()=>this.submitUpdate()}>Uložit</Button>
+                <Button variant="raised" disabled={!capacityvalid || !timevalid} onClick={()=>this.submitUpdate()}>Uložit</Button>
                 </div>
 
                 <Typography variant="caption"> Lesson Id: {this.props.lessonId} </Typography>

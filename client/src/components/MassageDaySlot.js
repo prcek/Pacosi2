@@ -5,6 +5,8 @@ import Typography from 'material-ui/Typography';
 import DateTimeView from './DateTimeView';
 import * as colors from 'material-ui/colors';
 import { compose } from 'react-apollo'
+import PaymentView from './PaymentView';
+
 var classNames = require('classnames');
 
 const styles = theme => ({
@@ -98,7 +100,7 @@ class MassageDaySlot extends React.Component {
         const time=this.renderTime(false);
         return (
             <div className={classNames(classes.inner,classes.click)} onClick={this.handleSlotClick}>
-            {time} <Typography> <b>{this.props.order.customer_name}</b>&nbsp;{this.props.order.massage_type.name} </Typography>
+            {time} <Typography> <b>{this.props.order.customer_name} </b>&nbsp;{this.props.order.massage_type.name}&nbsp;<PaymentView payment={this.props.order.payment}/></Typography>
             </div>
         )
     }

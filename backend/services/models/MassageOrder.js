@@ -22,15 +22,27 @@ const MassageOrderSchema = mongoose.Schema(
             type: Date,
             required: true
         },
-
-
+/*
+        client_id: {
+            type: Schema.Types.ObjectId,
+            ref: "Client",
+            required: true
+        },
+*/
         customer_name: {
             type: String,
         },
 
         comment: {
             type: String,
-        }
+        },
+
+        payment: {
+            type: Number,
+            default: 0,
+            required: true
+        },
+
     },
     {
         timestamps: { createdAt: 'created_at', updatedAt: 'updated_at' },
