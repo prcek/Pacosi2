@@ -17,8 +17,11 @@ import { HttpLink } from 'apollo-link-http';
 import { InMemoryCache } from 'apollo-cache-inmemory';
 import Raven from 'raven-js';
 import {store,persistor} from './store';
+import { startCron } from './cron';
 import LogRocket from 'logrocket';
 LogRocket.init('evmn92/pacosi');
+
+
 
 /*
 Raven.setDataCallback(function (data) {
@@ -79,3 +82,4 @@ ReactDOM.render(
     , document.getElementById('root'));
 
 registerServiceWorker();
+startCron();

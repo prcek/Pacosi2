@@ -24,33 +24,28 @@ const doLogin = (username,password) => {
             }
         })
     });
-/*
-    fetch("/auth/login",{
-        method:'POST',
-        body:JSON.stringify({login:form.login,password:form.password}), 
-        headers: new Headers({
-            'Content-Type': 'application/json'
-        })
-    }).then((resp) => resp.json()).then(data=>{
-        if (data.auth_ok) {
-            this.setState({wrong:false,form:form});
-            const dt = Jwt.decode(data.auth_token);
-            console.log("auth:",dt);
-            Cookies.set('auth',data.auth_token,{ expires: new Date(dt.exp*1000)});
-            this.props.onSetAuthToken(data.auth_token); 
-        } else {
-            form["password"] = "";
-            this.setState({wrong:true,form:form});
-        }
-    }).catch(err=>{
-        console.error("do login",err);
-    })
-*/
 
 }
 
 const doRelogin = () => {
-
+    const auth = store.getState().auth;
+    if (!auth) return false;
+    const token = auth.token;
+    if (!token) {
+        return false;
+    }
+    if (token==="") {
+        return false;
+    }
+    const d = Jwt.decode(token);
+    var now = new Date();
+    var exp = (d.exp*1000)-now.getTime();
+    if (exp>5000) {
+        console.log("login auth exp: ", exp/60000, "min left")
+        if (exp<60000) {
+            console.log("doRelogin TODO");
+        }
+    }
 }
 
 const doLogout = () => {
