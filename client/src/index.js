@@ -19,18 +19,24 @@ import Raven from 'raven-js';
 import {store,persistor} from './store';
 import { startCron } from './cron';
 import LogRocket from 'logrocket';
-LogRocket.init('evmn92/pacosi');
 
 
 
-/*
-Raven.setDataCallback(function (data) {
-    data.extra.sessionURL = LogRocket.sessionURL;
-    return data;
-});
+if (process.env.NODE_ENV !== 'production') {
+    console.log("DEVELOPMENT VERSION")
+} else {
+    console.log("PRODUCTION VERSION")
+    LogRocket.init('evmn92/pacosi');
 
-Raven.config('https://168a490cc82a405caf610da4cd224ea5@sentry.io/280940').install();
-*/
+    
+    Raven.setDataCallback(function (data) {
+        data.extra.sessionURL = LogRocket.sessionURL;
+        return data;
+    });
+    Raven.config('https://168a490cc82a405caf610da4cd224ea5@sentry.io/280940').install();
+
+}
+
 
 
 
