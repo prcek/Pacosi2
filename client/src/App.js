@@ -111,10 +111,7 @@ const PageTest = ({ match }) => (
 class App extends Component {
 
   checkAuth() {
-
-
-
-    return this.props.auth && isAuth(this.props.auth.token);
+    return /*this.props.auth && */isAuth();
   }
 
   render() {
