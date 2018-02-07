@@ -41,9 +41,9 @@ const doRelogin = () => {
     var now = new Date();
     var exp = (d.exp*1000)-now.getTime();
     if (exp>5000) {
-        console.log("login auth exp: ", exp/60000, "min left")
+        //console.log("login auth exp: ", exp/60000, "min left")
         if (exp<120000) {
-            console.log("doRelogin TODO");
+            console.log("doRelogin");
 
             fetch("/auth/relogin",{
                 method:'POST',
