@@ -55,7 +55,7 @@ class MassageOrder extends React.Component {
         const { classes } = this.props;
         var ranges = [];
         var m = moment(this.props.massageOrder.begin).startOf('day').add(7,'hours');
-        var m2 = moment(m).add(780,'minutes');
+        var m2 = moment(m).add(840,'minutes');
         ranges.push({begin:m.toDate(),end:m2.toDate()});
 
 

@@ -376,7 +376,7 @@ class MassageRoomDay extends React.Component {
 
         var ranges = [];
         var m = moment(this.props.day).startOf('day').add(7,'hours');
-        var m2 = moment(m).add(780,'minutes');
+        var m2 = moment(m).add(840,'minutes');
         ranges.push({begin:m.toDate(),end:m2.toDate()});
 
 
