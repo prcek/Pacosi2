@@ -256,6 +256,15 @@ class LessonTab extends React.Component {
                         onChange={(e)=>this.handleDocChange("phone",TableEditor.empty2null(e.target.value))}
                     />
 
+                    <TextField className={classes.textfield}
+                        margin="dense"
+                        id="comment"
+                        label="Poznámka"
+                        type="text"
+                        value={TableEditor.null2empty(this.state.doc.comment)}
+                        onChange={(e)=>this.handleDocChange("comment",TableEditor.empty2null(e.target.value))}
+                    />
+
                     <PaymentField 
                         // margin="dense"
                         id="payment"
