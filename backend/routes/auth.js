@@ -10,6 +10,23 @@ function gen_jwt(dict) {
   return jwt.sign(dict,config.auth.secret,{expiresIn: '1h'});
 }
 
+function genAuthDict(user) {
+  var rr = "";
+  switch (user.role) {
+    case 0: rr = "ADMIN"; break;
+    case 1: rr = "RECEPTION"; break;
+    case 2: rr = "DOCTOR"; break;
+    default: rr= "?";
+  }
+  return {
+    login:user.login,
+    auth_ok:true,
+    auth_token: gen_jwt({user_id:user.id,role:rr,login:user.login}),
+    role:rr,
+    name:user.name,
+  }
+}
+
 
 /* login. */
 router.post('/login', function(req, res, next) {
@@ -22,21 +39,8 @@ router.post('/login', function(req, res, next) {
     console.log(r);
     const ok = r.comparePassword(password);
     console.log("password ok",ok);
-    var rr = "";
-    switch (r.role) {
-      case 0: rr = "ADMIN"; break;
-      case 1: rr = "RECEPTION"; break;
-      case 2: rr = "DOCTOR"; break;
-      default: rr= "?";
-    }
     if (ok) {
-      res.json({
-        login:login,
-        auth_ok:true,
-        auth_token: gen_jwt({user_id:r.id,role:rr,login:r.login}),
-        role:rr,
-        name:r.name,
-      });
+      res.json(genAuthDict(r));
     } else {
       res.json({
         auth_ok: false,
@@ -50,6 +54,37 @@ router.post('/login', function(req, res, next) {
   })
 
 
+});
+
+
+router.post('/relogin', function(req, res, next) {
+  console.log("DO RELOGIN");
+  const token = req.body.token;
+  //console.log("token",token)
+
+
+  jwt.verify(token, config.auth.secret, function(err, decoded) {
+    if (err) {
+      res.json({
+        auth_ok:false
+      })
+    } else {
+      console.log(decoded);
+      User.findOne({ _id: decoded.user_id, hidden: {$ne: true}, status:1 }).then(r=>{
+        //console.log(r._id);
+        res.json(genAuthDict(r));
+      }).catch(err=>{
+        console.log("notfound")
+        res.json({
+          auth_ok: false,
+        });
+      })
+    }
+   
+  });
+
+ 
+ 
 });
 
 module.exports = router;

@@ -42,8 +42,26 @@ const doRelogin = () => {
     var exp = (d.exp*1000)-now.getTime();
     if (exp>5000) {
         console.log("login auth exp: ", exp/60000, "min left")
-        if (exp<60000) {
+        if (exp<120000) {
             console.log("doRelogin TODO");
+
+            fetch("/auth/relogin",{
+                method:'POST',
+                body:JSON.stringify({token:token}), 
+                headers: new Headers({
+                    'Content-Type': 'application/json'
+                })
+            }).then((resp) => resp.json()).then(data=>{
+                if (data.auth_ok) {
+                    const dt = Jwt.decode(data.auth_token);
+                    Cookies.set('auth',data.auth_token,{ expires: new Date(dt.exp*1000)});
+                    store.dispatch(setAuthToken(data.auth_token));
+                } else {
+                    console.log("relogin no auth")
+                }
+            }).catch(err=>{
+                console.log("relogin failed");
+            })
         }
     }
 }

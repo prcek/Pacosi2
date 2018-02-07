@@ -6,4 +6,11 @@ router.get('/', function(req, res, next) {
   res.render('index', { title: 'Express' });
 });
 
+router.get('/ping', function(req, res, next) {
+  res.json({
+    pong:true
+  })
+});
+
+
 module.exports = router;
