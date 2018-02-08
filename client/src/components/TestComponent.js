@@ -7,6 +7,7 @@ import { findDOMNode } from 'react-dom'
 import Popover from 'material-ui/Popover';
 import TextField from 'material-ui/TextField';
 import CalendarIcon from 'material-ui-icons/Today';
+import ClearIcon from 'material-ui-icons/Clear';
 import IconButton from 'material-ui/IconButton';
 import Calendar from './Calendar';
 import Moment from 'moment';
@@ -25,6 +26,9 @@ const styles = theme => ({
     textfield: {
         //margin: theme.spacing.unit
     },
+    iconbutton: {
+        width: '30px'
+    }
 
 });
 
@@ -32,33 +36,32 @@ const styles = theme => ({
 class TestComponent extends React.Component {
  
     state = {
-        focus:false,
         open:false,
         anchorEl:null,
         startDay: moment(),
         valueDay: null,
     }
 
+    handleClear = () => {
+        this.setState({valueDay:null})
+    }
     handleClick = () => {
-        const { open } = this.state
-        this.setState({
-            open: !open,
-            anchorEl: findDOMNode(this.input),
-        })
+        const { open , valueDay} = this.state
+
+        if (!open) {
+            this.setState({
+                open: true,
+                startDay: valueDay?valueDay:moment(),
+                anchorEl: findDOMNode(this.input),
+            })
+        } else {
+            this.setState({
+                open: false,
+            })
+        }
+
     }
 
-    handleFocus = () => {
-        this.setState({
-            focus:true,
-            anchorEl: findDOMNode(this.input),
-        })
-    }
-    handleBlur = () => {
-        this.setState({
-            focus:false,
-            anchorEl:null,
-        })
-    }
 
     handleClose = () => {
         this.setState({open:false,anchorEl:null})
@@ -90,6 +93,7 @@ class TestComponent extends React.Component {
         }
         return (
             <div> 
+                <span> xxxxx </span>
                 <FormControl className={classes.textfield} 
                     ref={node => {
                         this.input = node;
@@ -98,17 +102,20 @@ class TestComponent extends React.Component {
                     <InputLabel htmlFor={"div_id"}>Label</InputLabel>
                     
                     <Input 
-                    onClick={this.handleClick}
-                        onFocus={this.handleFocus} 
-                        onBlur={this.handleBlur} 
+                        //onClick={this.handleClick}
                         name={"name"} 
                         id={"div_id"} 
                         value={val} 
-                        style={{width:300}}  
-                        inputProps={{readOnly:true}}
+                        style={{width:280}}  
+                        inputProps={{readOnly:true,onClick:this.handleClick}}
                         endAdornment={
                             <InputAdornment position="end">
-                                <IconButton >
+                                {this.state.valueDay && (
+                                    <IconButton className={classes.iconbutton} onClick={this.handleClear}>
+                                        <ClearIcon/>
+                                    </IconButton>
+                                )}
+                                 <IconButton  className={classes.iconbutton} onClick={this.handleClick}>
                                     <CalendarIcon/>
                                  </IconButton>
                             </InputAdornment>
@@ -120,7 +127,7 @@ class TestComponent extends React.Component {
                         onClose={this.handleClose}
                         anchorOrigin={{vertical:"bottom",horizontal:"left"}}
                     >
-                    <div style={{width:300}}  > 
+                    <div style={{width:280}}  > 
                         <Calendar 
                             startDay={this.state.startDay}
                             onForward={this.handleNextWeek} 
