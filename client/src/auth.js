@@ -38,6 +38,13 @@ const doRelogin = () => {
         return false;
     }
     const d = Jwt.decode(token);
+    if (!d) {
+        return false;
+    }
+    if (!d.exp) {
+        return false;
+    }
+
     var now = new Date();
     var exp = (d.exp*1000)-now.getTime();
     if (exp>5000) {
@@ -83,6 +90,12 @@ const isAuth = () => {
     }
 
     const d = Jwt.decode(token);
+    if (!d) {
+        return false;
+    }
+    if (!d.exp) {
+        return false;
+    }
     var now = new Date();
     var exp = (d.exp*1000)-now.getTime();
     return exp>0;
