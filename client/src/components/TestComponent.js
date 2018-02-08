@@ -1,34 +1,17 @@
 import React from 'react';
 import { withStyles } from 'material-ui/styles';
 import { compose } from 'react-apollo';
-import Input, { InputLabel, InputAdornment } from 'material-ui/Input';
-import { FormControl } from 'material-ui/Form';
-import { findDOMNode } from 'react-dom'
-import Popover from 'material-ui/Popover';
-import TextField from 'material-ui/TextField';
-import CalendarIcon from 'material-ui-icons/Today';
-import ClearIcon from 'material-ui-icons/Clear';
-import IconButton from 'material-ui/IconButton';
-import Calendar from './Calendar';
-import Moment from 'moment';
-const MomentRange = require('moment-range');
-
-const moment = MomentRange.extendMoment(Moment);
-require("moment/min/locales.min");
-moment.locale('cs');
-
+import DateField from './DateField';
+import RoleField from './RoleField';
 
 const styles = theme => ({
     root: {
       marginTop: theme.spacing.unit * 3,
-      width: '200px',
+      width: '100%',
     },
     textfield: {
         //margin: theme.spacing.unit
     },
-    iconbutton: {
-        width: '30px'
-    }
 
 });
 
@@ -36,116 +19,25 @@ const styles = theme => ({
 class TestComponent extends React.Component {
  
     state = {
-        open:false,
-        anchorEl:null,
-        startDay: moment(),
-        valueDay: null,
+        valueDate: null,
+        valueDate2: null,
     }
 
-    handleClear = () => {
-        this.setState({valueDay:null})
+    handleDateChange = (d) => {
+        this.setState({valueDate:d})
     }
-    handleClick = () => {
-        const { open , valueDay} = this.state
-
-        if (!open) {
-            this.setState({
-                open: true,
-                startDay: valueDay?valueDay:moment(),
-                anchorEl: findDOMNode(this.input),
-            })
-        } else {
-            this.setState({
-                open: false,
-            })
-        }
-
+    handleDateChange2 = (d) => {
+        this.setState({valueDate2:d})
     }
-
-
-    handleClose = () => {
-        this.setState({open:false,anchorEl:null})
-    }
-
-    handleSelectDay = (d) => {
-        this.setState({valueDay:d,open:false})
-    }
-
-    handleNextWeek = () => {
-        const d = moment(this.state.startDay).add(7,'days').toDate();
-        this.setState({startDay:d});
-    };
-    handlePrevWeek = () => {
-        const d = moment(this.state.startDay).subtract(7,'days').toDate();
-        this.setState({startDay:d});
-    };
-    handleTodayWeek = () => {
-        const d = moment().startOf('week');
-        this.setState({startDay:d});
-    };
-
 
     render() {
         const { classes } = this.props;
-        var val = ""
-        if (this.state.valueDay) {
-            val = this.state.valueDay.format("LL");
-        }
         return (
-            <div> 
-                <span> xxxxx </span>
-                <FormControl className={classes.textfield} 
-                    ref={node => {
-                        this.input = node;
-                    }} 
-                >
-                    <InputLabel htmlFor={"div_id"}>Label</InputLabel>
-                    
-                    <Input 
-                        //onClick={this.handleClick}
-                        name={"name"} 
-                        id={"div_id"} 
-                        value={val} 
-                        style={{width:280}}  
-                        inputProps={{readOnly:true,onClick:this.handleClick}}
-                        endAdornment={
-                            <InputAdornment position="end">
-                                {this.state.valueDay && (
-                                    <IconButton className={classes.iconbutton} onClick={this.handleClear}>
-                                        <ClearIcon/>
-                                    </IconButton>
-                                )}
-                                 <IconButton  className={classes.iconbutton} onClick={this.handleClick}>
-                                    <CalendarIcon/>
-                                 </IconButton>
-                            </InputAdornment>
-                        }
-                    />
-                    <Popover 
-                        open={this.state.open}
-                        anchorEl={this.state.anchorEl}
-                        onClose={this.handleClose}
-                        anchorOrigin={{vertical:"bottom",horizontal:"left"}}
-                    >
-                    <div style={{width:280}}  > 
-                        <Calendar 
-                            startDay={this.state.startDay}
-                            onForward={this.handleNextWeek} 
-                            onBackward={this.handlePrevWeek}
-                            onToday={this.handleTodayWeek}
-                            onSelect={this.handleSelectDay}
-                            selectedDay={this.state.valueDay}
-                        /> 
-                    </div>
-                    </Popover>
-
-                </FormControl>
-                <TextField
-                    id="name"
-                    label="Name"
-                    className={classes.textField}
-                    value={"this.state.name"}
-                />
+            <div>
+            <DateField id="xx" name="xxxx" value={this.state.valueDate} onChange={this.handleDateChange}/>
+            <DateField id="xx2" name="xxxx2" value={this.state.valueDate2} onChange={this.handleDateChange2}/>
+            <div>{this.state.valueDate} </div>
+            <RoleField value=""/>
             </div>
         )
     }
