@@ -3,11 +3,11 @@ import { withStyles } from 'material-ui/styles';
 import { compose } from 'react-apollo';
 import DateField from './DateField';
 import RoleField from './RoleField';
-import ClientLookup from './ClientLookup2';
+//import ClientLookup from './ClientLookup2';
 //import Divider from 'material-ui/Divider';
 import ClientView from './ClientView';
 import ClientField from './ClientField';
-import Paper from 'material-ui/Paper';
+//import Paper from 'material-ui/Paper';
 
 const styles = theme => ({
     root: {
@@ -44,11 +44,6 @@ class TestComponent extends React.Component {
         return (
             <div>
             
-            <div style={{width:400}}>
-            <Paper>
-            <ClientLookup />
-            </Paper>
-            </div>
 
 
 

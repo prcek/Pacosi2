@@ -131,7 +131,7 @@ class ClientLookup extends React.Component {
 
 ClientLookup.propTypes = {
     classes: PropTypes.object.isRequired,
-    onSelect: PropTypes.func,
+    onSelect: PropTypes.func.isRequired,
 }
 
 export default withApollo(compose(
