@@ -237,7 +237,7 @@ class LessonTab extends React.Component {
                     />
 
                     <PaymentField 
-                        // margin="dense"
+                        margin="dense"
                         id="payment"
                         label="Platba"
                         value={TableEditor.null2empty(this.state.doc.payment)}
