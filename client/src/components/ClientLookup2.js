@@ -12,7 +12,7 @@ import { MenuItem, MenuList } from 'material-ui/Menu';
 
 const styles = theme => ({
     root: {
-        width: '100%',
+        width: '400px',
         borderStyle: 'solid',
         borderColor: 'green',
         borderWidth: 'thin',
@@ -96,6 +96,7 @@ class ClientLookup extends React.Component {
 
     onSuggestClick = (client) => {
         console.log("ClientLookup.onSuggestClick",client)
+        this.props.onSelect(client);
     }
 
     renderSuggestions() {
@@ -118,16 +119,19 @@ class ClientLookup extends React.Component {
         const input = this.renderInput();
         const suggestions = this.renderSuggestions();
         return (
+           
             <div className={classes.root}> 
                 {input}
                 {suggestions}
             </div>
+        
         )
     }
 }
 
 ClientLookup.propTypes = {
     classes: PropTypes.object.isRequired,
+    onSelect: PropTypes.func,
 }
 
 export default withApollo(compose(
