@@ -21,22 +21,25 @@ const styles = theme => ({
     textfield: {
         margin: theme.spacing.unit
     },
+    /*
     gridList: {
         width: "100%",
         height: 100,
     },
+    */
 
-    gridItem: {
-        display: "flex",
-        justifyContent: "left", /* align horizontal */
-        alignItems: "center",
+    //gridItem: {
+    //    display: "flex",
+    //    justifyContent: "left", /* align horizontal */
+   //     alignItems: "center",
         //borderStyle: 'solid',
         //borderColor: 'green',
         //borderWidth: 'thin',
-    },
+    //},
+    
     menuList: {
         width: "100%",
-        height: 200,
+        height: 300,
         overflowY:"auto"
     },
     menuItem: {
