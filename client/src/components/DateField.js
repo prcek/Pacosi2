@@ -125,6 +125,7 @@ class DateField extends React.Component {
                         anchorEl={this.state.anchorEl}
                         onClose={this.handleClose}
                         anchorOrigin={{vertical:"bottom",horizontal:"left"}}
+                        disableRestoreFocus
                 >
                     <Calendar 
                         startDay={this.state.startDay}
