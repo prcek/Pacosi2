@@ -13,9 +13,9 @@ import { MenuItem, MenuList } from 'material-ui/Menu';
 const styles = theme => ({
     root: {
         width: '400px',
-        borderStyle: 'solid',
-        borderColor: 'green',
-        borderWidth: 'thin',
+      //  borderStyle: 'solid',
+      //  borderColor: 'green',
+      //  borderWidth: 'thin',
         padding: "5px"
     },
     textfield: {
