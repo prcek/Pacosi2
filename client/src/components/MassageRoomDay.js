@@ -42,11 +42,11 @@ const MassageRoomDayPlan = gql`
           id,begin,end
       }
       massage_orders {
-        id massage_type {name length} massage_type_id begin customer_name comment payment
+        id massage_type {name length} massage_type_id begin client_id comment payment
       }
       status 
       slots {
-          date break free order {id massage_type {name length} massage_type_id begin customer_name comment payment} len clen
+          date break free order {id massage_type {name length} massage_type_id begin client_id client {id, name,surname,phone, no} comment payment} len clen
       }
       massage_types {
         id name length hidden
@@ -74,16 +74,16 @@ const DeleteOpeningTime = gql`
 
 
 const AddMassageOrder = gql`
-    mutation AddMassageOrder($massage_room_id: ID! $massage_type_id: ID! $begin: DateTime!, $customer_name: String!, $comment: String,  $payment: Payment!) {
-        addMassageOrder(massage_room_id:$massage_room_id, massage_type_id:$massage_type_id, begin:$begin,customer_name:$customer_name, comment:$comment, payment:$payment) {
+    mutation AddMassageOrder($massage_room_id: ID! $massage_type_id: ID! $begin: DateTime!, $client_id: ID!, $comment: String,  $payment: Payment!) {
+        addMassageOrder(massage_room_id:$massage_room_id, massage_type_id:$massage_type_id, begin:$begin,client_id:$client_id, comment:$comment, payment:$payment) {
             id
         }
     }
 `;
 
 const UpdateMassageOrder = gql`
-    mutation UpdateMassageOrder($id: ID! $massage_type_id: ID $begin: DateTime, $customer_name: String, $comment: String, $payment: Payment) {
-        updateMassageOrder(id:$id, massage_type_id:$massage_type_id, begin:$begin,customer_name:$customer_name, comment:$comment, payment:$payment) {
+    mutation UpdateMassageOrder($id: ID! $massage_type_id: ID $begin: DateTime, $client_id: ID, $comment: String, $payment: Payment) {
+        updateMassageOrder(id:$id, massage_type_id:$massage_type_id, begin:$begin,client_id:$client_id, comment:$comment, payment:$payment) {
             id
         }
     }
@@ -229,7 +229,7 @@ class MassageRoomDay extends React.Component {
                 massage_room_id: this.props.massageRoomId,
                 begin:order.begin,
                 massage_type_id: order.massage_type_id,
-                customer_name: order.customer_name,
+                client_id: order.client_id,
                 comment: order.comment,
                 payment: order.payment,
             }
@@ -258,7 +258,7 @@ class MassageRoomDay extends React.Component {
                 id: this.state.massageOrder.id,
                 massage_type_id: this.state.massageOrder.massage_type_id,
                 begin: this.state.massageOrder.begin,
-                customer_name: this.state.massageOrder.customer_name,
+                client_id: this.state.massageOrder.client_id,
                 comment: this.state.massageOrder.comment,
                 payment: this.state.massageOrder.payment
             }}).then(({ data }) => {
@@ -274,7 +274,7 @@ class MassageRoomDay extends React.Component {
                 massage_room_id: this.state.massageOrder.massage_room_id,
                 massage_type_id: this.state.massageOrder.massage_type_id,
                 begin: this.state.massageOrder.begin,
-                customer_name: this.state.massageOrder.customer_name,
+                client_id: this.state.massageOrder.client_id,
                 comment: this.state.massageOrder.comment,
                 payment: this.state.massageOrder.payment
             }}).then(({ data }) => {
@@ -353,7 +353,7 @@ class MassageRoomDay extends React.Component {
         console.log("CHECK ORDER",order);
         if (!order.begin) { return false;}
         if (!moment(order.begin).isSame(this.props.day,"day")) {return false;}
-        if (!order.customer_name) { return false;}
+        if (!order.client_id) { return false;}
         if (!order.payment) { return false;}
         if (!order.massage_type_id) { return false;}
         const massageType = this.getMassageType(order.massage_type_id);

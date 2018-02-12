@@ -95,7 +95,7 @@ class ClientField extends React.Component {
                     name={this.props.name} 
                     id={this.props.id} 
                     value={val?val:""} 
-                    style={{width:400}}  
+                    style={{width:350}}  
                     inputProps={{readOnly:true,onClick:this.handleClick}}
                     endAdornment={
                         <InputAdornment position="end">
@@ -110,7 +110,7 @@ class ClientField extends React.Component {
                         </InputAdornment>
                     }
                 />
-                <Popover style={{width:400}}
+                <Popover style={{width:350}}
                         open={this.state.open}
                         anchorEl={this.state.anchorEl}
                         onClose={this.handleClose}

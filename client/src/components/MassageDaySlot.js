@@ -98,9 +98,11 @@ class MassageDaySlot extends React.Component {
     renderSlot() {
         const { classes } = this.props;
         const time=this.renderTime(false);
+        const clientname = this.props.order.client?this.props.order.client.surname+" "+this.props.order.client.name:"";
+
         return (
             <div className={classNames(classes.inner,classes.click)} onClick={this.handleSlotClick}>
-            {time} <Typography> <b>{this.props.order.customer_name} </b>&nbsp;{this.props.order.massage_type.name}&nbsp;<PaymentView payment={this.props.order.payment}/></Typography>
+            {time} <Typography> <b>{clientname} </b>&nbsp;{this.props.order.massage_type.name}&nbsp;<PaymentView payment={this.props.order.payment}/></Typography>
             </div>
         )
     }

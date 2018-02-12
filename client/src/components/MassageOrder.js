@@ -6,6 +6,7 @@ import MassageTypeField from './MassageTypeField'
 //import Typography from 'material-ui/Typography';
 import TimeField from './TimeField';
 import TextField from 'material-ui/TextField';
+import ClientField from './ClientField';
 import Button from 'material-ui/Button';
 import PaymentField from './PaymentField';
 import Toolbar from 'material-ui/Toolbar';
@@ -82,14 +83,15 @@ class MassageOrder extends React.Component {
                 />
 
 
-                <TextField className={classes.textfield}
+
+                <ClientField className={classes.textfield}
                     // autoFocus§
                     //  margin="dense"
-                    id="lt_name"
-                    label="Jméno"
+                    id="lt_client"
+                    label="Klient"
                     type="text"
-                    value={null2empty(this.props.massageOrder.customer_name)}
-                    onChange={(e)=>this.props.onMassageOrderChange("customer_name",empty2null(e.target.value))}
+                    value={this.props.massageOrder.client_id}
+                    onChange={(cid)=>this.props.onMassageOrderChange("client_id",cid)}
                 />
 
                 <PaymentField 

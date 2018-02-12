@@ -12,7 +12,7 @@ import { MenuItem, MenuList } from 'material-ui/Menu';
 
 const styles = theme => ({
     root: {
-        width: '400px',
+        width: '350px',
       //  borderStyle: 'solid',
       //  borderColor: 'green',
       //  borderWidth: 'thin',

@@ -20,6 +20,8 @@ const MassageRoomType = require('./MassageRoom');
 const MassageRoomResolver = require('../resolvers/MassageRoom');
 const MassageTypeType = require('./MassageType');
 const MassageTypeResolver = require('../resolvers/MassageType');
+const ClientType = require('./Client');
+const ClientResolver = require('../resolvers/Client');
 
 const PaymentType = require('./Payment');
 
@@ -78,10 +80,20 @@ const MassageOrderType = new GraphQL.GraphQLObjectType({
             description: 'Begin time',
         },
 
-        customer_name: {
-            type: GraphQLString,
-            description: 'customer name'
+
+        client_id: {
+            type: GraphQLID,
+            description: 'client id',
         },
+
+        client: {
+            type: ClientType,
+            description: 'client',
+            resolve(parent, args, context, info) {
+                return ClientResolver.single({ id: parent.client_id });
+            }
+        },
+
 
         comment: {
             type: GraphQLString,
