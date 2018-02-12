@@ -265,6 +265,7 @@ export default compose(
         options: {
             refetchQueries: [
                 'Clients',
+                'Client'
               ],
         }
     }),
@@ -274,6 +275,7 @@ export default compose(
         options: {
             refetchQueries: [
                 'Clients',
+                'Client'
               ],
         }
     }),
@@ -282,6 +284,7 @@ export default compose(
         options: {
             refetchQueries: [
                 'Clients',
+                'Client'
               ],
         }
     }),

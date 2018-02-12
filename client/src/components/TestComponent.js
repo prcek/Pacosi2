@@ -5,6 +5,7 @@ import DateField from './DateField';
 import RoleField from './RoleField';
 import ClientLookup2 from './ClientLookup2';
 //import Divider from 'material-ui/Divider';
+import ClientView from './ClientView';
 import Paper from 'material-ui/Paper';
 
 const styles = theme => ({
@@ -43,7 +44,8 @@ class TestComponent extends React.Component {
             <ClientLookup2 />
             </Paper>
             </div>
-           
+            <ClientView client_id="5a4e0f95c8495915be856e65" />
+            <ClientView  />
             <DateField id="xx" name="xxxx" value={this.state.valueDate} onChange={this.handleDateChange}/>
             <DateField id="xx2" name="xxxx2" value={this.state.valueDate2} onChange={this.handleDateChange2}/>
             <div>{this.state.valueDate} </div>
