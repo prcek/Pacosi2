@@ -9,7 +9,7 @@ import Popover from 'material-ui/Popover';
 import SearchIcon from 'material-ui-icons/Search';
 import ClearIcon from 'material-ui-icons/Clear';
 import IconButton from 'material-ui/IconButton';
-import ClientLookup from './ClientLookup2';
+import ClientLookup from './ClientLookup';
 import { graphql } from 'react-apollo';
 import gql from 'graphql-tag';
 

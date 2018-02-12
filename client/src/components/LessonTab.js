@@ -12,7 +12,7 @@ import DeleteIcon from 'material-ui-icons/Delete';
 import DateTimeView from './DateTimeView';
 import PaymentView from './PaymentView';
 import Checkbox from 'material-ui/Checkbox';
-import ClientLookup from './ClientLookup';
+import ClientField from './ClientField';
 import TextField from 'material-ui/TextField';
 import PaymentField from './PaymentField';
 import TableEditor from './TableEditor';
@@ -129,7 +129,7 @@ class LessonTab extends React.Component {
         this.props.addDoc({
             variables: {
                 lesson_id:this.props.lessonId,
-                client_id:this.state.doc.id,
+                client_id:this.state.doc.client_id,
                 payment:this.state.doc.payment,
                 comment:this.state.doc.comment
             },
@@ -143,18 +143,7 @@ class LessonTab extends React.Component {
 
 
     }
-    handleSelect = (c) => {
-        const newdoc = {
-            id:c.id,
-            surname:c.surname,
-            name:c.name,
-            phone:c.phone,
-            payment:c.payment,
-            comment:c.comment
-        }
-        this.setState({doc:newdoc,doc_err:{}})
 
-    }
     handleDocChange(name,value){
         let { doc, doc_err } = this.state;
         doc[name]=value;
@@ -190,15 +179,14 @@ class LessonTab extends React.Component {
 
     checkDocField(name,value) {
         switch(name) {
-            case 'surname': return ((value!==null) && (value!==undefined));
-            case 'id': return ((value!==null) && (value!==undefined));
+            case 'client_id': return ((value!==null) && (value!==undefined));
             case 'payment': return ((value!==null) && (value!==undefined));
             default: return true;
             }
         }
 
     checkDoc(doc) {
-        return this.checkDocField('surname',this.state.doc.surname)  && this.checkDocField('id',this.state.doc.id) && this.checkDocField('payment',this.state.doc.payment);
+        return  this.checkDocField('client_id',this.state.doc.client_id) && this.checkDocField('payment',this.state.doc.payment);
     }
 
 
@@ -229,32 +217,14 @@ class LessonTab extends React.Component {
         const { classes } = this.props;
         return (
             <div> 
-                <ClientLookup onSelect={this.handleSelect}/>
                 <form className={classes.form}  noValidate autoComplete="off">  
-                    <TextField className={classes.textfield}
+                    <ClientField className={classes.textfield}
                         error={this.state.doc_err.surname}
                         margin="dense"
-                        id="surname"
-                        label="Přijmení"
-                        type="text"
-                        value={TableEditor.null2empty(this.state.doc.surname)}
-                        onChange={(e)=>this.handleDocChange("surname",TableEditor.empty2null(e.target.value))}
-                    />
-                    <TextField className={classes.textfield}
-                        margin="dense"
-                        id="name"
-                        label="Jméno"
-                        type="text"
-                        value={TableEditor.null2empty(this.state.doc.name)}
-                        onChange={(e)=>this.handleDocChange("name",TableEditor.empty2null(e.target.value))}
-                    />
-                    <TextField className={classes.textfield}
-                        margin="dense"
-                        id="phone"
-                        label="Telefon"
-                        type="text"
-                        value={TableEditor.null2empty(this.state.doc.phone)}
-                        onChange={(e)=>this.handleDocChange("phone",TableEditor.empty2null(e.target.value))}
+                        id="client"
+                        label="Klient"
+                        value={this.state.doc.client_id}
+                        onChange={(cid)=>this.handleDocChange("client_id",cid)}
                     />
 
                     <TextField className={classes.textfield}

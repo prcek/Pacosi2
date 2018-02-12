@@ -1,51 +1,56 @@
 import React from 'react';
 import { withStyles } from 'material-ui/styles';
+//import { fade } from 'material-ui/styles/colorManipulator';
 import PropTypes from 'prop-types';
 import Typography from 'material-ui/Typography';
 import { compose } from 'react-apollo'
-//import { graphql } from 'react-apollo';
 import gql from 'graphql-tag';
 import { withApollo } from 'react-apollo';
 import TextField from 'material-ui/TextField';
-import Paper from 'material-ui/Paper';
-import { MenuItem } from 'material-ui/Menu';
-import Autosuggest from 'react-autosuggest';
+//import GridList  from 'material-ui/GridList';
+import { MenuItem, MenuList } from 'material-ui/Menu';
 
 const styles = theme => ({
     root: {
-      marginTop: theme.spacing.unit * 3,
-      width: '100%',
+        width: '400px',
+      //  borderStyle: 'solid',
+      //  borderColor: 'green',
+      //  borderWidth: 'thin',
+        padding: "5px"
     },
-    container: {
-        flexGrow: 1,
-        position: 'relative',
-        height: 200,
-      },
-      suggestionsContainerOpen: {
-        position: 'absolute',
-        marginTop: theme.spacing.unit,
-        marginBottom: theme.spacing.unit * 3,
-        left: 0,
-        right: 0,
-      },
-      suggestion: {
-        display: 'block',
-      },
-      suggestionsList: {
-        margin: 0,
-        padding: 0,
-        listStyleType: 'none',
-      },
-      textField: {
-        width: '100%',
-      },
+    textfield: {
+        margin: theme.spacing.unit
+    },
+    /*
+    gridList: {
+        width: "100%",
+        height: 100,
+    },
+    */
+
+    //gridItem: {
+    //    display: "flex",
+    //    justifyContent: "left", /* align horizontal */
+   //     alignItems: "center",
+        //borderStyle: 'solid',
+        //borderColor: 'green',
+        //borderWidth: 'thin',
+    //},
+    
+    menuList: {
+        width: "100%",
+        height: 300,
+        overflowY:"auto"
+    },
+    menuItem: {
+        
+    }
 });
 
 
-
 const ClientsLookup = gql`
-  query ClientsLookup($text: String!) {
-    clientsLookup(text:$text) {
+  query ClientsLookup($text: String!, $limit:  Int) {
+    clientsLookup(text:$text,limit:$limit) {
         id,name,surname,no,phone
     }
   }
@@ -53,132 +58,83 @@ const ClientsLookup = gql`
 
 
 class ClientLookup extends React.Component {
+
     state = {
-        value: "",
-        suggestions: [],
+        srch: "",
+        suggestions: []
     }
 
-    handleChange = (event, op) => {
-        console.log("handleChange",op)
-        this.setState({
-          value: op.newValue,
-        });
-    };
+    handleSrchChange = (val) => {
+        console.log("handleSrchChange",val)
+        this.setState({srch:val});
+        if (val !== "") {
+            this.doLookup(val);
+        } else {
+            this.setState({suggestions:[]});
+        }
+    }
 
-    handleSuggestionsFetchRequested = (op) => {
-        console.log("handleSuggestionsFetchRequested",op,this)
-        this.props.client.query({query:ClientsLookup,variables:{text:op.value}}).then(r=>{
+    doLookup(srch) {
+        this.props.client.query({query:ClientsLookup,variables:{text:srch,limit:25}}).then(r=>{
             this.setState({suggestions: r.data.clientsLookup});
         }).catch(console.error);
-    };
-
-    handleSuggestionsClearRequested = () => {
-        console.log("handleSuggestionsClearRequested")
     }
 
-    handleSuggestionSelected = (event,s) => {
-        console.log("handleSuggestionSelected",s);
-        this.props.onSelect(s.suggestion);
-    }
-
-    renderInput(inputProps) {
-        const { classes, autoFocus, value, ref, ...other } = inputProps;
-        console.log("renderInput",inputProps);
+    renderInput() {
+        const { classes } = this.props;
         return (
-          
-          <TextField
-            autoFocus={autoFocus}
-            className={classes.textField}
-            value={value}
-            inputRef={ref}
-            InputProps={{
-              classes: {
-                input: classes.input,
-              },
-              ...other,
-            }}
-          />
-        
-     
-        );
-        
+            <TextField
+                autoFocus
+                id="search"
+                label="Hledání v evidenci klientů"
+                type="search"
+                className={classes.textField}
+                fullWidth
+                margin="none"
+                value={this.state.srch}
+                onChange={(e)=>this.handleSrchChange(e.target.value)}
+            />
+        )
     }
 
-    renderSuggestion(suggestion, { query, isHighlighted }) {
-        console.log("renderSuggestion")
-        return (
-            <MenuItem selected={isHighlighted} component="div">
-              <Typography variant="body2">
-                    
-                    <span>
-                      {suggestion.surname}
-                    </span>
-                    &nbsp;
-                    <span>
-                      {suggestion.name}
-                    </span>
-                    &nbsp;
-                    <em>
-                      {suggestion.no}
-                    </em>
-                    
-
-              </Typography>
-            </MenuItem>
-          );
+    onSuggestClick = (client) => {
+        console.log("ClientLookup.onSuggestClick",client)
+        this.props.onSelect(client);
     }
 
-    renderSuggestionsContainer(options) {
-        const { containerProps, children } = options;
-        console.log("renderSuggestionsContainer");
+    renderSuggestions() {
+        const { classes } = this.props;
+        const { suggestions } = this.state;
         return (
-          <Paper {...containerProps} square>
-            {children}
-          </Paper>
-        );
-      }
-
-    getSuggestionValue(suggestion) {
-        console.log("getSuggestionValue")
-        return suggestion.surname+" "+suggestion.name+" "+suggestion.no;
+            <MenuList  className={classes.menuList}>
+                {suggestions.map((item,idx) => (
+                    <MenuItem dense divider className={classes.menuItem} key={idx} onClick={(e)=>this.onSuggestClick(item)} >
+                       <Typography> {item.surname}&nbsp;{item.name} </Typography>
+                    </MenuItem>
+                ))}
+            </MenuList>
+        )
     }
 
     render() {
+        
         const { classes } = this.props;
+        const input = this.renderInput();
+        const suggestions = this.renderSuggestions();
         return (
-            
-
-            <Autosuggest 
-                theme={{
-                    container: classes.container,
-                    suggestionsContainerOpen: classes.suggestionsContainerOpen,
-                    suggestionsList: classes.suggestionsList,
-                    suggestion: classes.suggestion,
-                }}
-                renderInputComponent={(i)=>this.renderInput(i)}
-                inputProps={{
-                    autoFocus: true,
-                    classes,
-                    placeholder: 'Hledání v evidenci klientů',
-                    value: this.state.value,
-                    onChange: this.handleChange,
-                  }}
-                suggestions={this.state.suggestions}
-                onSuggestionsFetchRequested={this.handleSuggestionsFetchRequested}
-                onSuggestionsClearRequested={this.handleSuggestionsClearRequested}
-                onSuggestionSelected={this.handleSuggestionSelected}
-                renderSuggestionsContainer={(o)=>this.renderSuggestionsContainer(o)}
-                getSuggestionValue={(s)=>this.getSuggestionValue(s)}
-                renderSuggestion={(s,op)=>this.renderSuggestion(s,op)}
-            />
-            
+           
+            <div className={classes.root}> 
+                {input}
+                {suggestions}
+            </div>
+        
         )
     }
 }
 
 ClientLookup.propTypes = {
     classes: PropTypes.object.isRequired,
-    onSelect: PropTypes.func.isRequired
+    onSelect: PropTypes.func.isRequired,
 }
 
 export default withApollo(compose(
