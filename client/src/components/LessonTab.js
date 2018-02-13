@@ -8,7 +8,9 @@ import Table, { TableBody, TableCell, TableHead, TableRow, TableFooter } from 'm
 import Toolbar from 'material-ui/Toolbar';
 import Typography from 'material-ui/Typography';
 import Button from 'material-ui/Button';
+import IconButton from 'material-ui/IconButton';
 import DeleteIcon from 'material-ui-icons/Delete';
+import PrintIcon from 'material-ui-icons/Print';
 import DateTimeView from './DateTimeView';
 import PaymentView from './PaymentView';
 import Checkbox from 'material-ui/Checkbox';
@@ -16,6 +18,9 @@ import ClientField from './ClientField';
 import TextField from 'material-ui/TextField';
 import PaymentField from './PaymentField';
 import TableEditor from './TableEditor';
+import AppBar from 'material-ui/AppBar';
+import CloseIcon from 'material-ui-icons/Close';
+import PdfView from './PdfView';
 
 import Dialog, {
     DialogActions,
@@ -115,10 +120,19 @@ class LessonTab extends React.Component {
         doc_err: {},
         doc_error_msg:null,
         todel: {},
-        delAsk:false
+        delAsk:false,
+        print:false
     }
     handleAdd = () => {
         this.setState({addMode:true});
+    }
+
+    handlePrint = () => {
+        this.setState({print:true});
+    }
+
+    handlePrintClose = () => {
+        this.setState({print:false});
     }
 
     handleCancelAdd = () => {
@@ -305,6 +319,30 @@ class LessonTab extends React.Component {
         )
     }
 
+    renderPrintDialog() {
+        const { classes } = this.props;
+        const lessonInfo = this.props.lessonInfo.lessonInfo;
+        return (
+            <Dialog
+                fullScreen
+                open={this.state.print}
+                onClose={this.handlePrintClose}
+             >
+                <AppBar position="static" className={classes.appBar}>
+                    <Toolbar>
+                        <Typography variant="title" color="inherit" className={classes.flex}>
+                            Tisk lekce
+                        </Typography>
+                        <IconButton color="inherit" onClick={this.handlePrintClose} aria-label="Close">
+                            <CloseIcon />
+                         </IconButton>
+                     </Toolbar>
+                </AppBar>
+            {this.state.print && (<PdfView title={"Lekce "+lessonInfo.lesson_type.name+" - "+lessonInfo.lesson_type.location.name+", "+moment(lessonInfo.datetime).format("LLL")} description={"Přehled přihlášených klientů na lekci."} cols={["id","dd"]} rows={[[1,"x"],[2,"y"]]}/>)}
+             </Dialog>
+        )
+    }
+
     render() {
         const { classes } = this.props;
         if (!(this.props.lessonInfo && this.props.lessonInfo.lessonInfo)) {
@@ -313,13 +351,15 @@ class LessonTab extends React.Component {
         const lessonInfo = this.props.lessonInfo.lessonInfo;
         const panel = this.state.addMode?this.renderAddPanel():this.renderMembersTable();
         const delAsk= this.renderDelAskDialog();
+        const printDlg = this.renderPrintDialog();
         return (
             <div className={classes.root}>
             {delAsk}
+            {printDlg}
             <Toolbar>
                 <Typography variant="title" className={classes.flex} noWrap> Lekce {lessonInfo.lesson_type.name} - {lessonInfo.lesson_type.location.name}, <DateTimeView date={lessonInfo.datetime} format="LLLL"/> </Typography>
                 <Button variant="raised" disabled={this.state.addMode} className={classes.button} onClick={this.handleAdd}> přihlásit </Button>
-                <Button variant="raised" disabled={this.state.addMode} className={classes.button} > docházka </Button>
+                <Button variant="raised" disabled={this.state.addMode} className={classes.button} onClick={this.handlePrint} > <PrintIcon/> </Button>
             </Toolbar>
             <div className={classes.panel}>
             {panel}

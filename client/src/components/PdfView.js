@@ -18,9 +18,9 @@ pdfMake.vfs = pdfFonts.pdfMake.vfs;
 
 const styles = theme => ({
     root: {
-     // marginTop: theme.spacing.unit * 3,
+      //paddingTop: '64px',
       width: '100%',
-      height: '500px',
+      height: '100%',
     },
 });
   
