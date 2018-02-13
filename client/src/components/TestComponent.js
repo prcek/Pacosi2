@@ -7,6 +7,7 @@ import RoleField from './RoleField';
 //import Divider from 'material-ui/Divider';
 import ClientView from './ClientView';
 import ClientField from './ClientField';
+import PdfView from './PdfView';
 //import Paper from 'material-ui/Paper';
 
 const styles = theme => ({
@@ -45,7 +46,7 @@ class TestComponent extends React.Component {
             <div>
             
 
-
+            <PdfView />
 
             <ClientView client_id={this.state.client_id} />
             <ClientField id="cxx" name="cxxxx" value={this.state.client_id} onChange={this.handleClientChange}/>
