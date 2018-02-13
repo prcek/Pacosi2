@@ -213,6 +213,12 @@ class Clients extends TableEditor {
             <TableRow><TableCell> loading </TableCell></TableRow>
         )
     }
+
+    onFilter = (val) => {
+        this.props.onSetFilter(val);
+        this.props.onSelectPageNo(0); 
+    }
+
     renderFilterField(value) {
         const { classes } = this.props;
         return (
@@ -221,7 +227,7 @@ class Clients extends TableEditor {
             label="Hledání"
             type="search"
             value={TableEditor.null2empty(value)}
-            onChange={(e)=>this.props.onSetFilter(TableEditor.empty2null(e.target.value))}
+            onChange={(e)=>this.onFilter(TableEditor.empty2null(e.target.value))}
         />
         )
     }
