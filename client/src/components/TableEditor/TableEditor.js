@@ -115,6 +115,7 @@ class TableEditor extends React.Component {
         return true;
     }
 
+
     handleDocChange(name,value){
         let { doc, doc_err } = this.state;
         doc[name]=value;
@@ -289,17 +290,22 @@ class TableEditor extends React.Component {
         return "no label";
     }
 
+    renderFilterField(value) {
+        return null;
+    }
  
     renderHeader() {
         const { classes } = this.props;
         if (this.props.docs.docs_pages) {
             const pi = this.props.docs.docs_pages.paginationInfo;
+            const filterField = this.renderFilterField(this.props.current_filter);
             return (
                 <Toolbar>
                     <Typography variant="title">
                         {this.renderHeaderLabel()}
                     </Typography>
                     <Button variant="raised" className={classes.button} style={{minWidth:"38px"}} onClick={()=>this.onOpenAddDialog()}> <AddIcon/>  </Button>
+                    {filterField}
                     <div className={classes.spacer} />
                     <Typography component="div" type="caption">
                         Délka stránky:

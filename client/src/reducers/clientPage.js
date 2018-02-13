@@ -1,5 +1,5 @@
 
-const client_page_no = (state={pageNo:0,pageLength:10}, action) => {
+const client_page = (state={pageNo:0,pageLength:10,filter:null}, action) => {
     switch (action.type) {
       case 'SET_CLIENT_PAGE_NO':
         return  Object.assign({}, state, {
@@ -9,9 +9,13 @@ const client_page_no = (state={pageNo:0,pageLength:10}, action) => {
         return  Object.assign({}, state, {
           pageLength: action.page_length
         })
+      case 'SET_CLIENT_FILTER':
+        return  Object.assign({}, state, {
+          filter: action.filter
+        })
       default:
         return state
     }
   }
   
-  export default client_page_no;
+  export default client_page;

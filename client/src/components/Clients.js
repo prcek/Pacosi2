@@ -7,7 +7,7 @@ import { compose } from 'react-apollo'
 import { graphql } from 'react-apollo';
 import { connect } from 'react-redux'
 import gql from 'graphql-tag';
-import { setClientPageNo, setClientPageLength } from './../actions'
+import { setClientPageNo, setClientPageLength, setClientFilter } from './../actions'
 import DateTimeView from './DateTimeView';
 import TextField from 'material-ui/TextField';
 
@@ -38,8 +38,8 @@ const LocalStyles = (theme) => ({
 const styles = JoinStyles([TableEditorStyles,LocalStyles]);
 
 const CurrentClients = gql`
-  query Clients($pageNo: Int!, $pageLength: Int!) {
-    docs_pages: clients_pages(pagination:{pageNo:$pageNo,pageLength:$pageLength}) {
+  query Clients($pageNo: Int!, $pageLength: Int!, $filter: String) {
+    docs_pages: clients_pages(pagination:{pageNo:$pageNo,pageLength:$pageLength},filter:$filter) {
       items {
         id
         no
@@ -213,7 +213,18 @@ class Clients extends TableEditor {
             <TableRow><TableCell> loading </TableCell></TableRow>
         )
     }
-
+    renderFilterField(value) {
+        const { classes } = this.props;
+        return (
+            <TextField className={classes.filterfield}
+            id="filter"
+            label="Hledání"
+            type="search"
+            value={TableEditor.null2empty(value)}
+            onChange={(e)=>this.props.onSetFilter(TableEditor.empty2null(e.target.value))}
+        />
+        )
+    }
 
     renderHeaderLabel() {
         return "Evidence klientů"
@@ -225,7 +236,8 @@ class Clients extends TableEditor {
 function mapStateToProps(state) {
     return { 
         current_page_no: state.clientPage.pageNo,
-        current_page_length: state.clientPage.pageLength
+        current_page_length: state.clientPage.pageLength,
+        current_filter: state.clientPage.filter,
     }
 }
 
@@ -236,7 +248,10 @@ const mapDispatchToProps = dispatch => {
       },
       onSelectPageLength: no => {
         dispatch(setClientPageLength(no))
-      }
+      },
+      onSetFilter: filter => {
+        dispatch(setClientFilter(filter))
+      },
     }
 }
 
@@ -246,7 +261,7 @@ export default compose(
     connect(mapStateToProps,mapDispatchToProps),
     graphql(CurrentClients,{
         name: "docs",
-        options: ({current_page_no,current_page_length})=>({variables:{pageNo:current_page_no,pageLength:current_page_length}})
+        options: ({current_page_no,current_page_length,current_filter})=>({variables:{pageNo:current_page_no,pageLength:current_page_length,filter:current_filter}})
     }),
     graphql(UpdateClient,{
         name:"updateDoc",

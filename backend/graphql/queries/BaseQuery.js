@@ -6,6 +6,7 @@ const {
     GraphQLID,
     GraphQLInt,
     GraphQLNonNull,
+    GraphQLString
 } = GraphQL;
 
 const GraphQLIsoDate = require('graphql-iso-date');
@@ -88,11 +89,17 @@ class BaseQuery {
             args: {
                 pagination: {
                     type: new GraphQLNonNull(PaginationType),
+                },
+                filter: {
+                    type: GraphQLString
                 }
             },
             description: 'List all '+this.type+' records present in the database',
             resolve: (parent, args, context, info) => {
-                return this.resolver.index_pages(args.pagination);
+
+
+
+                return this.resolver.index_pages(args.pagination,this.resolver.filterString2filter(args.filter));
             }
         }
     }

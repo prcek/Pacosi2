@@ -22,6 +22,10 @@ const TestComponentBaseStyles = theme => ({
     textfield: {
         margin: theme.spacing.unit
     },
+    filterfield: {
+        margin: theme.spacing.unit,
+        width:"300px"
+    },
     input: {
         fontSize: 'inherit',
         flexShrink: 0,

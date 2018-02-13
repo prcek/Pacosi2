@@ -35,6 +35,18 @@ class ClientController extends BaseController{
         });
     }
 
+    filterString2filter(str) {
+        if (!str) {
+            return {}
+        } else if (str === "") {
+            return {}
+        } 
+        const srchtxt = "^"+escapeStringRegexp(removeDiacritics(str).toLowerCase().trim());
+//        console.log(srchtxt);
+        return { $or: [{'search.surname': {$regex: srchtxt }},{'search.name':{$regex: srchtxt } },{'phone': {$regex: srchtxt }},{'comment': {$regex: srchtxt }}]}
+    }
+
+
     index_pages(pagination,filter={}) { 
         const f = {...filter,...this.hiddenFilter}
         return super.index_pages(pagination,f);

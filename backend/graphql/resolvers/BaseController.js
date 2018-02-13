@@ -23,6 +23,10 @@ class BaseController {
             });
     }
 
+    filterString2filter(str) {
+        return {}
+    }
+    
     index_pages(pagination,filter={}) {
         console.log("BaseController index pages",this.model.modelName,pagination,filter)
         if (pagination.pageNo<0) {
