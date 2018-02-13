@@ -52,7 +52,7 @@ class TestComponent extends React.Component {
             <div>
             
 
-            <PdfView title="Název dokumentu" description={czechText} cols={["id","dd"]} rows={[]}/>
+            <PdfView title="Název dokumentu" description={czechText} cols={["id","dd"]} rows={[[1,"x"],[2,"y"]]}/>
 
             <ClientView client_id={this.state.client_id} />
             <ClientField id="cxx" name="cxxxx" value={this.state.client_id} onChange={this.handleClientChange}/>

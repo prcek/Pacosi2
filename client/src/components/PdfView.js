@@ -5,16 +5,21 @@ import { compose } from 'react-apollo'
 //import jsPDF from 'jspdf';
 import pdfMake from "pdfmake/build/pdfmake";
 import pdfFonts from "pdfmake/build/vfs_fonts";
-pdfMake.vfs = pdfFonts.pdfMake.vfs;
-//require('jspdf-autotable');
 
-//require('pdfmake/build/pdfmake.js'); 
-//require('pdfmake/build/vfs_fonts.js');
+
+import Moment from 'moment';
+const MomentRange = require('moment-range');
+
+const moment = MomentRange.extendMoment(Moment);
+require("moment/min/locales.min");
+moment.locale('cs');
+
+pdfMake.vfs = pdfFonts.pdfMake.vfs;
 
 const styles = theme => ({
     root: {
      // marginTop: theme.spacing.unit * 3,
-      width: '800px',
+      width: '100%',
       height: '500px',
     },
 });
@@ -46,7 +51,30 @@ class PdfView extends React.Component {
             content: [ 
                 {text: this.props.title, style: "header"},
                 this.props.description,
-
+                {
+                    style: 'table',
+			        table: {
+                        widths: this.props.cols.map((x)=>{return "*"}),
+                        headerRows: 1,
+                        body: [
+                            this.props.cols.map((x)=>{return {
+                                text: x,
+                                style:'tableHeader',
+                                border: [false, false, false, false]
+                            }}),
+                            ...this.props.rows.map( (r,line)=>{
+                                return r.map((x)=>{
+                                    return {
+                                        text:x,
+                                        border: [false, false, false, false],
+                                        fillColor: (line % 2 === 0)?[255,255,255]:[245,245,245]
+                                    };
+                                });
+                            })    
+                        ]
+                    }
+                },
+                {text: "stav k "+moment().format("LLL"), style: 'footer'}
             ],
             styles: {
                 header: {
@@ -54,18 +82,19 @@ class PdfView extends React.Component {
                     bold: true,
                     margin: [0, 0, 0, 10]
                 },
-                subheader: {
-                    fontSize: 16,
-                    bold: true,
-                    margin: [0, 10, 0, 5]
+                footer: {
+                    alignment: 'right',
+                    fontSize: 8,
+                    italics: true
                 },
-                tableExample: {
+                table: {
                     margin: [0, 5, 0, 15]
                 },
                 tableHeader: {
                     bold: true,
                     fontSize: 13,
-                    color: 'black'
+                    color: 'white',
+                    fillColor: [41, 128, 185]
                 }
             },
          };
@@ -93,7 +122,7 @@ PdfView.propTypes = {
     title: PropTypes.string.isRequired,
     description: PropTypes.string,
     cols: PropTypes.arrayOf(PropTypes.string).isRequired,
-    rows: PropTypes.arrayOf(PropTypes.oneOfType([PropTypes.string,PropTypes.number])).isRequired
+    rows: PropTypes.arrayOf(PropTypes.arrayOf(PropTypes.oneOfType([PropTypes.string,PropTypes.number]))).isRequired
 };
   
 
