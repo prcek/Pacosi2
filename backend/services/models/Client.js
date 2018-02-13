@@ -27,6 +27,9 @@ const ClientSchema = mongoose.Schema(
         phone: {
             type: String
         },
+        comment: {
+            type: String
+        },
         street: {
             type: String
         },

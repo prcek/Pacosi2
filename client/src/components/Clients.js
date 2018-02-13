@@ -45,9 +45,8 @@ const CurrentClients = gql`
         no
         name
         surname
-        email
+        comment
         phone
-        year
         created_at
       }
 
@@ -62,16 +61,16 @@ const CurrentClients = gql`
 `;
 
 const UpdateClient = gql`
-    mutation UpdateClient($id: ID!, $surname: String!, $name: String, $phone: String, $email: String, $year: Int) {
-        update_doc: updateClient(id:$id,surname:$surname,name:$name,phone:$phone,email:$email,year:$year) {
+    mutation UpdateClient($id: ID!, $surname: String!, $name: String, $phone: String, $comment: String) {
+        update_doc: updateClient(id:$id,surname:$surname,name:$name,phone:$phone,comment:$comment) {
             id
         }
     }
 `;
 
 const AddClient = gql`
-    mutation AddClient($surname: String!, $name: String, $phone: String, $email: String, $year: Int) {
-        add_doc: addClient(surname:$surname,name:$name,phone:$phone,email:$email,year:$year) {
+    mutation AddClient($surname: String!, $name: String, $phone: String, $comment: String) {
+        add_doc: addClient(surname:$surname,name:$name,phone:$phone,comment:$comment) {
             id
         }
     }
@@ -150,23 +149,14 @@ class Clients extends TableEditor {
             />
             <TextField className={classes.textfield} 
                 margin="dense"
-                id="email"
-                label="Emailová adresa"
+                id="comment"
+                label="Poznámka"
                 type="text"
-                value={TableEditor.null2empty(doc.email)}
-                onChange={(e)=>this.handleDocChange("email",TableEditor.empty2null(e.target.value))}
+                value={TableEditor.null2empty(doc.comment)}
+                onChange={(e)=>this.handleDocChange("comment",TableEditor.empty2null(e.target.value))}
                 InputProps={{style:{width:350}}}
             />
 
-            <TextField className={classes.textfield} 
-                margin="dense"
-                id="year"
-                label="Ročník"
-                type="number"
-                value={TableEditor.null2empty(doc.year)}
-                onChange={(e)=>this.handleDocChange("year",TableEditor.empty2null(e.target.value))}
-                InputProps={{style:{width:100}}}
-            />
         </form>
 
         )
@@ -191,8 +181,7 @@ class Clients extends TableEditor {
                 <TableCell padding={"dense"}>Přijmení</TableCell>
                 <TableCell padding={"dense"}>Jméno</TableCell>
                 <TableCell padding={"dense"}>Telefon</TableCell>
-                <TableCell padding={"dense"} style={{width:"0px"}}>Ročník</TableCell>
-                <TableCell padding={"dense"}>Email</TableCell>
+                <TableCell padding={"dense"}>Poznámka</TableCell>
                 <TableCell padding={"dense"}>Zaevidován</TableCell>
                 <TableCell padding={"dense"}></TableCell>
             </TableRow>
@@ -208,8 +197,7 @@ class Clients extends TableEditor {
             <TableCell padding={"dense"}>{doc.surname}</TableCell>
             <TableCell padding={"dense"}>{doc.name}</TableCell>
             <TableCell padding={"dense"}>{doc.phone}</TableCell>
-            <TableCell padding={"dense"} style={{width:"0px"}}>{doc.year}</TableCell>
-            <TableCell padding={"dense"}>{doc.email}</TableCell>
+            <TableCell padding={"dense"}>{doc.comment}</TableCell>
             <TableCell padding={"dense"}><DateTimeView date={doc.created_at} format="LLL"/></TableCell>
             <TableCell padding={"dense"} classes={{root:classes.cell}}>
                 {toolbar}

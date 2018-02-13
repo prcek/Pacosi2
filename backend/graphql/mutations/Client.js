@@ -33,6 +33,10 @@ class ClientMutation extends BaseMutation {
                 type: GraphQLString,
                 description: 'Enter client email address',
             },
+            comment: {
+                type: GraphQLString,
+                description: 'Enter client comment',
+            },
             phone: {
                 type: GraphQLString,
                 description: 'Enter client phone number',
@@ -73,6 +77,10 @@ class ClientMutation extends BaseMutation {
             email: {
                 type: GraphQLString,
                 description: 'Enter client email address',
+            },
+            comment: {
+                type: GraphQLString,
+                description: 'Enter client comment',
             },
             phone: {
                 type: GraphQLString,

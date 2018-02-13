@@ -41,6 +41,10 @@ const ClientType = new GraphQL.GraphQLObjectType({
             type: GraphQLString,
             description: 'Email address of the client',
         },
+        comment: {
+            type: GraphQLString,
+            description: 'Comment of the client',
+        },
 
         phone: {
             type: GraphQLString,
