@@ -7,6 +7,7 @@ import Input, { InputLabel } from 'material-ui/Input';
 import { MenuItem } from 'material-ui/Menu';
 import { FormControl } from 'material-ui/Form';
 import Select from 'material-ui/Select';
+import Lodash from 'lodash';
 
 
 const styles = theme => ({
@@ -26,6 +27,7 @@ const CurrentOrderItems = gql`
     orderItems {
       id
       name
+      status
     }
   }
 `;
@@ -34,7 +36,7 @@ const CurrentOrderItems = gql`
 class OrderItemField extends React.Component {
 
     renderItems(items) {
-        return items.map(item=> (
+        return Lodash.filter(items,{status:"ACTIVE"}).map(item=> (
             <MenuItem key={item.id} value={item.id}>{item.name}</MenuItem>
         )); 
     }

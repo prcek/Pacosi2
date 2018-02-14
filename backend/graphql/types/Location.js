@@ -16,6 +16,8 @@ const {
     GraphQLDateTime
 } = GraphQLIsoDate;
 
+const StatusType = require('./Status');
+
 
 const LocationType = new GraphQL.GraphQLObjectType({
     name: 'Location',
@@ -30,9 +32,13 @@ const LocationType = new GraphQL.GraphQLObjectType({
             type: GraphQLString,
             description: 'Name of the location',
         },
-        active: {
-            type: GraphQLBoolean,
-            description: 'Status of the location, whether active or disabled',
+        status: {
+            type: StatusType,
+            description: 'Status of the item, whether active or disabled',
+        },
+
+        hidden: {
+            type: GraphQLBoolean
         },
 
         created_at: {

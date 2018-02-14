@@ -10,10 +10,17 @@ const LocationSchema = mongoose.Schema(
             type: String,
             required: true
         },
-        active: {
+
+        hidden: {
             type: Boolean,
-            default: true
+            default: false
         },
+        status: {
+            type: Number,
+            default: 1,
+            required: true
+        },
+
     },
     {
         timestamps: { createdAt: 'created_at', updatedAt: 'updated_at' },

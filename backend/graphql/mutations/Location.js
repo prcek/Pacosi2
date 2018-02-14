@@ -12,6 +12,7 @@ const {
 const LocationType = require('../types/Location');
 const LocationResolver = require('../resolvers/Location');
 const BaseMutation = require('./BaseMutation');
+const StatusType = require('../types/Status');
 
 
 class LocationMutation extends BaseMutation {
@@ -24,9 +25,9 @@ class LocationMutation extends BaseMutation {
                 type: new GraphQLNonNull(GraphQLString),
                 description: 'Enter location name, Cannot be left empty',
             },
-            active: {
-                type: GraphQLBoolean,
-                description: 'Enters location status, by default its set to active. true: active, false: disabled',
+            status: {
+                type: new GraphQLNonNull(StatusType),
+                description: 'Enters status, by default its set to active. 1: active, 2: disabled',
             },
         }
     }
@@ -40,9 +41,9 @@ class LocationMutation extends BaseMutation {
                 type: GraphQLString,
                 description: 'Enter location name',
             },
-            active: {
-                type: GraphQLBoolean,
-                description: 'Enters location status. true: active, false: disabled',
+            status: {
+                type: StatusType,
+                description: 'Enters status, by default its set to active. 1: active, 2: disabled',
             },
         };
     }

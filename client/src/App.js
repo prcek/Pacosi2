@@ -13,6 +13,7 @@ import LessonType from './components/LessonType';
 import Users from './components/Users';
 import OrderItems from './components/OrderItems';
 import LessonTypes from './components/LessonTypes';
+import Locations from './components/Locations';
 import MassageRooms from './components/MassageRooms';
 import MassageTypes from './components/MassageTypes';
 import Clients from './components/Clients';
@@ -51,6 +52,12 @@ const PageLessonTypes = ({ match }) => (
     <LessonTypes />
   </div>
 )
+const PageLocations = ({ match }) => (
+  <div>
+    <Locations />
+  </div>
+)
+
 
 const PageMassageRooms = ({ match }) => (
   <div>
@@ -143,6 +150,7 @@ class App extends Component {
           <Route path="/r/orderitems" component={PageOrderItems}/>
           <Route path="/r/lessontypes" component={PageLessonTypes}/>
           <Route path="/r/massagerooms" component={PageMassageRooms}/>
+          <Route path="/r/locations" component={PageLocations}/>
           <Route path="/r/massagetypes" component={PageMassageTypes}/>
           <Route path="/r/clients" component={PageClients}/>
           <Route path="/r/orders" component={PageOrders}/>

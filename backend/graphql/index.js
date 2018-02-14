@@ -118,7 +118,7 @@ const RootMutation = new GraphQLObjectType({
         deleteLessonMember: LessonMemberMutation.delete(),
         addLocation: LocationMutation.create(),
         updateLocation: LocationMutation.update(),
-        deleteLocation: LocationMutation.delete(),
+        hideLocation: LocationMutation.hide(),
         addOpeningTime: OpeningTimeMutation.create(),
         updateOpeningTime: OpeningTimeMutation.update(),
         deleteOpeningTime: OpeningTimeMutation.delete(),

@@ -19,6 +19,7 @@ import { connect } from 'react-redux'
 import { graphql } from 'react-apollo';
 import gql from 'graphql-tag';
 
+import Lodash from 'lodash';
 
 import {doLogout} from './auth';
 import { setLocation } from './actions'
@@ -26,7 +27,7 @@ import { setLocation } from './actions'
 const CurrentLocations = gql`
   query CurrentLocations {
     locations {
-      id,name
+      id,name,status
     }
   }
 `;
@@ -123,7 +124,7 @@ class MenuBar extends React.Component {
       ]
     }
     renderLocations(locations) {
-      return locations.map(location=> (
+      return Lodash.filter(locations,{status:"ACTIVE"}).map(location=> (
         <MenuItem key={location.id} value={location.id}> {location.name} </MenuItem>
       ));
     }
@@ -208,6 +209,7 @@ class MenuBar extends React.Component {
                   <MenuItem onClick={()=>this.handleCfgClickTo('/r/orderitems')}>Položky prodeje</MenuItem>
                   <MenuItem onClick={()=>this.handleCfgClickTo('/r/lessontypes')}>Typy lekcí</MenuItem>
                   <MenuItem onClick={()=>this.handleCfgClickTo('/r/massagerooms')}>Masáže</MenuItem>
+                  <MenuItem onClick={()=>this.handleCfgClickTo('/r/locations')}>Lokality</MenuItem>
                   <MenuItem onClick={()=>this.handleCfgClickTo('/r/massagetypes')}>Typy masáží</MenuItem>
                 </Menu>
 

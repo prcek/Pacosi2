@@ -222,6 +222,7 @@ export default compose(
         options: {
             refetchQueries: [
                 'LessonTypes',
+                'LocationInfo'
               ],
         }
     }),
@@ -231,6 +232,7 @@ export default compose(
         options: {
             refetchQueries: [
                 'LessonTypes',
+                'LocationInfo'
               ],
         }
     }),
@@ -239,6 +241,7 @@ export default compose(
         options: {
             refetchQueries: [
                 'LessonTypes',
+                'LocationInfo'
               ],
         }
     }),
