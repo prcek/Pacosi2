@@ -96,10 +96,10 @@ class MassageRoom extends React.Component {
                         <Toolbar classes={{root:classes.toolbar}}> 
                         {this.props.massageroom.massageRoom  && <Typography variant="title">{this.props.massageroom.massageRoom.name}</Typography> }
                         </Toolbar>
-                        <MassageRoomCal massageRoomId={this.props.massageRoomId} begin={this.state.calendarStartDate} selected={this.state.calendarDay} onSelectDay={this.handleSelectDay} onMove={this.handleCalMove}/>
+                        <MassageRoomCal massageRoomId={this.props.massageRoomId} massageRoom={this.props.massageroom.massageRoom} begin={this.state.calendarStartDate} selected={this.state.calendarDay} onSelectDay={this.handleSelectDay} onMove={this.handleCalMove}/>
                     </Grid>
                     <Grid item xs={12} sm={12} md={8} lg={9}>
-                        {this.state.calendarDay && <MassageRoomDay massageRoomId={this.props.massageRoomId} day={this.state.calendarDay} onNew={this.handleNewOrder} onEdit={this.handleEditOrder}/>}
+                        {this.state.calendarDay && <MassageRoomDay massageRoomId={this.props.massageRoomId} massageRoom={this.props.massageroom.massageRoom} day={this.state.calendarDay} onNew={this.handleNewOrder} onEdit={this.handleEditOrder}/>}
                     </Grid>
                 </Grid>
 

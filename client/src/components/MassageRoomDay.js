@@ -45,7 +45,7 @@ const MassageRoomDayPlan = gql`
           id,begin,end
       }
       massage_orders {
-        id massage_type {name length} massage_type_id begin client_id comment payment
+        id massage_type {name length} massage_type_id begin client_id client {id, name,surname,phone, no} comment payment
       }
       status 
       slots {
@@ -530,14 +530,15 @@ class MassageRoomDay extends React.Component {
 
     renderPrintDialog() {
         const { classes } = this.props;
-        //const lessonInfo = this.props.lessonInfo.lessonInfo;
-        const widths = [15,120,100,80,70,100,"*",40];
-        const cols = ["#","Zapsán","Přijmení","Jméno","Telefon","Platba","Poznámka","Účast"];
-        const rows = [];
+        const orders = this.props.massageRoomDayPlan.massageRoomDayPlan?Lodash.sortBy(this.props.massageRoomDayPlan.massageRoomDayPlan.massage_orders,['begin']):[];
+        console.log("XXX",orders);
         
-        //lessonInfo.members.map((m,i)=>{
-        //    return [i+1,moment(m.created_at).format("LLL"),m.client.surname,m.client.name,m.client.phone,payment2str(m.payment),m.comment,m.presence?"ano":""]
-        //})
+        const widths = [50,100,80,80,200,100,90];
+        const cols = ["Čas","Přijmení","Jméno","Telefon","Masáž","Platba","Poznámka"];
+        const rows = orders.map(m=>{
+            return [moment(m.begin).format("HH:mm"),m.client.surname,m.client.name,m.client.phone,m.massage_type.name,payment2str(m.payment),m.comment]
+        });
+        const roomInfo = this.props.massageRoom? this.props.massageRoom.name +", "+this.props.massageRoom.location.name :"";
         return (
             <Dialog
                 fullScreen
@@ -547,14 +548,14 @@ class MassageRoomDay extends React.Component {
                 <AppBar position="static" className={classes.appBar}>
                     <Toolbar>
                         <Typography variant="title" color="inherit" className={classes.flex}>
-                            Tisk masáží
+                            Tisk masáží - {roomInfo}
                         </Typography>
                         <IconButton color="inherit" onClick={this.handlePrintClose} aria-label="Close">
                             <CloseIcon />
                          </IconButton>
                      </Toolbar>
                 </AppBar>
-            {this.state.print && (<PdfView landscape title={"masaze"} description={"Přehled přihlášených klientů na masáže."} cols={cols} rows={rows} widths={widths}/>)}
+            {this.state.print && (<PdfView landscape title={roomInfo + " - " + moment(this.props.day).format("LL")} description={"Přehled přihlášených klientů na masáže."} cols={cols} rows={rows} widths={widths}/>)}
              </Dialog>
         )
     }
@@ -605,6 +606,7 @@ class MassageRoomDay extends React.Component {
 MassageRoomDay.propTypes = {
     classes: PropTypes.object.isRequired,
     massageRoomId: PropTypes.string.isRequired,
+    massageRoom: PropTypes.object,
     day: PropTypes.objectOf(Date).isRequired,
     onNew: PropTypes.func,
     onEdit: PropTypes.func
