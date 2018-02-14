@@ -8,7 +8,7 @@ import { compose } from 'react-apollo'
 import PaymentView from './PaymentView';
 
 var classNames = require('classnames');
-
+const baseH = 40;
 const styles = theme => ({
     root: {
         margin: 0,
@@ -19,16 +19,16 @@ const styles = theme => ({
         height: '1.5em',
     },
     rooth1: {
-        height: '2em',
+        height: baseH+'px',
     },
     rooth2: {
-        height: '4em',
+        height: baseH*2+'px',
     },
     rooth3: {
-        height: '6em',
+        height: baseH*3+'px',
     },
     rooth4: {
-        height: '8em',
+        height: baseH*4+'px',
     },
 
     inner: {
@@ -98,11 +98,17 @@ class MassageDaySlot extends React.Component {
     renderSlot() {
         const { classes } = this.props;
         const time=this.renderTime(false);
-        const clientname = this.props.order.client?this.props.order.client.surname+" "+this.props.order.client.name:"";
+        const clientname = this.props.order.client?this.props.order.client.surname+" "+(this.props.order.client.name||""):"";
+        const phone = this.props.order.client? this.props.order.client.phone:"";
+        const comment = this.props.order.comment;
 
         return (
             <div className={classNames(classes.inner,classes.click)} onClick={this.handleSlotClick}>
-            {time} <Typography> <b>{clientname} </b>&nbsp;{this.props.order.massage_type.name}&nbsp;<PaymentView payment={this.props.order.payment}/></Typography>
+                {time}
+                <div>
+                    <Typography> <b>{clientname} </b>&nbsp;{phone}&nbsp;<em>{comment}</em></Typography>
+                    <Typography> {this.props.order.massage_type.name}, &nbsp; <PaymentView payment={this.props.order.payment}/>  </Typography>
+                </div>
             </div>
         )
     }
