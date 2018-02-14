@@ -70,6 +70,13 @@ const DeleteLessonMember = gql`
     }
 `;
 
+const UpdateLessonMember = gql`
+    mutation UpdateLessonMember($id: ID!, $presence: Boolean ) {
+        update_doc: updateLessonMember(id:$id,presence:$presence) {
+            id
+        }
+    }
+`;
 
 
 const styles = theme => ({
@@ -279,7 +286,20 @@ class LessonTab extends React.Component {
 
         )
     }
-
+    handleCheckClick = (m) => {
+  
+        this.props.updateDoc({
+            variables: {
+                id:m.id,
+                presence:!m.presence
+            }
+        }).then(r=>{
+            //this.setState({ delAsk: false, doc:{},doc_err:{} });
+        }).catch(e=>{
+            console.error(e);
+            //this.setState({ doc_error_msg:"Chyba mazání: "+e})
+        })     
+    }
 
     renderMembers(members) {
         const { classes } = this.props;
@@ -294,7 +314,7 @@ class LessonTab extends React.Component {
                 <TableCell padding={"dense"} classes={{root:classes.cell}}><PaymentView payment={m.payment}/></TableCell>
                 <TableCell padding={"dense"} classes={{root:classes.cell}}>{m.comment}</TableCell>
                 <TableCell padding={"checkbox"} classes={{root:classes.cell}}>
-                    <Checkbox checked={m.presence} disabled />
+                    <Checkbox onClick={(e)=>this.handleCheckClick(m)}checked={m.presence} />
                 </TableCell>
                 <TableCell padding={"dense"} classes={{root:classes.cell}}>
                     <Toolbar disableGutters={true} classes={{root:classes.toolbar}} >
@@ -409,6 +429,14 @@ export default compose(
         }
     }),
 
+    graphql(UpdateLessonMember,{
+        name:"updateDoc",
+        options: {
+            refetchQueries: [
+                'LessonInfo',
+              ],
+        }
+    }),
 
     graphql(DeleteLessonMember,{
         name:"removeDoc",
