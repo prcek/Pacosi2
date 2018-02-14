@@ -96,7 +96,7 @@ class MassageRooms extends TableEditor {
 
     renderEditDialogContentText(doc,addMode) {
         if (addMode) {
-            return "Nový masážní místnosti, musí byt vyplňen stav, název a lokalita."
+            return "Nová masážní místnost, musí byt vyplňen stav, název a lokalita."
         } else {
             return "Úprava masážní místnosti, musí byt vyplňen stav, název a lokalita."
         }  
