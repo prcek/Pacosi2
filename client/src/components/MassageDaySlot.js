@@ -106,8 +106,8 @@ class MassageDaySlot extends React.Component {
             <div className={classNames(classes.inner,classes.click)} onClick={this.handleSlotClick}>
                 {time}
                 <div>
-                    <Typography> <b>{clientname} </b>&nbsp;{phone}&nbsp;<em>{comment}</em></Typography>
-                    <Typography> {this.props.order.massage_type.name}, &nbsp; <PaymentView payment={this.props.order.payment}/>  </Typography>
+                    <Typography noWrap> <b>{clientname} </b>&nbsp;{phone}&nbsp;<em>{comment}</em></Typography>
+                    <Typography noWrap> {this.props.order.massage_type.name}, &nbsp; <PaymentView payment={this.props.order.payment}/>  </Typography>
                 </div>
             </div>
         )

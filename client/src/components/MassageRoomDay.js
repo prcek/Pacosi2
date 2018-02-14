@@ -15,6 +15,7 @@ import TimeField from './TimeField';
 import MassageOrder from './MassageOrder';
 import CloseIcon from 'material-ui-icons/Close';
 import IconButton from 'material-ui/IconButton';
+import PrintIcon from 'material-ui-icons/Print';
 import Switch from 'material-ui/Switch';
 import { FormGroup, FormControlLabel } from 'material-ui/Form';
 import Dialog, {
@@ -25,6 +26,8 @@ import Dialog, {
   } from 'material-ui/Dialog';
 import Divider from 'material-ui/Divider';
 import Lodash from 'lodash';
+import AppBar from 'material-ui/AppBar';
+import PdfView from './PdfView';
 
 
 const Moment = require('moment');
@@ -126,6 +129,17 @@ const styles = theme => ({
     }
 });
   
+function payment2str(p) {
+    let s;
+    switch(p) {
+    case "NOT_PAID": s = "neplaceno"; break;
+    case "VOUCHER": s ="dárkový poukaz"; break;
+    case "INVOICE": s ="faktura"; break;
+    case "PAID": s ="placeno"; break;
+    default : s="";
+    }
+    return s;
+}
 
 
 class MassageRoomDay extends React.Component {
@@ -140,8 +154,8 @@ class MassageRoomDay extends React.Component {
                 begin: this.props.day,
                 end: this.props.day
             },
-            massageOrder: null
-        
+            massageOrder: null,
+            print: false
             
         };
     }
@@ -424,10 +438,11 @@ class MassageRoomDay extends React.Component {
     }
 
     renderSettingsSwitch() {
+        const { classes } = this.props;
         return (
             <FormGroup row>
                 <FormControlLabel
-                    control={<Switch checked={this.state.planMode} onChange={(e,c)=>this.onPlanMode(c)}/>}
+                    control={<Switch className={classes.button} checked={this.state.planMode} onChange={(e,c)=>this.onPlanMode(c)}/>}
                     label="Editace dne"
                 />
             </FormGroup>
@@ -504,6 +519,48 @@ class MassageRoomDay extends React.Component {
         )
     }
 
+    handlePrint = () => {
+        this.setState({print:true});
+    }
+
+    handlePrintClose = () => {
+        this.setState({print:false});
+    }
+
+
+    renderPrintDialog() {
+        const { classes } = this.props;
+        //const lessonInfo = this.props.lessonInfo.lessonInfo;
+        const widths = [15,120,100,80,70,100,"*",40];
+        const cols = ["#","Zapsán","Přijmení","Jméno","Telefon","Platba","Poznámka","Účast"];
+        const rows = [];
+        
+        //lessonInfo.members.map((m,i)=>{
+        //    return [i+1,moment(m.created_at).format("LLL"),m.client.surname,m.client.name,m.client.phone,payment2str(m.payment),m.comment,m.presence?"ano":""]
+        //})
+        return (
+            <Dialog
+                fullScreen
+                open={this.state.print}
+                onClose={this.handlePrintClose}
+             >
+                <AppBar position="static" className={classes.appBar}>
+                    <Toolbar>
+                        <Typography variant="title" color="inherit" className={classes.flex}>
+                            Tisk masáží
+                        </Typography>
+                        <IconButton color="inherit" onClick={this.handlePrintClose} aria-label="Close">
+                            <CloseIcon />
+                         </IconButton>
+                     </Toolbar>
+                </AppBar>
+            {this.state.print && (<PdfView landscape title={"masaze"} description={"Přehled přihlášených klientů na masáže."} cols={cols} rows={rows} widths={widths}/>)}
+             </Dialog>
+        )
+    }
+
+
+
     render() {
         const { classes } = this.props;
 
@@ -516,15 +573,20 @@ class MassageRoomDay extends React.Component {
         const pm = this.props.massageRoomDayPlan.massageRoomDayPlan?this.renderDayPlan():null;
         const mo = this.state.massageOrder?this.renderOrder():null;
         const mod_dialog = this.renderMODeleteDialog();
+        const printDlg = this.renderPrintDialog();
         return (
             <div className={classes.root}>
             {mod_dialog}
+            {printDlg}
              <Grid container>
                 <Grid item xs={12} sm={12} md={12} lg={7}>
                     <Toolbar classes={{root:classes.toolbar}}>
                         <Typography variant="title"><DateTimeView date={this.props.day}/></Typography>
                         <Typography color="inherit" className={classes.flex}>&nbsp;</Typography>
+
                         {this.renderSettingsSwitch()}
+                        <Button variant="raised" disabled={!pm} className={classes.button} onClick={this.handlePrint} > <PrintIcon/> </Button>
+
                     </Toolbar>  
                     <Paper>
                         {this.state.planMode?pm:dd}    
