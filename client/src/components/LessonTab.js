@@ -337,7 +337,7 @@ class LessonTab extends React.Component {
         const widths = [15,120,100,80,70,100,"*",40];
         const cols = ["#","Zapsán","Přijmení","Jméno","Telefon","Platba","Poznámka","Účast"];
         const rows = lessonInfo.members.map((m,i)=>{
-            return [i+10,moment(m.created_at).format("LLL"),m.client.surname,m.client.name,m.client.phone,payment2str(m.payment),m.comment,m.presence?"ano":""]
+            return [i+1,moment(m.created_at).format("LLL"),m.client.surname,m.client.name,m.client.phone,payment2str(m.payment),m.comment,m.presence?"ano":""]
         })
         return (
             <Dialog
