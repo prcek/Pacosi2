@@ -42,6 +42,7 @@ class PdfView extends React.Component {
     genPdf() {
         console.log("pdf render start")
         var docDefinition = {
+            pageOrientation: this.props.landscape?'landscape':'portrait',
             info: {
                 title: this.props.title,
                 //author: 'CLR Evidence',
@@ -54,7 +55,7 @@ class PdfView extends React.Component {
                 {
                     style: 'table',
 			        table: {
-                        widths: this.props.cols.map((x)=>{return "*"}),
+                        widths: this.props.widths?this.props.widths:this.props.cols.map((x)=>{return "*"}),
                         headerRows: 1,
                         body: [
                             this.props.cols.map((x)=>{return {
@@ -65,7 +66,7 @@ class PdfView extends React.Component {
                             ...this.props.rows.map( (r,line)=>{
                                 return r.map((x)=>{
                                     return {
-                                        text:x,
+                                        text:x?x:"",
                                         border: [false, false, false, false],
                                         fillColor: (line % 2 === 0)?[255,255,255]:[245,245,245]
                                     };
@@ -88,7 +89,8 @@ class PdfView extends React.Component {
                     italics: true
                 },
                 table: {
-                    margin: [0, 5, 0, 15]
+                    margin: [0, 5, 0, 15],
+                    fontSize: 10
                 },
                 tableHeader: {
                     bold: true,
@@ -121,10 +123,15 @@ PdfView.propTypes = {
     classes: PropTypes.object.isRequired,
     title: PropTypes.string.isRequired,
     description: PropTypes.string,
+    landscape: PropTypes.bool,
+    widths: PropTypes.array,
     cols: PropTypes.arrayOf(PropTypes.string).isRequired,
     rows: PropTypes.arrayOf(PropTypes.arrayOf(PropTypes.oneOfType([PropTypes.string,PropTypes.number]))).isRequired
 };
   
+PdfView.defaultProps = {
+    landscape: false
+}
 
 export default compose(
     withStyles(styles),

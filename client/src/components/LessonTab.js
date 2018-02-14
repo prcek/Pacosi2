@@ -322,6 +322,11 @@ class LessonTab extends React.Component {
     renderPrintDialog() {
         const { classes } = this.props;
         const lessonInfo = this.props.lessonInfo.lessonInfo;
+        const widths = [15,120,100,80,70,100,"*",40];
+        const cols = ["#","Zapsán","Přijmení","Jméno","Telefon","Platba","Poznámka","Účast"];
+        const rows = lessonInfo.members.map((m,i)=>{
+            return [i+10,moment(m.created_at).format("LLL"),m.client.surname,m.client.name,m.client.phone,m.payment.name,m.comment,m.presence?"ano":""]
+        })
         return (
             <Dialog
                 fullScreen
@@ -338,7 +343,7 @@ class LessonTab extends React.Component {
                          </IconButton>
                      </Toolbar>
                 </AppBar>
-            {this.state.print && (<PdfView title={"Lekce "+lessonInfo.lesson_type.name+" - "+lessonInfo.lesson_type.location.name+", "+moment(lessonInfo.datetime).format("LLL")} description={"Přehled přihlášených klientů na lekci."} cols={["id","dd"]} rows={[[1,"x"],[2,"y"]]}/>)}
+            {this.state.print && (<PdfView landscape title={"Lekce "+lessonInfo.lesson_type.name+" - "+lessonInfo.lesson_type.location.name+", "+moment(lessonInfo.datetime).format("LLL")} description={"Přehled přihlášených klientů na lekci."} cols={cols} rows={rows} widths={widths}/>)}
              </Dialog>
         )
     }
