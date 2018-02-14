@@ -11,6 +11,7 @@ import Button from 'material-ui/Button';
 import IconButton from 'material-ui/IconButton';
 import DeleteIcon from 'material-ui-icons/Delete';
 import PrintIcon from 'material-ui-icons/Print';
+import AddIcon from 'material-ui-icons/PersonAdd';
 import DateTimeView from './DateTimeView';
 import PaymentView from './PaymentView';
 import Checkbox from 'material-ui/Checkbox';
@@ -397,7 +398,7 @@ class LessonTab extends React.Component {
             {printDlg}
             <Toolbar>
                 <Typography variant="title" className={classes.flex} noWrap> Lekce {lessonInfo.lesson_type.name} - {lessonInfo.lesson_type.location.name}, <DateTimeView date={lessonInfo.datetime} format="LLLL"/> </Typography>
-                <Button variant="raised" disabled={this.state.addMode  || lessonFull} className={classes.button} onClick={this.handleAdd}> přihlásit </Button>
+                <Button variant="raised" disabled={this.state.addMode  || lessonFull} className={classes.button} onClick={this.handleAdd}> <AddIcon/> </Button>
                 <Button variant="raised" disabled={this.state.addMode} className={classes.button} onClick={this.handlePrint} > <PrintIcon/> </Button>
             </Toolbar>
             <div className={classes.panel}>
