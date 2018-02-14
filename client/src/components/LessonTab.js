@@ -114,6 +114,7 @@ const styles = theme => ({
     textfield: {
         margin: theme.spacing.unit
     },
+
 });
   
 
@@ -386,6 +387,7 @@ class LessonTab extends React.Component {
             return null;
         } 
         const lessonInfo = this.props.lessonInfo.lessonInfo;
+        const lessonFull = lessonInfo.capacity<=lessonInfo.members.length;
         const panel = this.state.addMode?this.renderAddPanel():this.renderMembersTable();
         const delAsk= this.renderDelAskDialog();
         const printDlg = this.renderPrintDialog();
@@ -395,7 +397,7 @@ class LessonTab extends React.Component {
             {printDlg}
             <Toolbar>
                 <Typography variant="title" className={classes.flex} noWrap> Lekce {lessonInfo.lesson_type.name} - {lessonInfo.lesson_type.location.name}, <DateTimeView date={lessonInfo.datetime} format="LLLL"/> </Typography>
-                <Button variant="raised" disabled={this.state.addMode} className={classes.button} onClick={this.handleAdd}> přihlásit </Button>
+                <Button variant="raised" disabled={this.state.addMode  || lessonFull} className={classes.button} onClick={this.handleAdd}> přihlásit </Button>
                 <Button variant="raised" disabled={this.state.addMode} className={classes.button} onClick={this.handlePrint} > <PrintIcon/> </Button>
             </Toolbar>
             <div className={classes.panel}>
@@ -425,6 +427,7 @@ export default compose(
         options: {
             refetchQueries: [
                 'LessonInfo',
+                'LessonsInfo',
               ],
         }
     }),
@@ -434,6 +437,7 @@ export default compose(
         options: {
             refetchQueries: [
                 'LessonInfo',
+                'LessonsInfo',
               ],
         }
     }),
@@ -443,6 +447,7 @@ export default compose(
         options: {
             refetchQueries: [
                 'LessonInfo',
+                'LessonsInfo',
               ],
         }
     }),
