@@ -356,7 +356,7 @@ class LessonTab extends React.Component {
     renderPrintDialog() {
         const { classes } = this.props;
         const lessonInfo = this.props.lessonInfo.lessonInfo;
-        const widths = [15,120,100,80,70,100,"*",40];
+        const widths = [15,120,100,80,70,100,160,40];
         const cols = ["#","Zapsán","Přijmení","Jméno","Telefon","Platba","Poznámka","Účast"];
         const rows = lessonInfo.members.map((m,i)=>{
             return [i+1,moment(m.created_at).format("LLL"),m.client.surname,m.client.name,m.client.phone,payment2str(m.payment),m.comment,m.presence?"ano":""]
