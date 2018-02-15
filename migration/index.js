@@ -23,7 +23,7 @@ db.connect();
 const baseUrl="http://localhost:4001";
 
 function doAuth() {
-
+    
     return new Promise(function(resolve, reject) {
 
         fetch(baseUrl+"/auth/login",{
@@ -83,6 +83,34 @@ const LessonsInfo = gql`
       id,datetime,members_count,capacity
     }
   }
+`;
+
+
+const LessonInfo = gql`
+  query LessonInfo($lesson_id: ID!) {
+    lessonInfo(id:$lesson_id) {
+        id,datetime,capacity,members {
+            id,presence,comment,payment,client {
+              id,name,surname,phone,no
+            } created_at
+        }
+        lesson_type {
+            name
+            location {
+              name
+            }
+        }
+    }
+  }
+`;
+
+
+const AddLessonMember = gql`
+    mutation AddLessonMember($lesson_id: ID!, $client_id: ID!, $payment: Payment!, $comment:String) {
+        add_doc: addLessonMember(lesson_id:$lesson_id,client_id:$client_id,payment:$payment, comment:$comment) {
+            id
+        }
+    }
 `;
 
 
@@ -166,6 +194,50 @@ function importLesson(client,l,lid) {
     });
 }
 
+function getLessonMembers(client,lesson_id) {
+    return new Promise(function(resolve, reject){
+
+        client.query({query:LessonInfo, variables:{lesson_id:lesson_id}, fetchPolicy:"network-only"}).then(res=>{
+            resolve(res.data.lessonInfo.members.map(lm=>{return lm.client}));
+        })
+        
+    });
+}
+
+function importLessonMember(client,lm,lid) { 
+    return new Promise(function(resolve, reject){
+        findClient(client,{id:lm.klient_id}).then(c=>{
+            if (c) {
+                findLesson(client,{date:lm.date},lid).then(l=>{
+                    if (l) {
+                        getLessonMembers(client,l.id).then(lms=>{
+                            if (lodash.find(lms,{'id':c.id})) {
+                                resolve("skip dupl");
+                            } else {
+                        
+                                client.mutate({mutation:AddLessonMember,variables:{
+                                    lesson_id: l.id,
+                                    client_id:c.id,
+                                    payment: "NOT_PAID",
+                                }}).then(res=>{
+                                    console.log(res);
+                                    resolve("ok");
+                                })
+                                
+                            }
+                        }) 
+                    } else {
+                        resolve("skip no lesson")
+                    }
+                })
+            } else {
+                resolve("skip no client");
+            }
+            
+        })
+    });
+}
+
 
 doAuth().then(auth=>{
 
@@ -202,12 +274,19 @@ doAuth().then(auth=>{
 */
 
 
-    db.query('SELECT z.klient_id, l.date, z.attend, l.typ FROM `zapis` AS z  LEFT JOIN lekce   AS l ON l.id =z.lekce_id WHERE l.typ=0 LIMIT 1',  function (error, results, fields) {
+
+    db.query('SELECT z.klient_id, l.date, z.attend, l.typ FROM `zapis` AS z  LEFT JOIN lekce   AS l ON l.id =z.lekce_id WHERE l.typ=2 ',  function (error, results, fields) {
         if (error) throw error;
         console.log('The solution is: ', results);
-        db.end();
+
+        pMap(results,(lm)=>importLessonMember(client,lm,"5a57702ca94ea133ed2e4b97"),{concurrency:1}).then((x)=>{
+            console.log("import done",x);
+            db.end();
+        })
 
     });
+
+
 
 });
 
