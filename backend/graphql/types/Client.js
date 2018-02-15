@@ -16,6 +16,9 @@ const {
     GraphQLDateTime
 } = GraphQLIsoDate;
 
+const LocationType = require('./Location');
+const LocationResolver = require('../resolvers/Location');
+
 
 const ClientType = new GraphQL.GraphQLObjectType({
     name: 'Client',
@@ -26,6 +29,20 @@ const ClientType = new GraphQL.GraphQLObjectType({
             type: GraphQLID,
             description: 'ID of the client, Generated automatically by MongoDB',
         },
+
+        location_id: {
+            type: GraphQLID,
+            description: 'location id',
+        },
+        
+        location: {
+            type: LocationType,
+            description: 'location',
+            resolve(parent, args, context, info) {
+                return LocationResolver.single({ id: parent.location_id });
+            }
+        },
+
         no: {
             type: GraphQLInt
         },
@@ -61,6 +78,11 @@ const ClientType = new GraphQL.GraphQLObjectType({
         city: {
             type: GraphQLString,
             description: 'Street of the client',
+        },
+
+        old_id: {
+            type: GraphQLString,
+            description: 'old id from import',
         },
 
         active: {

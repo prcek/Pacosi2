@@ -46,6 +46,14 @@ class ClientController extends BaseController{
         return { $or: [{'search.surname': {$regex: srchtxt }},{'search.name':{$regex: srchtxt } },{'phone': {$regex: srchtxt }},{'comment': {$regex: srchtxt }}]}
     }
 
+    location2filter(str) {
+        if (!str) {
+            return {}
+        } else if (str === "") {
+            return {}
+        } 
+        return {'location_id':str};
+    }
 
     index_pages(pagination,filter={}) { 
         const f = {...filter,...this.hiddenFilter}
@@ -62,7 +70,7 @@ class ClientController extends BaseController{
         return super.count(f);
     }
 
-    lookup(text,limit=0) {
+    lookup(text,filter,limit=0) {
         console.log("ClientController lookup","["+text+"]",limit)    
         const srchtxt = "^"+escapeStringRegexp(removeDiacritics(text).toLowerCase().trim());
         return this.model.find({ $or: [{'search.surname': {$regex: srchtxt }},{'search.name':{$regex: srchtxt } }],...this.hiddenFilter}).limit(limit)

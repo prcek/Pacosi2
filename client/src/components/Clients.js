@@ -38,8 +38,8 @@ const LocalStyles = (theme) => ({
 const styles = JoinStyles([TableEditorStyles,LocalStyles]);
 
 const CurrentClients = gql`
-  query Clients($pageNo: Int!, $pageLength: Int!, $filter: String) {
-    docs_pages: clients_pages(pagination:{pageNo:$pageNo,pageLength:$pageLength},filter:$filter) {
+  query Clients($pageNo: Int!, $pageLength: Int!, $filter: String, $location_id: ID) {
+    docs_pages: clients_pages(pagination:{pageNo:$pageNo,pageLength:$pageLength},filter:$filter, location_id:$location_id) {
       items {
         id
         no
@@ -47,6 +47,7 @@ const CurrentClients = gql`
         surname
         comment
         phone
+        location_id
         created_at
       }
 
@@ -69,8 +70,8 @@ const UpdateClient = gql`
 `;
 
 const AddClient = gql`
-    mutation AddClient($surname: String!, $name: String, $phone: String, $comment: String) {
-        add_doc: addClient(surname:$surname,name:$name,phone:$phone,comment:$comment) {
+    mutation AddClient($surname: String!, $name: String, $phone: String, $comment: String, $location_id: ID!) {
+        add_doc: addClient(surname:$surname,name:$name,phone:$phone,comment:$comment,location_id:$location_id) {
             id
         }
     }
@@ -162,6 +163,9 @@ class Clients extends TableEditor {
         )
     }
 
+    newDocTemplate() {
+        return {location_id:this.props.current_location_id}
+    }
     checkDocField(name,value) {
         switch(name) {
             case 'surname': return ((value!==null) && (value!==undefined));
@@ -244,6 +248,7 @@ function mapStateToProps(state) {
         current_page_no: state.clientPage.pageNo,
         current_page_length: state.clientPage.pageLength,
         current_filter: state.clientPage.filter,
+        current_location_id: state.location,
     }
 }
 
@@ -267,7 +272,7 @@ export default compose(
     connect(mapStateToProps,mapDispatchToProps),
     graphql(CurrentClients,{
         name: "docs",
-        options: ({current_page_no,current_page_length,current_filter})=>({variables:{pageNo:current_page_no,pageLength:current_page_length,filter:current_filter}})
+        options: ({current_page_no,current_page_length,current_filter,current_location_id})=>({variables:{pageNo:current_page_no,pageLength:current_page_length,filter:current_filter,location_id:current_location_id}})
     }),
     graphql(UpdateClient,{
         name:"updateDoc",

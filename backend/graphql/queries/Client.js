@@ -19,6 +19,54 @@ class ClientQuery extends BaseQuery {
         super(ClientType,ClientResolver);
     }
 
+
+    index() {
+        return {
+            type: new GraphQLList(this.type),
+            args: {
+                location_id: {
+                    type: GraphQLID,
+                }
+            },
+            description: 'List all '+this.type+' records present in the database',
+            resolve: (parent, args, context, info) => {
+                const filter = this.resolver.location2filter(args.location_id)
+                return this.resolver.index(filter);
+            }
+        }
+    }
+    index_pages() {
+        return {
+            type: new GraphQL.GraphQLObjectType({
+                name: this.type+'Pages',
+                fields: () => ({
+                    items: {
+                        type: new GraphQLList(this.type)
+                    },
+                    paginationInfo: {
+                        type: this.paginationInfoType
+                    }
+                }) 
+            }),
+            args: {
+                pagination: {
+                    type: new GraphQLNonNull(this.paginationType),
+                },
+                filter: {
+                    type: GraphQLString
+                },
+                location_id: {
+                    type: GraphQLID,
+                },
+            },
+            description: 'List all '+this.type+' records present in the database',
+            resolve: (parent, args, context, info) => {
+                const filter = {...this.resolver.filterString2filter(args.filter),...this.resolver.location2filter(args.location_id)}
+                return this.resolver.index_pages(args.pagination,filter);
+            }
+        }
+    }
+
     lookup() {
         return {
             type: new GraphQLList(ClientType),
@@ -28,6 +76,12 @@ class ClientQuery extends BaseQuery {
                     type: new GraphQLNonNull(GraphQLString),
                     description: 'Please enter text',
                 },
+
+                location_id: {
+                    type: GraphQLID,
+                    description: 'Enter location id',
+                },
+    
                 limit: {
                     type: GraphQLInt,
                     description: 'Please max limit',
@@ -35,7 +89,8 @@ class ClientQuery extends BaseQuery {
 
             },
             resolve(parent, args, context, info) {
-                return ClientResolver.lookup(args.text,args.limit);
+                const filter = this.resolver.location2filter(args.location_id)
+                return ClientResolver.lookup(args.text,filter,args.limit);
             }
         }
     }

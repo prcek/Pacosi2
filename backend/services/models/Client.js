@@ -2,9 +2,17 @@
 
 const mongoose = require('mongoose');
 mongoose.Promise = require('bluebird');
+const Schema = mongoose.Schema;
 
 const ClientSchema = mongoose.Schema(
     {
+
+        location_id: {
+            type: Schema.Types.ObjectId,
+            ref: "Location",
+           // required: true
+        },
+
         no: {
             type: Number,
             unique: true,
@@ -36,6 +44,11 @@ const ClientSchema = mongoose.Schema(
         city: {
             type: String
         },
+
+        old_id: {
+            type: String
+        },
+
         hidden: {
             type: Boolean,
             default: false

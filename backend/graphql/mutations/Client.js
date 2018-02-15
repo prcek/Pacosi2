@@ -21,6 +21,12 @@ class ClientMutation extends BaseMutation {
 
     create_args() {
         return {
+
+            location_id: {
+                type: new GraphQLNonNull(GraphQLID),
+                description: 'Enter location id, Cannot be left empty',
+            },
+
             surname: {
                 type: new GraphQLNonNull(GraphQLString),
                 description: 'Enter client surname, Cannot be left empty',
@@ -53,6 +59,12 @@ class ClientMutation extends BaseMutation {
                 type: GraphQLString,
                 description: 'Enter client city',
             },
+
+            old_id: {
+                type: GraphQLString,
+                description: 'Enter old id - from import',
+            },
+
             active: {
                 type: GraphQLBoolean,
                 description: 'Enters client status, by default its set to active. true: active, false: disabled',
@@ -66,6 +78,12 @@ class ClientMutation extends BaseMutation {
                 type: new GraphQLNonNull(GraphQLID),
                 description: 'Enter client id',
             },
+
+            location_id: {
+                type: GraphQLID,
+                description: 'Enter location id',
+            },
+
             name: {
                 type: GraphQLString,
                 description: 'Enter client name, Cannot be left empty',
@@ -98,6 +116,12 @@ class ClientMutation extends BaseMutation {
                 type: GraphQLString,
                 description: 'Enter client city',
             },
+
+            old_id: {
+                type: GraphQLString,
+                description: 'Enter old id - from import',
+            },
+
             active: {
                 type: GraphQLBoolean,
                 description: 'Enters users status. true: active, false: disabled',

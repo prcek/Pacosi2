@@ -60,6 +60,8 @@ class BaseQuery {
     constructor(type,resolver) {
         console.log("BaseQuery constructor for type",type,"and model resolver",resolver.model.modelName);
         this.type = type;
+        this.paginationType = PaginationType;
+        this.paginationInfoType= PaginationInfoType;
         this.resolver = resolver;
     }
 
@@ -96,9 +98,6 @@ class BaseQuery {
             },
             description: 'List all '+this.type+' records present in the database',
             resolve: (parent, args, context, info) => {
-
-
-
                 return this.resolver.index_pages(args.pagination,this.resolver.filterString2filter(args.filter));
             }
         }
