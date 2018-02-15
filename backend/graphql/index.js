@@ -51,6 +51,7 @@ const RootQuery = new GraphQLObjectType({
         clients: ClientQuery.index(),
         clients_pages: ClientQuery.index_pages(),
         client: ClientQuery.single(),
+        clientOld: ClientQuery.single_by_old(),
         clientsLookup: ClientQuery.lookup(),
         lessonTypes: LessonTypeQuery.index(),
         lessonType: LessonTypeQuery.single(),

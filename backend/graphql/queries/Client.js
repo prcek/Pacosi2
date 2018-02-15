@@ -19,6 +19,21 @@ class ClientQuery extends BaseQuery {
         super(ClientType,ClientResolver);
     }
 
+    single_by_old() {
+        return {
+            type: this.type,
+            description: 'This will return data of a single '+this.type+' based on the id provided',
+            args: {
+                old_id: {
+                    type: new GraphQLNonNull(GraphQLString),
+                    description: 'Please enter '+this.type+' old id',
+                }
+            },
+            resolve: (parent, args, context, info) => {
+                return this.resolver.single_by_old({ old_id: args.old_id });
+            }
+        }
+    }
 
     index() {
         return {

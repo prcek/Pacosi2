@@ -15,6 +15,19 @@ class ClientController extends BaseController{
         this.hiddenFilter = {hidden: {$ne: true}}
     }
 
+    single_by_old( args ) {
+        return new Promise((resolve, reject) => {
+            console.log("ClientController get",this.model.modelName+"(",args,")")    
+            this.model.findOne({ old_id: args.old_id }).then(r=>{
+                if (r===null) {
+                    console.log("can't find",this.model.modelName,"with old_id:",args.old_id)
+                }
+                resolve(r);
+            }).catch(reject);
+        });
+    }
+
+
     create(args) {
         return new Promise((resolve, reject) => {
             console.log("ClientController create",this.model.modelName+"(",args,")")   
