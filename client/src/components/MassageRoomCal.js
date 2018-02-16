@@ -15,7 +15,7 @@ moment.locale('cs');
 
 const MassageRoomDayInfos = gql`
   query MassageRoomDayInfos($massage_room_id: ID! $begin_date: Date! $end_date: Date!) {
-    massageRoomDayInfos(massage_room_id:$massage_room_id, begin_date:$begin_date, end_date:$end_date) @connection(key: "date", filter:["massage_room_id"]) {
+    massageRoomDayInfos(massage_room_id:$massage_room_id, begin_date:$begin_date, end_date:$end_date)  {
       date,status
     }
   }
@@ -128,7 +128,7 @@ export default compose(
                 massage_room_id:massageRoomId,
                 begin_date: moment(begin).format('YYYY-MM-DD'),
                 end_date:moment(begin).add(8,'weeks').format('YYYY-MM-DD')
-            }
+            }, fetchPolicy:"cache-and-network"
         })
     }),
 )(MassageRoomCal)
