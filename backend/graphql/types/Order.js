@@ -71,6 +71,11 @@ const OrderType = new GraphQL.GraphQLObjectType({
             description: 'customer name'
         },
         
+        date: {
+            type: GraphQLDate,
+            description: 'order date',
+        },
+
         created_at: {
             type: GraphQLDateTime,
             description: 'Date and time when this order was created',

@@ -9,6 +9,13 @@ const {
     GraphQLBoolean
 } = GraphQL;
 
+const GraphQLIsoDate = require('graphql-iso-date');
+const {
+    GraphQLDate,
+    GraphQLTime,
+    GraphQLDateTime
+} = GraphQLIsoDate;
+
 const OrderType = require('../types/Order');
 const OrderResolver = require('../resolvers/Order');
 const BaseMutation = require('./BaseMutation');
@@ -42,6 +49,11 @@ class OrderMutation extends BaseMutation {
                 description: 'Enter order customer name',
             },
             
+            date: {
+                type: new GraphQLNonNull(GraphQLDate),
+                description: 'Enter order date, Cannot be left empty',
+            },
+
         }
     }
     update_args() {
@@ -70,7 +82,12 @@ class OrderMutation extends BaseMutation {
                 type: GraphQLString,
                 description: 'Enter order customer name',
             },
-            
+
+            date: {
+                type: GraphQLDate,
+                description: 'Enter order date, Cannot be left empty',
+            },
+  
         };
     }
 }

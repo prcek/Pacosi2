@@ -30,7 +30,13 @@ const OrderSchema = mongoose.Schema(
 
         customer_name: {
             type: String,
-        }
+        },
+
+        date: {
+            type: Date,
+            required: true
+        },
+
     },
     {
         timestamps: { createdAt: 'created_at', updatedAt: 'updated_at' },

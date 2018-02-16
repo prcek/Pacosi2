@@ -157,6 +157,14 @@ const AddOpeningTime = gql`
     }
 `;
 
+const AddOrder = gql`
+    mutation AddOrder($user_id: ID!, $order_item_id:ID!, $customer_name: String, $count: Int!, $total_price:Int!, $date:Date!) {
+        add_doc: addOrder(user_id:$user_id,order_item_id:$order_item_id,customer_name:$customer_name,count:$count,total_price:$total_price,date:$date) {
+            id
+        }
+    }
+`;
+
 
 const vinicni_location_id = "5a32971b1457d41625d242bc";
 
@@ -429,6 +437,67 @@ function importMassageOT(client,ot,mid) {
     });
 }
 
+function getDoctorID(id) {
+    switch(id) {
+        case 1: /*Spodenejko*/ return "5a5731507e6b6628f6ef74ca"
+        case 2: /*Strmiska*/ return "5a3bdea57b930262f4bf8b7c"
+        case 3: /*Koukal*/ return "5a2fc2f43e9e2bf85728cb94"
+        case 4: /*Toufarová-Dudysová*/ return "5a6a5e957685fa026a143ea9"
+        case 5: /*FT*/ return "5a2fc15916147af831e9e9c4"
+        case 6: /*Evidence*/ return "5a3bdf147b930262f4bf8b7e"
+        default: return null;
+    }
+}
+
+function getOrderItemID(id) {
+    switch(id) {
+        case 1: /*laserová sonda*/ return "5a87009267af3bc899206aef";
+        case 2: /*laserová sprcha*/ return "5a87009c67af3bc899206af0";
+        case 3: /*masáže*/ return "5a8700a467af3bc899206af1";
+        case 4: /*Pilates*/ return "5a8700aa67af3bc899206af2";
+        case 5: /*kondiční cvičení*/ return "5a8700b267af3bc899206af3";
+        case 6: /*DP 500*/ return "5a8700b967af3bc899206af4";
+        case 7: /*DP 1000*/ return "5a8700c167af3bc899206af5";
+        case 8: /*DP 1500*/ return "5a8700c767af3bc899206af6";
+        case 9: /*DP 2000*/ return "5a8700cd67af3bc899206af7";
+        case 10: /*faktura - KARTA*/ return "5a8700d367af3bc899206af8";
+        case 11: /*biolampa*/ return "5a8700da67af3bc899206af9";
+        case 12: /*SM Systém*/ return "5a8700df67af3bc899206afa";
+        case 13: /*DP klasická masáž*/ return "5a8700e667af3bc899206afb";
+        case 14: /*DP Lávové kameny*/ return "5a8700ed67af3bc899206afc";
+        case 15: /*DP reflexní masáž nohou*/ return "5a8700f667af3bc899206afd";
+        default: return null;
+    }
+
+}
+function importOrder(client,o) {
+    return new Promise(function(resolve, reject){
+        console.log(o);
+        const doc_id = getDoctorID(o.doctor_id);
+        if (!doc_id) {
+            resolve("missing doc_id");
+            return;
+        }
+        const item_id = getOrderItemID(o.type_id);
+        if (!item_id) {
+            resolve("missing item_id");
+            return;
+        }
+        client.mutate({mutation:AddOrder,variables:{
+            user_id: doc_id,
+            order_item_id: item_id,
+            customer_name:  o.user,
+            count: o.count,
+            total_price: o.cost,
+            date: moment(o.created).format("YYYY-MM-DD")
+            //$user_id: ID!, $order_item_id:ID!, $customer_name: String, $count: Int!, $total_price:Int!, $date:Date!
+        }}).then(res=>{
+            console.log(res);
+            resolve("ok")
+        })
+        
+    });
+}
 
 doAuth().then(auth=>{
 
@@ -492,7 +561,7 @@ doAuth().then(auth=>{
     });
 */
 
-
+/*
     //massage_room_id - vinicni - 5a577e50e29c8736e844806a
     db.query('SELECT * FROM masaze_plan  ', function (error, results, fields) {
         if (error) throw error;
@@ -504,8 +573,22 @@ doAuth().then(auth=>{
         })
         
     });
+*/
+/*
 
+    db.query('SELECT * FROM permanentky  ', function (error, results, fields) {
+        if (error) throw error;
+        //console.log('The solution is: ', results);
 
+        pMap(results,(ot)=>importOrder(client,ot),{concurrency:1}).then((x)=>{
+            console.log("import done",x);
+            db.end();
+        })
+        
+    });
+  */
+  
+  db.end();
 /*
     findClientByName(client,"Létal","548534630").then(x=>{
         console.log(x);
