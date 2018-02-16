@@ -139,6 +139,25 @@ const MassageOrders = gql`
     }
 `;
 
+const MassageOT = gql`
+    query MassageOT($massage_room_id:ID!, $date: Date!) { 
+	    massageRoomDayPlan(massage_room_id:$massage_room_id, date:$date) {
+            opening_times {
+                id,  begin, end
+            }
+	    } 
+    }
+`;
+
+const AddOpeningTime = gql`
+    mutation AddOpeningTime($massage_room_id: ID! $begin: DateTime!, $end: DateTime!) {
+        addOpeningTime(massage_room_id:$massage_room_id,begin:$begin,end:$end) {
+            id
+        }
+    }
+`;
+
+
 const vinicni_location_id = "5a32971b1457d41625d242bc";
 
 
@@ -327,6 +346,20 @@ function getMassageMembers(client,mid,date) {
     });
 }
 
+function getMassageOT(client,mid,date) {
+    console.log("getMassageMembers",mid,date);
+    return new Promise(function(resolve, reject){
+        client.query({query:MassageOT,variables:{
+            massage_room_id:mid,
+            date: date
+        },fetchPolicy:"network-only"}).then(res=>{
+           // console.log(res.data.massageRoomDayPlan.massage_orders);
+            resolve(res.data.massageRoomDayPlan.opening_times)
+        });
+    });
+}
+
+
 function importMassageMember(client,m,mid) {
     
 
@@ -365,6 +398,37 @@ function importMassageMember(client,m,mid) {
        
     });
 }
+
+
+function importMassageOT(client,ot,mid) {
+    
+
+    return new Promise(function(resolve, reject){
+        console.log(ot);
+        const day = moment(ot.zacatek).format("YYYY-MM-DD");
+        getMassageOT(client,mid,day).then(ots=>{
+
+            if (lodash.find(ots,{'begin':moment(ot.zacatek).toISOString()})) {
+                resolve("skip - dupl");
+            } else {
+                client.mutate({mutation:AddOpeningTime,variables:{
+                    massage_room_id:mid,
+                    begin:moment(ot.zacatek).toISOString(),
+                    end:moment(ot.konec).toISOString()
+                }}).then(res=>{
+                    console.log(res);
+                    resolve("ok");
+                })
+
+              
+            }
+
+        })
+
+
+    });
+}
+
 
 doAuth().then(auth=>{
 
@@ -414,6 +478,7 @@ doAuth().then(auth=>{
     });
 */
 
+/*
     //massage_room_id - vinicni - 5a577e50e29c8736e844806a
     db.query('SELECT * FROM masaze ', function (error, results, fields) {
         if (error) throw error;
@@ -425,6 +490,21 @@ doAuth().then(auth=>{
         })
         
     });
+*/
+
+
+    //massage_room_id - vinicni - 5a577e50e29c8736e844806a
+    db.query('SELECT * FROM masaze_plan  ', function (error, results, fields) {
+        if (error) throw error;
+        //console.log('The solution is: ', results);
+
+        pMap(results,(ot)=>importMassageOT(client,ot,"5a577e50e29c8736e844806a"),{concurrency:1}).then((x)=>{
+            console.log("import done",x);
+            db.end();
+        })
+        
+    });
+
 
 /*
     findClientByName(client,"Létal","548534630").then(x=>{
