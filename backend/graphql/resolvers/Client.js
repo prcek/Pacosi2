@@ -85,8 +85,10 @@ class ClientController extends BaseController{
 
     lookup(text,filter,limit=0) {
         console.log("ClientController lookup","["+text+"]",limit)    
-        const srchtxt = "^"+escapeStringRegexp(removeDiacritics(text).toLowerCase().trim());
-        return this.model.find({ $or: [{'search.surname': {$regex: srchtxt }},{'search.name':{$regex: srchtxt } }],...this.hiddenFilter}).limit(limit)
+        const srchtxt = "^"+escapeStringRegexp(removeDiacritics(""+text).toLowerCase().trim());
+        const tf = { ...filter, $or: [{'phone':{$regex: srchtxt}},{'search.surname': {$regex: srchtxt }},{'search.name':{$regex: srchtxt } }],...this.hiddenFilter};
+        console.log(tf);
+        return this.model.find(tf).limit(limit)
             .sort('created_at')
             .exec()
             .then( records => {

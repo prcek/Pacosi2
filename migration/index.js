@@ -113,7 +113,13 @@ const AddLessonMember = gql`
     }
 `;
 
-
+const LookupClient = gql`
+    query LookupClient($location_id:ID!, $text:String!) {
+        clientsLookup(text:$text,location_id:$location_id, limit:10) {
+            id, surname, phone
+        }
+    }
+`;
 
 const vinicni_location_id = "5a32971b1457d41625d242bc";
 
@@ -238,6 +244,60 @@ function importLessonMember(client,lm,lid) {
     });
 }
 
+function findClientByName(client,surname,phone) {
+    return new Promise(function(resolve, reject){
+
+        if (phone && phone !=="")  {
+            client.query({query:LookupClient,variables:{text:phone,location_id:vinicni_location_id}}).then(res=>{
+                if (res.data.clientsLookup.length == 1) {
+                    resolve(res.data.clientsLookup[0]);
+                } else {
+                    if (surname && surname !=="") { 
+                        client.query({query:LookupClient,variables:{text:surname,location_id:vinicni_location_id}}).then(res=>{
+                            if (res.data.clientsLookup.length == 1) {
+                                resolve(res.data.clientsLookup[0]);
+                            } else {
+                                resolve(null);
+                            }
+                        })
+                    } else {
+                        resolve(null);
+                    }
+                }
+            })
+        } else if (surname && surname !=="") {
+            client.query({query:LookupClient,variables:{text:surname,location_id:vinicni_location_id}}).then(res=>{
+                if (res.data.clientsLookup.length == 1) {
+                    resolve(res.data.clientsLookup[0]);
+                } else {
+                    resolve(null);
+                }
+            })
+        } else {
+            resolve(null);
+        }
+
+        
+    });
+}
+
+function getMassageMembers(client,mid,date) {
+    
+}
+
+function importMassageMember(client,m,mid,mtid) {
+    return new Promise(function(resolve, reject){
+        findClientByName(client,m.prijmeni,m.telefon).then(cl=>{
+            if (cl) {
+                console.log(m);
+                resolve("found");
+            } else {
+                resolve("missing client")
+            }
+        })
+       
+    });
+}
 
 doAuth().then(auth=>{
 
@@ -274,7 +334,7 @@ doAuth().then(auth=>{
 */
 
 
-
+/*
     db.query('SELECT z.klient_id, l.date, z.attend, l.typ FROM `zapis` AS z  LEFT JOIN lekce   AS l ON l.id =z.lekce_id WHERE l.typ=2 ',  function (error, results, fields) {
         if (error) throw error;
         console.log('The solution is: ', results);
@@ -285,7 +345,26 @@ doAuth().then(auth=>{
         })
 
     });
+*/
 
+    //massage_room_id - vinicni - 5a577e50e29c8736e844806a, typ 1=Klasická masáž za a šíje = 5a859501f559497fb68dc879
+    db.query('SELECT * FROM masaze WHERE typ = 1 LIMIT 10', function (error, results, fields) {
+        if (error) throw error;
+        console.log('The solution is: ', results);
+
+        pMap(results,(l)=>importMassageMember(client,l,"5a577e50e29c8736e844806a","5a859501f559497fb68dc879"),{concurrency:1}).then((x)=>{
+            console.log("import done",x);
+            db.end();
+        })
+        
+    });
+
+/*
+    findClientByName(client,"Létal","548534630").then(x=>{
+        console.log(x);
+        db.end();
+    })
+*/
 
 
 });

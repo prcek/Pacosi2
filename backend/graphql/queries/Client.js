@@ -103,9 +103,9 @@ class ClientQuery extends BaseQuery {
                 }
 
             },
-            resolve(parent, args, context, info) {
+            resolve: (parent, args, context, info) => {
                 const filter = this.resolver.location2filter(args.location_id)
-                return ClientResolver.lookup(args.text,filter,args.limit);
+                return this.resolver.lookup(args.text,filter,args.limit);
             }
         }
     }
