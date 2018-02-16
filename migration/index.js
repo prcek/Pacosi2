@@ -121,6 +121,24 @@ const LookupClient = gql`
     }
 `;
 
+const AddMassageOrder = gql`
+    mutation AddMassageOrder($massage_room_id: ID! $massage_type_id: ID! $begin: DateTime!, $client_id: ID!, $comment: String,  $payment: Payment!) {
+        addMassageOrder(massage_room_id:$massage_room_id, massage_type_id:$massage_type_id, begin:$begin,client_id:$client_id, comment:$comment, payment:$payment) {
+            id
+        }
+    }
+`;
+
+const MassageOrders = gql`
+    query MassageOrders($massage_room_id:ID!, $date: Date!) { 
+	    massageRoomDayPlan(massage_room_id:$massage_room_id, date:$date) {
+            massage_orders {
+                id, client_id, begin
+            }
+	    } 
+    }
+`;
+
 const vinicni_location_id = "5a32971b1457d41625d242bc";
 
 
@@ -281,18 +299,67 @@ function findClientByName(client,surname,phone) {
     });
 }
 
-function getMassageMembers(client,mid,date) {
-    
+function getMassageTypeID(typ) {
+    switch(typ) {
+        case 1: /*Klasická masáž za a šíje*/ return "5a859501f559497fb68dc879";
+        case 2: /*Klasická masáž zad, šíje, HK, DK*/ return "5a86a6cfad32cb0005c57c1c";
+        case 3: /*Lávové kameny (záda, šíje)*/ return "5a86a6ffad32cb0005c57c1d";
+        case 4: /*Lávové kameny (záda, šíje,HK, DK*/ return "5a86a739ad32cb0005c57c1e";
+        case 5: /*Lymfatická masáž DK*/ return "5a86a750ad32cb0005c57c1f";
+        case 6: /*Sportovní masáž DK*/ return "5a86a75dad32cb0005c57c20";
+        case 7: /*Reflexní masáž chodidel*/ return "5a86a767ad32cb0005c57c21";
+        case 8: /*Reflexní masáž chodidel+masáž z*/ return "5a86a790ad32cb0005c57c22";
+        case 9: /*Celková masáž (záda,šíje,HK,DK,h*/ return "5a86a7c2f75877000579fcae";
+        default: return null;
+    }
 }
 
-function importMassageMember(client,m,mid,mtid) {
+function getMassageMembers(client,mid,date) {
+    console.log("getMassageMembers",mid,date);
+    return new Promise(function(resolve, reject){
+        client.query({query:MassageOrders,variables:{
+            massage_room_id:mid,
+            date: date
+        },fetchPolicy:"network-only"}).then(res=>{
+           // console.log(res.data.massageRoomDayPlan.massage_orders);
+            resolve(res.data.massageRoomDayPlan.massage_orders)
+        });
+    });
+}
+
+function importMassageMember(client,m,mid) {
+    
+
     return new Promise(function(resolve, reject){
         findClientByName(client,m.prijmeni,m.telefon).then(cl=>{
-            if (cl) {
-                console.log(m);
-                resolve("found");
+            const mtid = getMassageTypeID(m.typ);
+            
+            if (cl && mtid) {
+                getMassageMembers(client,mid,moment(m.zacatek).format("YYYY-MM-DD")).then(mms=>{
+
+                    if (lodash.find(mms,{'client_id':cl.id,'begin':moment(m.zacatek).toISOString()})) {
+                        resolve("skip");
+                    } else {
+                        
+                        client.mutate({mutation:AddMassageOrder,variables:{
+                            massage_room_id: mid,
+                            massage_type_id: mtid,
+                            begin: moment(m.zacatek).toISOString(),
+                            client_id:  cl.id,
+                            comment: m.popis,
+                            payment: "NOT_PAID"
+                        }}).then(res=>{
+                            console.log(res);
+                            resolve("ok");
+                        })
+
+                    }
+                   
+                });
+                
+                
             } else {
-                resolve("missing client")
+                resolve("missing client or mtid")
             }
         })
        
@@ -347,12 +414,12 @@ doAuth().then(auth=>{
     });
 */
 
-    //massage_room_id - vinicni - 5a577e50e29c8736e844806a, typ 1=Klasická masáž za a šíje = 5a859501f559497fb68dc879
-    db.query('SELECT * FROM masaze WHERE typ = 1 LIMIT 10', function (error, results, fields) {
+    //massage_room_id - vinicni - 5a577e50e29c8736e844806a
+    db.query('SELECT * FROM masaze ', function (error, results, fields) {
         if (error) throw error;
-        console.log('The solution is: ', results);
+        //console.log('The solution is: ', results);
 
-        pMap(results,(l)=>importMassageMember(client,l,"5a577e50e29c8736e844806a","5a859501f559497fb68dc879"),{concurrency:1}).then((x)=>{
+        pMap(results,(l)=>importMassageMember(client,l,"5a577e50e29c8736e844806a"),{concurrency:1}).then((x)=>{
             console.log("import done",x);
             db.end();
         })
