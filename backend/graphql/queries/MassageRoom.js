@@ -27,14 +27,8 @@ const MassageTypeResolver = require('../resolvers/MassageType');
 
 const BaseQuery = require('./BaseQuery');
 
-const DayStatusType =  new GraphQL.GraphQLEnumType({
-    name: 'DayStatus',
-    values: {
-        OFF:{value:0},
-        FREE:{value:1},
-        BUSY:{value:2}
-    }
-});
+const DayStatusType = require('../types/DayStatus');
+
 
 
 const MassageRoomDayInfoType = new GraphQL.GraphQLObjectType({
