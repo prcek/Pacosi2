@@ -1,6 +1,7 @@
 'use strict';
 
 const MassageRoom = require('../../services/models/MassageRoom');
+const mongoose = require('mongoose');
 
 const BaseController = require('./BaseController');
 const OpeningTimeResolver = require('./OpeningTime');
@@ -165,8 +166,44 @@ class MDController {
         return 2;
     }
 }
+function range2slots(b,e) {
+    const range = moment.range(b,e);
+    const slots = Array.from(range.by('minutes',{exclusive: true,step:30}));
+    return Lodash.map(slots,function(s){return s.toISOString()});
+}
 
 
+function calc_new_status(ots,mos) {
+
+    //console.log("calc_new_status",mos);
+
+
+    
+    if (ots && mos == null) {
+        return true;
+    }
+    if (mos && ots == null) {
+        return false;
+    }
+
+    if (mos == null && ots == null) {
+        return undefined; //WARN!
+    }
+    const otslots = Lodash.uniq(Lodash.flatten(Lodash.map(ots,function(ot){
+        return range2slots(ot.begin,ot.end);
+    })));
+    const moslots = Lodash.uniq(Lodash.flatten(Lodash.map(mos,function(mo){
+        const end = moment(mo.begin).add(mo.len,"minutes");
+        return range2slots(mo.begin,end);
+    })));
+
+    const freeslots = Lodash.without(otslots,...moslots);
+
+    //console.log("calc M",moslots);
+    //console.log("calc O",otslots);
+    //console.log("calc F",freeslots);
+    return freeslots.length>0;
+}
 
 
 class MassageRoomController extends BaseController {
@@ -196,42 +233,32 @@ class MassageRoomController extends BaseController {
 
             let srch = {};
             if (args.massage_room_id) {
-                srch.massage_room_id=args.massage_room_id
+                srch.massage_room_id=mongoose.Types.ObjectId(args.massage_room_id)
             }
             if (args.begin_date && args.end_date) {
                 srch.begin={"$gte":args.begin_date,"$lt":args.end_date}
             }
 
 
-            pAll([()=>OpeningTimeResolver.index(srch),()=>MassageOrderResolver.index(srch),()=>MassageTypeResolver.all()]).then(res=>{
-                const ots = res[0];
-                const mos = res[1];
-                const mts = Lodash.keyBy(res[2], 'id') 
-                const range = moment.range(args.begin_date,args.end_date);
-                const days = Array.from(range.by('day'));
-                const infos = days.map(d=>{
+            pAll([()=>OpeningTimeResolver.days(srch),()=>MassageOrderResolver.days(srch)]).then(res=>{
 
-                    const has_ot = ots.find(ot=>{
-                        return d.isSame(moment(ot.begin),'day')
-                    });
-                    const has_mo = mos.find(ot=>{
-                        return d.isSame(moment(ot.begin),'day')
-                    });
-
-                    var status = 0;
-                    if (has_ot) {
-                        if (!has_mo) {
-                            status = 1;    
-                        } else {
-                            const mdc = new MDController(d,ots,mos,mts) 
-                            status = mdc.getStatus();
-                        }
-                    } else if (has_mo) {
-                        status = 2;
+                const ot_days = res[0];
+                const mo_days = res[1];
+              
+                const xdays = Lodash.sortedUniq(Lodash.concat(Lodash.map(ot_days,"_id"),Lodash.map(mo_days,"_id")));
+                const sdays = Lodash.map(xdays,function(day){
+                    const cot = Lodash.find(ot_days,{_id:day});
+                    const cmo = Lodash.find(mo_days,{_id:day});
+                    const st = calc_new_status(cot?cot.ots:null,cmo?cmo.mos:null);
+                    let sts;
+                    switch(st) {
+                        case true: sts=1; break;
+                        case false: sts=2; break;
+                        default: sts=0;
                     }
-                    return {date:d.toDate(),status:status};
+                    return {date:day,status:sts};
                 })
-                resolve(infos);
+                resolve(sdays);
             }).catch(reject)
 
 
@@ -244,7 +271,7 @@ class MassageRoomController extends BaseController {
 
             let srch = {};
             if (args.massage_room_id) {
-                srch.massage_room_id=args.massage_room_id
+                srch.massage_room_id=mongoose.Types.ObjectId(args.massage_room_id);
             }
             if (args.date ) {
                 srch.begin={"$gte":args.date,"$lt":moment(args.date).add(1,'day').toDate()}
