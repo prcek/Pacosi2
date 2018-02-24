@@ -7,6 +7,7 @@ import Calendar from './Calendar';
 import Grid from 'material-ui/Grid';
 import LessonTabs from './LessonTabs';
 import DateTimeView from './DateTimeView';
+import LessonTypeCal from './LessonTypeCal';
 import Paper from 'material-ui/Paper';
 import Switch from 'material-ui/Switch';
 import { FormGroup, FormControlLabel } from 'material-ui/Form';
@@ -47,15 +48,15 @@ const CurrentLessonType = gql`
 class LessonType extends React.Component {
 
     state = {
-        day: moment().startOf('week'),
-        currentDate:moment(),
+        calendarStartDate: moment().startOf('week').toDate(),
+        currentDate:moment().toDate(),
         editMode: false
     }
 
     handleSelect = (day) => {
         this.setState({currentDate:day});
     }
-
+/*
     handleBackward = () => {
         this.setState({day:moment(this.state.day).subtract(7,'days')})
     };
@@ -70,7 +71,10 @@ class LessonType extends React.Component {
             day:moment().startOf('week')
         })
     };
-
+*/
+    handleCalMove = (d) => {
+        this.setState({calendarStartDate:d});
+    }
 
 
 
@@ -82,15 +86,16 @@ class LessonType extends React.Component {
     renderCal() {
        // const { classes } = this.props;
         return (
-            
-            <Calendar 
-                startDay={this.state.day} 
-                onForward={this.handleForward} 
-                onBackward={this.handleBackward}
-                onToday={this.handleToday}
-                onSelect={this.handleSelect}
-                selectedDay={this.state.currentDate}
-            />
+            <LessonTypeCal lesson_type_id={this.props.lessonTypeId} begin={this.state.calendarStartDate} selected={this.state.currentDate} onSelectDay={this.handleSelect} onMove={this.handleCalMove}/>
+
+            //<Calendar 
+            //    startDay={this.state.day} 
+            //    onForward={this.handleForward} 
+            //    onBackward={this.handleBackward}
+            //    onToday={this.handleToday}
+            //    onSelect={this.handleSelect}
+            //    selectedDay={this.state.currentDate}
+            ///>
             
         )
     }
