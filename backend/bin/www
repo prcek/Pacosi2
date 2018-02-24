@@ -7,7 +7,7 @@
 var app = require('../app');
 var debug = require('debug')('backend:server');
 var http = require('http');
-
+require('dotenv').config()
 const config = require('../config');
 const mongoose = require('mongoose');
 
@@ -23,6 +23,7 @@ var mongo_options = {
   reconnectInterval: 1000,
   useMongoClient: true
 };
+console.log("MONGODB_HOST",config.database.HOST)
 mongoose.connect( config.database.HOST, mongo_options);
 
 var port = normalizePort(config.server.PORT);
