@@ -9,7 +9,7 @@ import Typography from 'material-ui/Typography';
 import Button from 'material-ui/Button';
 import DateTimeView from './DateTimeView';
 import TextField from 'material-ui/TextField';
-
+import DebugInfo from './DebugInfo';
 
 var moment = require('moment');
 require("moment/min/locales.min");
@@ -176,7 +176,7 @@ class LessonTabEdit extends React.Component {
                 <Button variant="raised" disabled={!capacityvalid || !timevalid} onClick={()=>this.submitUpdate()}>Uložit</Button>
                 </div>
 
-                <Typography variant="caption"> Lesson Id: {this.props.lessonId} </Typography>
+                <DebugInfo> Lesson Id: {this.props.lessonId} </DebugInfo>
             </div>
         );
         
@@ -200,6 +200,7 @@ export default compose(
         options: {
             refetchQueries: [
                 'LessonsInfo',
+                'LessonTypeDayInfos'
               ],
         }
     }),
@@ -208,6 +209,7 @@ export default compose(
         options: {
             refetchQueries: [
                 'LessonsInfo',
+                'LessonTypeDayInfos'
             ],
         }
     })

@@ -145,6 +145,7 @@ export default compose(
         options: {
             refetchQueries: [
                 'LessonsInfo',
+                'LessonTypeDayInfos'
               ],
         }
     })

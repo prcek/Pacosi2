@@ -29,6 +29,9 @@ const styles = theme => ({
         minHeight:50
     },
 
+    flex: {
+        flex: 1,
+    },
 });
   
 
@@ -137,12 +140,13 @@ class LessonType extends React.Component {
                 <Grid item xs={12} sm={7} md={8} lg={9}>
                 <Toolbar classes={{root:classes.toolbar}}> 
                         {this.state.currentDate  && <Typography variant="title"><DateTimeView date={this.state.currentDate}/></Typography> }
+                        <Typography className={classes.flex}>&nbsp;</Typography>
+                        {sets}
                 </Toolbar>
                 {lessons}
                 </Grid>
             </Grid>
             
-                {sets}
                 <DebugInfo>
                     LessonType id:{this.props.lessonTypeId}
                     {this.state.currentDate && ", selected date: "+ moment(this.state.currentDate).format()} 

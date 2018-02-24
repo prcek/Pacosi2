@@ -430,6 +430,7 @@ export default compose(
             refetchQueries: [
                 'LessonInfo',
                 'LessonsInfo',
+                'LessonTypeDayInfos',
               ],
         }
     }),
@@ -440,6 +441,7 @@ export default compose(
             refetchQueries: [
                 'LessonInfo',
                 'LessonsInfo',
+                'LessonTypeDayInfos',
               ],
         }
     }),
@@ -450,6 +452,7 @@ export default compose(
             refetchQueries: [
                 'LessonInfo',
                 'LessonsInfo',
+                'LessonTypeDayInfos'
               ],
         }
     }),
