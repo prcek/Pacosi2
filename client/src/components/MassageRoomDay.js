@@ -28,7 +28,7 @@ import Divider from 'material-ui/Divider';
 import Lodash from 'lodash';
 import AppBar from 'material-ui/AppBar';
 import PdfView from './PdfView';
-
+import DebugInfo from './DebugInfo';
 
 const Moment = require('moment');
 const MomentRange = require('moment-range');
@@ -473,9 +473,9 @@ class MassageRoomDay extends React.Component {
                         onDelete={this.handleDeleteOrder}
                     />
                 </Paper>
-                <Typography variant="caption"> 
+                <DebugInfo > 
                 MassageOrder id:{this.state.massageOrder.id}
-                </Typography>
+                </DebugInfo>
 
             </div>
         )

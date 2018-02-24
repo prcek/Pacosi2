@@ -3,7 +3,6 @@ import PropTypes from 'prop-types';
 import { withStyles } from 'material-ui/styles';
 import Typography from 'material-ui/Typography';
 import { compose } from 'react-apollo'
-import Calendar from './Calendar';
 import Grid from 'material-ui/Grid';
 import LessonTabs from './LessonTabs';
 import DateTimeView from './DateTimeView';
@@ -14,6 +13,7 @@ import { FormGroup, FormControlLabel } from 'material-ui/Form';
 import Toolbar from 'material-ui/Toolbar/Toolbar';
 import { graphql } from 'react-apollo';
 import gql from 'graphql-tag';
+import DebugInfo from './DebugInfo';
 
 
 var moment = require('moment');
@@ -141,11 +141,13 @@ class LessonType extends React.Component {
                 {lessons}
                 </Grid>
             </Grid>
-            <Typography component="div" type="caption"> 
+            
                 {sets}
-                LessonType id:{this.props.lessonTypeId}
-                {this.state.currentDate && ", selected date: "+ moment(this.state.currentDate).format()} 
-            </Typography>
+                <DebugInfo>
+                    LessonType id:{this.props.lessonTypeId}
+                    {this.state.currentDate && ", selected date: "+ moment(this.state.currentDate).format()} 
+                </DebugInfo>
+           
            
             </div>
         )

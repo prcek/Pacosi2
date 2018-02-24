@@ -12,6 +12,7 @@ import Switch from 'material-ui/Switch';
 import { FormGroup, FormControlLabel } from 'material-ui/Form';
 import MassageRoomCal from './MassageRoomCal';
 import Toolbar from 'material-ui/Toolbar/Toolbar';
+import DebugInfo from './DebugInfo';
 
 var moment = require('moment');
 require("moment/min/locales.min");
@@ -104,10 +105,10 @@ class MassageRoom extends React.Component {
                 </Grid>
 
 
-            <Typography variant="caption"> 
+            <DebugInfo> 
                 MassageRoom id:{this.props.massageRoomId}
                 {this.state.calendarDay && ", selected date: "+ moment(this.state.calendarDay).format()} 
-            </Typography>
+            </DebugInfo>
             </div>
         )
     }

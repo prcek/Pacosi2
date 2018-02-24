@@ -29,6 +29,7 @@ import Dialog, {
     DialogContentText,
     DialogTitle,
 } from 'material-ui/Dialog';
+import DebugInfo from './DebugInfo';
 
 var moment = require('moment');
 require("moment/min/locales.min");
@@ -404,7 +405,7 @@ class LessonTab extends React.Component {
             <div className={classes.panel}>
             {panel}
             </div>
-            <Typography variant="caption"> Lesson Id: {this.props.lessonId} </Typography>
+            <DebugInfo> Lesson Id: {this.props.lessonId} </DebugInfo>
             </div>
         );
         

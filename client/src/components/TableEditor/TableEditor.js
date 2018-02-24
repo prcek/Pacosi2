@@ -38,6 +38,7 @@ import Dialog, {
     DialogContentText,
     DialogTitle,
 } from 'material-ui/Dialog';
+import DebugInfo from '../DebugInfo';
 
 
 class TableEditor extends React.Component {
@@ -208,6 +209,7 @@ class TableEditor extends React.Component {
                 </DialogContentText>
                 {dialogContent}
                 {this.state.doc_error_msg && <SnackbarContent message={this.state.doc_error_msg}/>}
+                <DebugInfo>{"id: "+this.state.doc.id}</DebugInfo>
             </DialogContent>
             <DialogActions>
                 <Button onClick={this.handleCancelDialog} color="primary">
@@ -231,6 +233,7 @@ class TableEditor extends React.Component {
                 <DialogTitle id="del-dialog-title">{dt}</DialogTitle>
                 <DialogContent>
                     {dc}
+                    <DebugInfo>{"id: "+this.state.doc.id}</DebugInfo>
                 </DialogContent>
                 <DialogActions>
                     <Button onClick={this.handleCancelDelDialog} color="primary">
