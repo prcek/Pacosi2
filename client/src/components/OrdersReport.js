@@ -76,7 +76,7 @@ class OrdersReport extends React.Component {
         return (
             <div>
             <Toolbar classes={{root:classes.toolbar}}>
-            <Typography className={classes.typo} type="title"> Přehled prodejů </Typography>
+            <Typography className={classes.typo} variant="title"> Přehled prodejů </Typography>
 
             <UserField 
                 autoFocus
