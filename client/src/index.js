@@ -20,12 +20,12 @@ import {store,persistor} from './store';
 import { startCron } from './cron';
 import LogRocket from 'logrocket';
 
-
+import version from './version.json';
 
 if (process.env.NODE_ENV !== 'production') {
-    console.log("DEVELOPMENT VERSION")
+    console.log("DEVELOPMENT VERSION:",version)
 } else {
-    console.log("PRODUCTION VERSION")
+    console.log("PRODUCTION VERSION:",version)
     LogRocket.init('evmn92/pacosi');
 
     
