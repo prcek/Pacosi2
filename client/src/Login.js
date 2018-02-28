@@ -7,6 +7,8 @@ import Button from 'material-ui/Button';
 import Paper from 'material-ui/Paper';
 import Divider from 'material-ui/Divider';
 import TextField from 'material-ui/TextField';
+import { CircularProgress } from 'material-ui/Progress';
+import Toolbar from 'material-ui/Toolbar';
 //import { setAuthToken } from './actions'
 //import Cookies from 'js-cookie';
 //import Jwt from 'jsonwebtoken';
@@ -30,7 +32,9 @@ const styles = theme => ({
         padding: theme.spacing.unit * 3,
         width: '400px',
       },
-      
+    toolbar: {
+        padding:0,
+    },
     textfield: {
         //margin: theme.spacing.unit
     },
@@ -58,9 +62,12 @@ class Login extends React.Component {
         return this.state.form.login!=="" && this.state.form.password!=="";
     }
 
+
     handleLogin = () => {
         let { form } = this.state;
+        this.setState({wait:true});
         doLogin(form.login,form.password).then(ok=>{
+            this.setState({wait:false});
             if (ok) { 
                 //this.setState({wrong:false,form:form});
             } else {
@@ -102,7 +109,10 @@ class Login extends React.Component {
                         />
                     </form>
                     {this.state.wrong && (<Typography color="error"> špatné přihlašovací jméno nebo heslo </Typography>)}
-                    <Button  disabled={(!this.isFormValid())|| this.state.wait} className={classes.button} variant="raised" onClick={this.handleLogin}> přihlásit </Button>
+                    <Toolbar className={classes.toolbar}>
+                        <Button  disabled={(!this.isFormValid())|| this.state.wait} className={classes.button} variant="raised" onClick={this.handleLogin}> přihlásit </Button>
+                        {this.state.wait && <CircularProgress  className={classes.buttonProgress} />}
+                    </Toolbar>
                     </Paper>
                 </div>
            </div>
