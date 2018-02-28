@@ -50,7 +50,7 @@ const LocationInfo = gql`
 
 const styles = theme => ({
   root: {
-    marginTop: theme.spacing.unit * 3,
+    //marginTop: theme.spacing.unit * 1,
     width: '100%',
   },
   flex: {

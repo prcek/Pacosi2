@@ -7,6 +7,7 @@ import { Route, Switch } from 'react-router-dom';
 import { SnackbarContent } from 'material-ui/Snackbar';
 import Reboot from 'material-ui/Reboot';
 import { withRouter } from 'react-router'
+import { withStyles } from 'material-ui/styles';
 
 import MassageRoom from './components/MassageRoom';
 import LessonType from './components/LessonType';
@@ -21,10 +22,20 @@ import Orders from './components/Orders';
 import OrdersReport from './components/OrdersReport';
 import LessonsReport from './components/LessonsReport';
 import MassagesReport from './components/MassagesReport';
+import Version from './components/Version';
 
 import TestComponent from './components/TestComponent';
 import Login from "./Login";
 import {isAuth} from './auth';
+
+
+const styles = theme => ({
+  root: {
+    marginTop: theme.spacing.unit * 3,
+    width: '100%',
+  },
+});
+
 
 const PageLessons = ({ match }) => (
  
@@ -122,22 +133,26 @@ class App extends Component {
   }
 
   render() {
+  // const { classes } = this.props
     if (this.checkAuth()) {
       return this.renderApp();
     } else {
       return (
         <div className="App">
         <Reboot />
+        <Version />
         <Login/>
         </div>      
       )
     }
   }
   renderApp() {
+   // const { classes } = this.props
     return (
       <div className="App">
         <Reboot />
         <header className="App-header">
+          <Version />
           <MenuBar />
         </header>
 
@@ -172,5 +187,6 @@ function mapStateToProps(state) {
 
 
 export default withRouter(compose(
+  withStyles(styles),
   connect(mapStateToProps),
 )(App));
