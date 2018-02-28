@@ -26,7 +26,7 @@ class Version extends React.Component {
         const { classes } = this.props;
         return (
             <div className={classes.version}>
-                {version.commit + " - " +version.log+ " ("+version.date+")"}
+                {version.log+ " ("+version.date+")"}
             </div>
         )
     }
