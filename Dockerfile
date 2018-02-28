@@ -11,9 +11,11 @@ RUN mkdir -p /usr/src/app
 WORKDIR /usr/src/app
 
 COPY backend /usr/src/app/
+COPY version.json /usr/src/app/
 RUN yarn install
 
 COPY client /usr/src/app/client/
+COPY version.json /usr/src/app/client/src/
 WORKDIR /usr/src/app/client
 RUN yarn install
 RUN yarn run build
