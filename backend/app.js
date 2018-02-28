@@ -13,6 +13,7 @@ const GraphQLSchema = require('./graphql');
 
 //var index = require('./routes/index');
 var auth_route = require('./routes/auth');
+var status_route = require('./routes/status');
 
 var app = express();
 
@@ -31,6 +32,7 @@ app.use(express.static(path.join(__dirname, 'client/build')));
 app.use(robots({UserAgent: '*', Disallow: '/'}));
 
 app.use('/auth',auth_route);
+app.use('/status',status_route);
 
 app.use(
   '/graphiql',
