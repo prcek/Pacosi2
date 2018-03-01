@@ -22,11 +22,48 @@ const OpeningTimeType = require('../types/OpeningTime');
 const OpeningTimeResolver = require('../resolvers/OpeningTime');
 const BaseMutation = require('./BaseMutation');
 
+const DateTimeIntervalType = new GraphQL.GraphQLInputObjectType({
+    name: 'DateTimeInterval',
+    fields: () => ({
+        begin: {
+            type: new GraphQLNonNull(GraphQLDateTime),
+            description: 'Enter start time, Cannot be left empty',
+        },
+        end: {
+            type: new GraphQLNonNull(GraphQLDateTime),
+            description: 'Enter end time, Cannot be left empty',
+        },
+  
+    })
+});
+
 
 class OpeningTimeMutation extends BaseMutation {
     constructor() {
         super(OpeningTimeType,OpeningTimeResolver);
     }
+
+
+    create_multi() {
+        return {
+            type: new GraphQLList(this.type),
+            description: 'MultiCreate new '+this.type+' records',
+            args:  {
+                massage_room_id: {
+                    type: new GraphQLNonNull(GraphQLID),
+                    description: 'Enter massage room id',
+                },
+                openingtimes: {
+                    type: new GraphQLNonNull(new GraphQLList(DateTimeIntervalType)),
+                    description: 'Enter openingtimes, Cannot be left empty',
+                },
+            },
+            resolve: (parent, fields) => {
+                return this.resolver.create_multi(fields.massage_room_id,fields.openingtimes);
+            }
+        }
+    }
+
 
     clean_days() {
         return {
@@ -52,15 +89,9 @@ class OpeningTimeMutation extends BaseMutation {
     create_args() {
         return  {
             massage_room_id: {
-                type: GraphQLID,
+                type: new GraphQLNonNull(GraphQLID),
                 description: 'Enter massage room id',
             },
-            /*
-            surgery_room_id: {
-                type: GraphQLID,
-                description: 'Enter surgery room id',
-            },
-            */
             begin: {
                 type: new GraphQLNonNull(GraphQLDateTime),
                 description: 'Enter start time, Cannot be left empty',
@@ -83,12 +114,6 @@ class OpeningTimeMutation extends BaseMutation {
                 type: GraphQLID,
                 description: 'Enter massage room id',
             },
-            /*
-            surgery_room_id: {
-                type: GraphQLID,
-                description: 'Enter surgery room id',
-            },
-            */
             begin: {
                 type: GraphQLDateTime,
                 description: 'Enter start time',

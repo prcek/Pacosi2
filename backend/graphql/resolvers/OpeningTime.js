@@ -16,9 +16,27 @@ class OpeningTimeController extends BaseController {
         super(OpeningTime);
     }
 
+    create_multi(massage_room_id,openingtimes) {
+        return new Promise((resolve, reject) => { 
+            console.log("OpeningTimeController create_multi(",massage_room_id,openingtimes,")");
+            let Model = this.model;
+            const models = openingtimes.map(ot=>{
+                return new Model({massage_room_id:massage_room_id,begin:ot.begin,end:ot.end});
+            })
+            console.log(models);
+            this.model.collection.insert(models).then(r=>{
+                if (r===null) {
+                    console.log("can't create",Model.modelName)
+                } else {
+                    console.log("new",Model.modelName,"ids",r.insertedIds)
+                    resolve(models);
+                }
+            })
+        });
+    }
 
     clean_days(massage_room_id, dates) {
-        console.log("BaseController clean_days(",massage_room_id,dates,")");
+        console.log("OpeningTimeController clean_days(",massage_room_id,dates,")");
         if (dates.length===0) {
             return [];
         }
