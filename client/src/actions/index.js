@@ -23,6 +23,10 @@ const setOrderPageLength = (page_length) => ({
     type: 'SET_ORDER_PAGE_LENGTH',
     page_length
 })
+const setOrderFilter = (filter) => ({
+    type: 'SET_ORDER_FILTER',
+    filter
+})
 
 const setAuthToken = (auth_token) => ({
     type: 'SET_AUTH_TOKEN',
@@ -37,5 +41,6 @@ export {
     setClientFilter,
     setOrderPageNo,
     setOrderPageLength,
+    setOrderFilter,
     setAuthToken,
 }

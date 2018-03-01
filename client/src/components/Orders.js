@@ -4,7 +4,7 @@ import { compose } from 'react-apollo'
 import { graphql } from 'react-apollo';
 import { connect } from 'react-redux'
 import gql from 'graphql-tag';
-import { setOrderPageNo, setOrderPageLength } from './../actions'
+import { setOrderPageNo, setOrderPageLength, setOrderFilter } from './../actions'
 import DateTimeView from './DateTimeView';
 import TextField from 'material-ui/TextField';
 import UserField from './UserField';
@@ -42,8 +42,8 @@ const styles = JoinStyles([TableEditorStyles,LocalStyles]);
 
 
 const CurrentOrders = gql`
-  query Orders($pageNo: Int!, $pageLength: Int!) {
-    docs_pages: orders_pages(pagination:{pageNo:$pageNo,pageLength:$pageLength}) {
+  query Orders($pageNo: Int!, $pageLength: Int!, $filter: String) {
+    docs_pages: orders_pages(pagination:{pageNo:$pageNo,pageLength:$pageLength},filter:$filter) {
       items {
         id
         user {name} user_id  total_price count order_item {name} order_item_id customer_name
@@ -213,6 +213,24 @@ class Orders extends TableEditor {
 
     }
 
+    onFilter = (val) => {
+        this.props.onSetFilter(val);
+        this.props.onSelectPageNo(0); 
+    }
+
+    renderFilterField(value) {
+        const { classes } = this.props;
+        return (
+            <TextField className={classes.filterfield}
+            id="filter"
+            label="Hledání klienta"
+            type="search"
+            value={TableEditor.null2empty(value)}
+            onChange={(e)=>this.onFilter(TableEditor.empty2null(e.target.value))}
+        />
+        )
+    }
+
 
     renderTableHeadRow() {
         return (
@@ -265,7 +283,8 @@ class Orders extends TableEditor {
 function mapStateToProps(state) {
     return { 
         current_page_no: state.orderPage.pageNo,
-        current_page_length: state.orderPage.pageLength
+        current_page_length: state.orderPage.pageLength,
+        current_filter: state.orderPage.filter,
     }
 }
   
@@ -276,7 +295,11 @@ const mapDispatchToProps = dispatch => {
       },
       onSelectPageLength: no => {
         dispatch(setOrderPageLength(no))
-      }
+      },
+      onSetFilter: filter => {
+        dispatch(setOrderFilter(filter))
+      },
+
     }
 }
 
@@ -287,7 +310,7 @@ export default compose(
     connect(mapStateToProps,mapDispatchToProps),
     graphql(CurrentOrders,{
         name: "docs",
-        options: ({current_page_no,current_page_length})=>({variables:{pageNo:current_page_no,pageLength:current_page_length}})
+        options: ({current_page_no,current_page_length,current_filter})=>({variables:{pageNo:current_page_no,pageLength:current_page_length,filter:current_filter}})
     }),
     graphql(UpdateOrder,{
         name:"updateDoc",

@@ -37,6 +37,10 @@ const OrderSchema = mongoose.Schema(
             required: true
         },
 
+        search: {
+            customer_name: String,
+        }
+
     },
     {
         timestamps: { createdAt: 'created_at', updatedAt: 'updated_at' },
@@ -44,6 +48,19 @@ const OrderSchema = mongoose.Schema(
     }
 );
 
+const removeDiacritics = require('diacritics').remove;
+
+
+OrderSchema.pre('save', function(next) {
+    if ( this.isModified('customer_name') ) {
+        if (this.customer_name) {
+            this.search.customer_name = removeDiacritics(this.customer_name).toLowerCase().trim();
+        } else {
+            this.search.customer_name = "";
+        }
+    } 
+    next();
+});
 
 
 module.exports = mongoose.model( 'Order', OrderSchema );

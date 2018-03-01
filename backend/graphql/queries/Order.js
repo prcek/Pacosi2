@@ -5,6 +5,7 @@ const {
     GraphQLList,
     GraphQLID,
     GraphQLNonNull,
+    GraphQLString,
     GraphQLInt
 } = GraphQL;
 
@@ -55,6 +56,39 @@ class OrderQuery extends BaseQuery {
     constructor() {
         super(OrderType,OrderResolver);
     }
+
+    index_pages() {
+        return {
+            type: new GraphQL.GraphQLObjectType({
+                name: this.type+'Pages',
+                fields: () => ({
+                    items: {
+                        type: new GraphQLList(this.type)
+                    },
+                    paginationInfo: {
+                        type: this.paginationInfoType
+                    }
+                }) 
+            }),
+            args: {
+                pagination: {
+                    type: new GraphQLNonNull(this.paginationType),
+                },
+                filter: {
+                    type: GraphQLString
+                },
+                location_id: {
+                    type: GraphQLID,
+                },
+            },
+            description: 'List all '+this.type+' records present in the database',
+            resolve: (parent, args, context, info) => {
+                const filter = {...this.resolver.filterString2filter(args.filter)}
+                return this.resolver.index_pages(args.pagination,filter);
+            }
+        }
+    }
+
 
     report() {
         return {

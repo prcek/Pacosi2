@@ -1,6 +1,8 @@
 'use strict';
 const mongoose = require('mongoose');
 const Order = require('../../services/models/Order');
+const escapeStringRegexp = require('escape-string-regexp');
+const removeDiacritics = require('diacritics').remove;
 
 const BaseController = require('./BaseController');
 
@@ -10,6 +12,24 @@ class OrderController extends BaseController {
         super(Order);
         this.defaultSort = {date: -1}
     }
+
+    index_pages(pagination,filter={}) { 
+        const f = {...filter,...this.hiddenFilter}
+        return super.index_pages(pagination,f);
+    }
+
+
+    filterString2filter(str) {
+        if (!str) {
+            return {}
+        } else if (str === "") {
+            return {}
+        } 
+        const srchtxt = "^"+escapeStringRegexp(removeDiacritics(str).toLowerCase().trim());
+//        console.log(srchtxt);
+        return { 'search.customer_name': {$regex: srchtxt }}
+    }
+
     report(args) {
         console.log("OrderController report",args)
 

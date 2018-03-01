@@ -5,7 +5,8 @@ class BaseController {
     constructor(model) {
         console.log("BaseController constructor for model",model.modelName)
         this.model = model;
-        this.defaultSort = {created_at: -1}
+        this.defaultSort = {created_at: -1},
+        this.hiddenFilter = {}
     }
 
     
