@@ -26,7 +26,9 @@ if (process.env.NODE_ENV !== 'production') {
     console.log("DEVELOPMENT VERSION:",version)
 } else {
     console.log("PRODUCTION VERSION:",version)
-    LogRocket.init('evmn92/pacosi');
+    LogRocket.init('evmn92/pacosi',{
+        release: version.commit,
+     });
 
     
     Raven.setDataCallback(function (data) {
