@@ -199,7 +199,7 @@ class MassageRoomDay extends React.Component {
 
     componentWillReceiveProps(nextProps) {
         if (!moment(this.props.day).isSame(nextProps.day,'day')) {
-            this.setState({newOtItem:{begin:nextProps.day,end:nextProps.day},massageOrder:null});
+            this.setState({newOtItem:{begin:nextProps.day,end:nextProps.day},massageOrder:null,rot_done:false,rot_wait:false,end_date:null});
         }
     }
    
