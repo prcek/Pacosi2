@@ -3,6 +3,7 @@
 const GraphQL = require('graphql');
 const {
     GraphQLNonNull,
+    GraphQLList,
     GraphQLString,
     GraphQLInt,
     GraphQLID,
@@ -27,6 +28,29 @@ class LessonMutation extends BaseMutation {
         super(LessonType,LessonResolver);
     }
 
+    multi_create() {
+        return {
+            type: new GraphQLList(this.type),
+            description: 'MultiCreate new '+this.type+' records',
+            args:  {
+                lesson_type_id: {
+                    type: new GraphQLNonNull(GraphQLID),
+                    description: 'Enter lesson type id, Cannot be left empty',
+                },
+                capacity: {
+                    type: new GraphQLNonNull(GraphQLInt),
+                    description: 'Enter lesson capacity, Cannot be left empty',
+                },
+                datetimes: {
+                    type: new GraphQLNonNull(new GraphQLList(GraphQLDateTime)),
+                    description: 'Enter lesson datetimes, Cannot be left empty',
+                },
+            },
+            resolve: (parent, fields) => {
+                return this.resolver.multi_create(fields);
+            }
+        }
+    }
 
     create_args() {
         return  {

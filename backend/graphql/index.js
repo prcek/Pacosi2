@@ -114,6 +114,7 @@ const RootMutation = new GraphQLObjectType({
         updateMassageOrder: MassageOrderMutation.update(),
         deleteMassageOrder: MassageOrderMutation.delete(),
         addLesson: LessonMutation.create(),
+        addLessons: LessonMutation.multi_create(),
         updateLesson: LessonMutation.update(),
         deleteLesson: LessonMutation.delete(),
         addLessonMember: LessonMemberMutation.create(),

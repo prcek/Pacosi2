@@ -5,7 +5,7 @@ import { compose } from 'react-apollo'
 
 
 import Input, { InputLabel, InputAdornment } from 'material-ui/Input';
-import { FormControl } from 'material-ui/Form';
+import { FormControl, FormHelperText } from 'material-ui/Form';
 import { findDOMNode } from 'react-dom'
 import Popover from 'material-ui/Popover';
 import CalendarIcon from 'material-ui-icons/Today';
@@ -136,8 +136,7 @@ class DateField extends React.Component {
                         selectedDay={val}
                     /> 
                 </Popover>
-
-
+                {this.props.helperText && (<FormHelperText id={"helper"+this.props.id}>{this.props.helperText}</FormHelperText>)}
            
             </FormControl>
         )
@@ -153,7 +152,8 @@ DateField.propTypes = {
     margin: PropTypes.string,
     label: PropTypes.string,
     id: PropTypes.string,
-    name: PropTypes.string
+    name: PropTypes.string,
+    helperText: PropTypes.string
 };
   
 DateField.defaultProps = {

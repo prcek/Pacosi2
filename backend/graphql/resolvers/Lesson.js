@@ -9,6 +9,39 @@ class LessonController extends BaseController {
         super(Lesson);
     }
 
+    multi_create(args) {
+        return new Promise((resolve, reject) => {
+            console.log("LessonController multi_create",this.model.modelName+"(",args,")")   
+            let model = this.model;
+            const models = args.datetimes.map(dt=>{
+                return new model({capacity:args.capacity,datetime:dt,lesson_type_id:args.lesson_type_id});
+            })
+            console.log(models);
+            this.model.collection.insert(models).then(r=>{
+                if (r===null) {
+                    console.log("can't create",this.model.modelName)
+                } else {
+                    console.log("new",this.model.modelName,"ids",r.insertedIds)
+                    resolve(models);
+                }
+            })
+            
+            /*
+
+            const record = new this.model(args);
+            record.save().then(r=>{
+                if (r===null) {
+                    console.log("can't create",this.model.modelName)
+                } else {
+                    console.log("new",this.model.modelName,"id",r.id)
+                }
+                resolve(r);
+            }).catch(reject);
+
+            */
+
+        });
+    }
 
     days(filter) {
         return new Promise((resolve, reject) => {
