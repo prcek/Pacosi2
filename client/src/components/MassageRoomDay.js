@@ -9,9 +9,15 @@ import Grid from 'material-ui/Grid';
 import Paper from 'material-ui/Paper';
 import Toolbar from 'material-ui/Toolbar';
 import Button from 'material-ui/Button';
+import DeleteIcon from 'material-ui-icons/Delete';
+import AddIcon from 'material-ui-icons/Add';
+import CopyIcon from 'material-ui-icons/ContentCopy';
 import MassageDaySlot from './MassageDaySlot';
 import DateTimeView from './DateTimeView';
 import TimeField from './TimeField';
+import DateField from './DateField';
+import TableEditor from './TableEditor';
+
 import MassageOrder from './MassageOrder';
 import CloseIcon from 'material-ui-icons/Close';
 import IconButton from 'material-ui/IconButton';
@@ -126,6 +132,14 @@ const styles = theme => ({
     warn: {
         margin: theme.spacing.unit * 3,
         color: 'red'
+    },
+    typop: {
+        marginLeft: theme.spacing.unit * 3,
+        marginTop: theme.spacing.unit, 
+    },
+    ul: {
+        marginTop:0,
+        marginBottom:0,
     }
 });
   
@@ -155,8 +169,9 @@ class MassageRoomDay extends React.Component {
                 end: this.props.day
             },
             massageOrder: null,
-            print: false
-            
+            print: false,
+            end_date:null,
+            rot_done:false
         };
     }
 
@@ -193,6 +208,12 @@ class MassageRoomDay extends React.Component {
     }
 
     checkNewOt() {
+
+        if (moment(this.state.newOtItem.begin).isSame(this.state.newOtItem.end)) {
+            return ""
+        }
+        
+
         if (moment(this.state.newOtItem.begin).isSameOrAfter(this.state.newOtItem.end)) {
             return "Začátek není před koncem"
         }
@@ -202,7 +223,7 @@ class MassageRoomDay extends React.Component {
         const overlap =ranges.find(r=>{
             return r.overlaps(range);
         })
-        return overlap?"Překryv s existujícím intervalem":null;
+        return overlap?"Překryv s existující dobou":null;
     }
 
     handleNewOtTime = (field,date) => {
@@ -387,7 +408,75 @@ class MassageRoomDay extends React.Component {
 
         this.setState({massageOrder:massageOrder,moCorrect:c});
     }
+    handleChangeED = (d) => {
+        this.setState({end_date:d,rot_done:false});
+    }
 
+    handleNewROt = () => {
+
+        //TODO
+
+
+        this.setState({end_date:null,rot_done:true})
+    }
+
+    getROtDates() {
+        if (this.state.end_date===null) {
+            return null;
+        }
+        var begin = moment(this.props.day);
+        begin.add(1,"week");
+
+        if (begin.isAfter(this.state.end_date)) {
+            return null;
+        }
+
+        var range = moment.range(begin,moment(this.state.end_date));
+        var days = Array.from(range.by('weeks'));
+        if (days.length>20) {
+            return null;
+        }
+
+        return days.map(d=>{return moment(d).format("YYYY-MM-DD")});
+    }
+
+    //checkNewROt() {
+    //    return this.getROtDates()!==null;
+    //}
+
+    renderDayPlanROt() {
+        const { classes } = this.props;
+        const days = this.getROtDates();
+        return (
+            <div className={classes.typop}>
+                <DateField 
+                        margin="dense"
+                        id="end_date"
+                        label="Konec opakování"
+                        value={TableEditor.null2empty(this.state.end_date)}
+                        onChange={(e)=>this.handleChangeED(TableEditor.empty2null(e))}
+                        helperText="Opakování ve stejný den v týdnu, nejdéle do zvoleného data"
+                     />
+           
+                <Button className={classes.button} disabled={days===null} variant="raised" style={{minWidth:"38px"}} onClick={this.handleNewROt}> <CopyIcon/> </Button>
+                <div>
+                    {days!==null &&(
+                        <ul>
+                            {days.map((d,idx)=>{return (
+                                <li key={idx}><DateTimeView date={d} format="LL"/></li>
+                            )})}
+                        </ul>        
+                    )}
+                  
+                </div>
+                {this.state.rot_done &&(
+                    <Typography className={classes.typop} variant="body2">provozní doba byla nakopírována</Typography>
+                )}
+                <div>&nbsp;</div>
+
+            </div>
+        )
+    }
 
     renderDayPlanNewOt() {
         const { classes } = this.props;
@@ -403,36 +492,48 @@ class MassageRoomDay extends React.Component {
                 <Toolbar> 
                     <TimeField label={"OD"} ranges={ranges} value={this.state.newOtItem.begin} onChange={(e)=>this.handleNewOtTime("begin",e.target.value)} />
                     <TimeField label={"DO"} ranges={ranges} value={this.state.newOtItem.end} onChange={(e)=>this.handleNewOtTime("end",e.target.value)} />
-                    <Button className={classes.button} disabled={this.checkNewOt()!==null} variant="raised" onClick={this.handleNewOtTimeSave}> přidat </Button>
+                    <Button className={classes.button} disabled={this.checkNewOt()!==null} variant="raised" style={{minWidth:"38px"}} onClick={this.handleNewOtTimeSave}> <AddIcon/> </Button>
+                    <Typography className={classes.warn}> {this.checkNewOt()} </Typography>
                 </Toolbar>
-                <Typography className={classes.warn}> {this.checkNewOt()} </Typography>
             </div>
         )
     }
     renderDayPlanOt(ot) {
         const { classes } = this.props;
         return (
-            <Toolbar key={ot.id}> 
+            <li key={ot.id}>
+                <Toolbar disableGutters> 
                 <Typography> <DateTimeView date={ot.begin} format={"HH:mm"} /> - <DateTimeView date={ot.end} format={"HH:mm"} /> </Typography>
-                <Button  className={classes.button} variant="raised" onClick={()=>this.handleOtTimeDelete(ot.id)}> smazat </Button>
-            </Toolbar>
+                <Button  className={classes.button} variant="raised" style={{minWidth:"38px"}} onClick={()=>this.handleOtTimeDelete(ot.id)}> <DeleteIcon/> </Button>
+                <DebugInfo>{"id: "+ot.id}</DebugInfo>
+                </Toolbar>
+            </li>
         )
     }
 
     renderDayPlan() {
-       // const { classes } = this.props;
+        const { classes } = this.props;
         const {opening_times}  = this.props.massageRoomDayPlan.massageRoomDayPlan;
         const ot = Lodash.sortBy(opening_times,['begin']).map(o=>{return this.renderDayPlanOt(o)})
         const not = this.renderDayPlanNewOt();
+        const rot = this.renderDayPlanROt();
+        
         return (
             <div>
                 <Toolbar > 
-                        <Typography variant={"subheading"}> Nastavení provozní doby </Typography>
+                        <Typography variant="title"> Nastavení provozní doby </Typography>
                 </Toolbar>
                 <Divider/>
+                <Typography className={classes.typop} variant="subheading">Aktuální provozní doba:</Typography>
+                <ul className={classes.ul}>
                 {ot}
+                </ul>
                 <Divider/>
+                <Typography className={classes.typop} variant="subheading">Přidání provozní doby:</Typography>
                 {not}
+                <Divider/>
+                <Typography className={classes.typop} variant="subheading">Kopírování provozní doby na následující dny:</Typography>
+                {rot}
             </div>
         )
     }

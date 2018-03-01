@@ -105,10 +105,11 @@ class MassageRoom extends React.Component {
                 </Grid>
 
 
-            <DebugInfo> 
-                MassageRoom id:{this.props.massageRoomId}
-                {this.state.calendarDay && ", selected date: "+ moment(this.state.calendarDay).format()} 
-            </DebugInfo>
+                <DebugInfo> 
+                    MassageRoom id:{this.props.massageRoomId}
+                    {this.state.calendarDay && ", selected date: "+ moment(this.state.calendarDay).format()} 
+                </DebugInfo>
+
             </div>
         )
     }
