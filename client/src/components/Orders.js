@@ -9,6 +9,8 @@ import DateTimeView from './DateTimeView';
 import TextField from 'material-ui/TextField';
 import UserField from './UserField';
 import OrderItemField from './OrderItemField';
+import DateField from './DateField';
+
 
 import TableEditor, { TableEditorStyles, JoinStyles } from './TableEditor';
 import  {
@@ -16,6 +18,12 @@ import  {
     TableRow,
 } from 'material-ui/Table'
 
+import Moment from 'moment';
+const MomentRange = require('moment-range');
+
+const moment = MomentRange.extendMoment(Moment);
+require("moment/min/locales.min");
+moment.locale('cs');
 
 
 const LocalStyles = (theme) => ({
@@ -39,6 +47,7 @@ const CurrentOrders = gql`
       items {
         id
         user {name} user_id  total_price count order_item {name} order_item_id customer_name
+        date
         created_at
       }
 
@@ -53,16 +62,16 @@ const CurrentOrders = gql`
 `;
 
 const UpdateOrder = gql`
-    mutation UpdateOrder($id: ID!, $user_id: ID, $order_item_id:ID, $customer_name: String, $count: Int, $total_price:Int) {
-        update_doc: updateOrder(id:$id,user_id:$user_id,order_item_id:$order_item_id,customer_name:$customer_name,count:$count,total_price:$total_price) {
+    mutation UpdateOrder($id: ID!, $user_id: ID, $order_item_id:ID, $customer_name: String, $count: Int, $total_price:Int,$date:Date) {
+        update_doc: updateOrder(id:$id,user_id:$user_id,order_item_id:$order_item_id,customer_name:$customer_name,count:$count,total_price:$total_price,date:$date) {
             id
         }
     }
 `;
 
 const AddOrder = gql`
-    mutation AddOrder($user_id: ID!, $order_item_id:ID!, $customer_name: String, $count: Int!, $total_price:Int!) {
-        add_doc: addOrder(user_id:$user_id,order_item_id:$order_item_id,customer_name:$customer_name,count:$count,total_price:$total_price) {
+    mutation AddOrder($user_id: ID!, $order_item_id:ID!, $customer_name: String, $count: Int!, $total_price:Int!, $date:Date!) {
+        add_doc: addOrder(user_id:$user_id,order_item_id:$order_item_id,customer_name:$customer_name,count:$count,total_price:$total_price,date:$date) {
             id
         }
     }
@@ -110,6 +119,12 @@ class Orders extends TableEditor {
        
     }
 
+
+    newDocTemplate() {
+        return {date:moment().format("YYYY-MM-DD")};
+    }
+
+
     renderEditDialogContent(doc,err,addMode) {
         const { classes } = this.props;
         return (
@@ -132,6 +147,15 @@ class Orders extends TableEditor {
                     label="Typ"
                     value={TableEditor.null2empty(doc.order_item_id)}
                     onChange={(e)=>this.handleDocChange("order_item_id",TableEditor.empty2null(e.target.value))}
+                />
+
+                <DateField 
+                    error={err.date}
+                    margin="dense"
+                    id="date"
+                    label="Datum"
+                    value={TableEditor.null2empty(doc.date)}
+                    onChange={(e)=>this.handleDocChange("date",TableEditor.empty2null(e))}
                 />
 
                 <TextField className={classes.textfield}   
@@ -174,6 +198,7 @@ class Orders extends TableEditor {
                case 'user_id': return ((value!==null) && (value!==undefined));
                case 'count': return ((value!==null) && (value!==undefined));
                case 'total_price': return ((value!==null) && (value!==undefined));
+               case 'date': return ((value!==null) && (value!==undefined));
                default: return true;
                }
            }
@@ -182,6 +207,7 @@ class Orders extends TableEditor {
         return this.checkDocField('customer_name',doc.customer_name) &&
         this.checkDocField('order_item_id',doc.order_item_id) &&
         this.checkDocField('user_id',doc.user_id) &&
+        this.checkDocField('date',doc.date) &&
         this.checkDocField('count',doc.count) &&
         this.checkDocField('total_price',doc.total_price);
 
@@ -196,7 +222,7 @@ class Orders extends TableEditor {
                   <TableCell padding={"dense"}>Klient</TableCell>
                   <TableCell padding={"dense"} style={{width:"0px"}}>Kolik</TableCell>
                   <TableCell padding={"dense"} style={{width:"0px"}}>Cena celkem</TableCell>
-                  <TableCell padding={"dense"}>Zaevidováno</TableCell>
+                  <TableCell padding={"dense"}>Datum</TableCell>
                   <TableCell padding={"dense"}></TableCell>
             </TableRow>
         )
@@ -213,7 +239,7 @@ class Orders extends TableEditor {
             <TableCell padding={"dense"}>{doc.customer_name}</TableCell>
             <TableCell padding={"dense"} style={{width:"0px"}}>{doc.count}</TableCell>
             <TableCell padding={"dense"} style={{width:"0px"}}>{doc.total_price}</TableCell>
-            <TableCell padding={"dense"}><DateTimeView date={doc.created_at} format="LLL"/></TableCell>
+            <TableCell padding={"dense"}><DateTimeView date={doc.date} format="LL"/></TableCell>
             <TableCell padding={"dense"} classes={{root:classes.cell}}>
                 {toolbar}
             </TableCell>

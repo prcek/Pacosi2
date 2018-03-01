@@ -8,6 +8,7 @@ class OrderController extends BaseController {
 
     constructor() {
         super(Order);
+        this.defaultSort = {date: -1}
     }
     report(args) {
         console.log("OrderController report",args)
@@ -18,7 +19,7 @@ class OrderController extends BaseController {
                 srch.user_id=mongoose.Types.ObjectId(args.user_id);
             }
             if (args.begin_date && args.end_date) {
-                srch.created_at={"$gte":args.begin_date,"$lt":args.end_date}
+                srch.date={"$gte":args.begin_date,"$lt":args.end_date}
             }
             console.log("srch",srch)
             this.model.aggregate([
