@@ -41,6 +41,7 @@ const MomentRange = require('moment-range');
 const moment = MomentRange.extendMoment(Moment);
 require("moment/min/locales.min");
 moment.locale('cs');
+var moment_tz = require('moment-timezone');
 
 
 
@@ -68,6 +69,22 @@ const MassageRoomDayPlan = gql`
 const AddOpeningTime = gql`
     mutation AddOpeningTime($massage_room_id: ID! $begin: DateTime!, $end: DateTime!) {
         addOpeningTime(massage_room_id:$massage_room_id,begin:$begin,end:$end) {
+            id
+        }
+    }
+`;
+
+const AddOpeningTimes = gql`
+    mutation AddOpeningTimes($massage_room_id: ID!, $openingtimes: [DateTimeInterval]!) {
+        addOpeningTimes(massage_room_id:$massage_room_id,openingtimes:$openingtimes) {
+            id
+        }
+    }
+`;
+
+const CleanOpeningTimes = gql`
+    mutation CleanOpeningTimes($massage_room_id: ID!, $dates: [Date]!) {
+        cleanOpeningTimes(massage_room_id:$massage_room_id,dates:$dates) {
             id
         }
     }
@@ -171,7 +188,8 @@ class MassageRoomDay extends React.Component {
             massageOrder: null,
             print: false,
             end_date:null,
-            rot_done:false
+            rot_done:false,
+            rot_wait:false,
         };
     }
 
@@ -413,11 +431,58 @@ class MassageRoomDay extends React.Component {
     }
 
     handleNewROt = () => {
+        const days = this.getROtDates();
+        const {opening_times}  = this.props.massageRoomDayPlan.massageRoomDayPlan;
+        const ot = Lodash.flatten(Lodash.sortBy(opening_times,['begin']).map(o=>{
 
-        //TODO
+            return days.map(d=>{
 
 
-        this.setState({end_date:null,rot_done:true})
+                const b_datetime_str = moment(d).format("YYYY-MM-DD")+" "+moment(o.begin).format("HH:mm");
+                const ob=moment_tz.tz(b_datetime_str,"Europe/Prague").tz("UTC").format();
+      
+                const e_datetime_str = moment(d).format("YYYY-MM-DD")+" "+moment(o.end).format("HH:mm");
+                const oe=moment_tz.tz(e_datetime_str,"Europe/Prague").tz("UTC").format();
+                
+                return {begin:ob,end:oe};
+    
+            })
+        }))
+
+        this.setState({rot_wait:true});
+        console.log("________")
+
+        const cdays = days.map(d=>{return moment(d).format("YYYY-MM-DD")});
+
+        this.props.cleanOpeningTimes({variables:{
+            massage_room_id: this.props.massageRoomId,
+            dates:cdays 
+        }}).then(({ data }) => {
+            console.log('cleanOpeningTimes - got data', data);
+           // console.log("XX",ot)
+
+            if (ot.length>0) {
+                this.props.addOpeningTimes({variables:{
+                    massage_room_id: this.props.massageRoomId,
+                    openingtimes:ot 
+                }}).then(({ data }) => {
+                    console.log('addOpeningTimes - got data', data);
+                    this.setState({end_date:null,rot_done:true,rot_wait:false})
+                }).catch((error) => {
+                    console.log('addOpeningTimes - there was an error sending the query', error);
+                });
+            } else {
+                this.setState({end_date:null,rot_done:true,rot_wait:false})
+            }
+
+        }).catch((error) => {
+            console.log('addOpeningTimes - there was an error sending the query', error);
+        });
+
+
+ 
+
+
     }
 
     getROtDates() {
@@ -458,7 +523,7 @@ class MassageRoomDay extends React.Component {
                         helperText="Opakování ve stejný den v týdnu, nejdéle do zvoleného data"
                      />
            
-                <Button className={classes.button} disabled={days===null} variant="raised" style={{minWidth:"38px"}} onClick={this.handleNewROt}> <CopyIcon/> </Button>
+                <Button className={classes.button} disabled={(days===null)||this.state.rot_wait} variant="raised" style={{minWidth:"38px"}} onClick={this.handleNewROt}> <CopyIcon/> </Button>
                 <div>
                     {days!==null &&(
                         <ul>
@@ -632,7 +697,7 @@ class MassageRoomDay extends React.Component {
     renderPrintDialog() {
         const { classes } = this.props;
         const orders = this.props.massageRoomDayPlan.massageRoomDayPlan?Lodash.sortBy(this.props.massageRoomDayPlan.massageRoomDayPlan.massage_orders,['begin']):[];
-        console.log("XXX",orders);
+        //console.log("XXX",orders);
         
         const widths = [50,100,80,80,200,100,90];
         const cols = ["Čas","Přijmení","Jméno","Telefon","Masáž","Platba","Poznámka"];
@@ -722,11 +787,29 @@ export default compose(
             variables:{
                 massage_room_id:massageRoomId,
                 date: moment(day).format('YYYY-MM-DD'),
-            }
+            }, fetchPolicy:"cache-and-network"
         })
     }),
     graphql(AddOpeningTime,{
         name:"addOpeningTime",
+        options: {
+            refetchQueries: [
+                'MassageRoomDayPlan',
+                'MassageRoomDayInfos'
+              ],
+        }
+    }),
+    graphql(AddOpeningTimes,{
+        name:"addOpeningTimes",
+        options: {
+            refetchQueries: [
+                'MassageRoomDayPlan',
+                'MassageRoomDayInfos'
+              ],
+        }
+    }),
+    graphql(CleanOpeningTimes,{
+        name:"cleanOpeningTimes",
         options: {
             refetchQueries: [
                 'MassageRoomDayPlan',
