@@ -126,6 +126,7 @@ const RootMutation = new GraphQLObjectType({
         addOpeningTime: OpeningTimeMutation.create(),
         updateOpeningTime: OpeningTimeMutation.update(),
         deleteOpeningTime: OpeningTimeMutation.delete(),
+        cleanOpeningTimes: OpeningTimeMutation.clean_days(),
         testCreateMethod: TestMutation.create(),
         testDeleteMethod: TestMutation.delete(),
         testUpdateMethod: TestMutation.update(),
