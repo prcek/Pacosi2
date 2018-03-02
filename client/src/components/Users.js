@@ -10,6 +10,7 @@ import StatusView from './StatusView';
 import RoleView from './RoleView';
 import StatusField from './StatusField';
 import RoleField from './RoleField';
+import LocationField from './LocationField';
 
 import TableEditor, { TableEditorStyles, JoinStyles } from './TableEditor';
 import  {
@@ -53,22 +54,26 @@ const CurrentUsers = gql`
       login
       email
       status
+      location_id
+      location {
+          name
+      }
     }
   }
 `;
 
 
 const UpdateUser = gql`
-    mutation UpdateUser($id: ID!, $name: String!, $email: String, $role: UserRole, $status: Status) {
-        update_doc: updateUser(id:$id,name:$name,email:$email,role:$role, status:$status) {
+    mutation UpdateUser($id: ID!, $name: String!, $email: String, $role: UserRole, $status: Status, $location_id:ID) {
+        update_doc: updateUser(id:$id,name:$name,email:$email,role:$role, status:$status, location_id:$location_id) {
             id
         }
     }
 `;
 
 const AddUser = gql`
-    mutation AddUser($name: String!, $email: String, $role: UserRole!, $status: Status!) {
-        add_doc: addUser(name:$name,email:$email,role:$role,status:$status) {
+    mutation AddUser($name: String!, $email: String, $role: UserRole!, $status: Status!, $location_id:ID) {
+        add_doc: addUser(name:$name,email:$email,role:$role,status:$status,location_id:$location_id) {
             id
         }
     }
@@ -177,6 +182,16 @@ class Users extends TableEditor {
                         onChange={(e)=>this.handleDocChange("role",TableEditor.empty2null(e.target.value))}
                     />
          
+                     <LocationField
+                        enableEmpty
+                        margin="dense"
+                        id="lt_location-simple"
+                        name="location"
+                        label="Lokalita"
+                        value={TableEditor.null2empty(doc.location_id)}
+                        onChange={(e)=>this.handleDocChange("location_id",TableEditor.empty2null(e.target.value))}
+                    />
+        
              
             </form>
    
@@ -210,6 +225,7 @@ class Users extends TableEditor {
                 <TableCell padding={"dense"}>Jméno</TableCell>
                 <TableCell padding={"dense"}>Role</TableCell>
                 <TableCell padding={"dense"}>Login</TableCell>
+                <TableCell padding={"dense"}>Lokalita</TableCell>
                 <TableCell padding={"dense"}></TableCell>
             </TableRow>
         )
@@ -232,6 +248,7 @@ class Users extends TableEditor {
             <TableCell padding={"dense"}>{doc.name}</TableCell>
             <TableCell padding={"dense"}><RoleView role={doc.role}/></TableCell>
             <TableCell padding={"dense"}>{doc.login}</TableCell>
+            <TableCell padding={"dense"}>{doc.location?doc.location.name:""}</TableCell>
             <TableCell padding={"dense"} classes={{root:classes.cell}}>
                 {toolbar}
             </TableCell>

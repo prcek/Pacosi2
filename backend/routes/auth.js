@@ -21,9 +21,14 @@ function genAuthDict(user) {
   return {
     login:user.login,
     auth_ok:true,
-    auth_token: gen_jwt({user_id:user.id,role:rr,login:user.login}),
+    auth_token: gen_jwt({
+      user_id:user.id,
+      role:rr,
+      login:user.login,
+    }),
     role:rr,
     name:user.name,
+    location_id:user.location_id
   }
 }
 

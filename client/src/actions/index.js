@@ -28,11 +28,15 @@ const setOrderFilter = (filter) => ({
     filter
 })
 
-const setAuthToken = (auth_token) => ({
-    type: 'SET_AUTH_TOKEN',
-    auth_token
+const setAuth = (auth_token,auth_user) => ({
+    type: 'SET_AUTH',
+    auth_token, auth_user
 })
 
+const clearAuth = () => ({
+    type: 'SET_AUTH_CLEAR'
+    
+})
 
 export {
     setLocation,
@@ -42,5 +46,6 @@ export {
     setOrderPageNo,
     setOrderPageLength,
     setOrderFilter,
-    setAuthToken,
+    setAuth,
+    clearAuth
 }

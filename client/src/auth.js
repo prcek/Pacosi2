@@ -1,9 +1,28 @@
 
 
-import { setAuthToken } from './actions'
+import { setAuth, clearAuth, setLocation } from './actions'
 import Cookies from 'js-cookie';
 import Jwt from 'jsonwebtoken';
 import {store} from './store';
+
+function processAuthResp(data) {
+    const dt = Jwt.decode(data.auth_token);
+    console.log("DT:",dt)
+    Cookies.set('auth',data.auth_token,{ expires: new Date(dt.exp*1000)});
+
+    if (data.location_id) {
+        const loc = store.getState().location;
+        if (loc !== data.location_id) {
+            console.log("force location",data.location_id)
+            store.dispatch(setLocation(data.location_id));
+        }
+    }
+
+    store.dispatch(
+        setAuth(data.auth_token,{role:dt.role,login:data.login, id:dt.user_id,name:data.name,location_id:data.location_id})
+    );
+}
+
 
 const doLogin = (username,password) => {
     return new Promise(function(resolve, reject) {
@@ -15,12 +34,9 @@ const doLogin = (username,password) => {
             })
         }).then((resp) => resp.json()).then(data=>{
             if (data.auth_ok) {
-                const dt = Jwt.decode(data.auth_token);
-                Cookies.set('auth',data.auth_token,{ expires: new Date(dt.exp*1000)});
-                store.dispatch(setAuthToken(data.auth_token));
-                resolve(true);
+                resolve({ok:true,cont: ()=>{processAuthResp(data);}});
             } else {
-                resolve(false)
+                resolve({ok:false})
             }
         })
     });
@@ -60,9 +76,7 @@ const doRelogin = () => {
                 })
             }).then((resp) => resp.json()).then(data=>{
                 if (data.auth_ok) {
-                    const dt = Jwt.decode(data.auth_token);
-                    Cookies.set('auth',data.auth_token,{ expires: new Date(dt.exp*1000)});
-                    store.dispatch(setAuthToken(data.auth_token));
+                    processAuthResp(data);
                 } else {
                     console.log("relogin no auth")
                 }
@@ -74,7 +88,7 @@ const doRelogin = () => {
 }
 
 const doLogout = () => {
-    store.dispatch(setAuthToken(""));
+    store.dispatch(clearAuth());
     Cookies.remove('auth');
 }
 

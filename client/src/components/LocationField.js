@@ -50,6 +50,7 @@ class LocationField extends React.Component {
                     onChange={this.props.onChange}
                     input={<Input name={this.props.name} id={this.props.id} style={{minWidth:100}} />}
                 >
+                    {this.props.enableEmpty && (<MenuItem key="none" value={""}>Žádná lokalita</MenuItem>)}
                     {items}
                 </Select>
             </FormControl>
@@ -66,11 +67,13 @@ LocationField.propTypes = {
     margin: PropTypes.string,
     label: PropTypes.string,
     id: PropTypes.string,
-    name: PropTypes.string
+    name: PropTypes.string,
+    enableEmpty: PropTypes.bool
 };
   
 LocationField.defaultProps = {
-    autoFocus: false
+    autoFocus: false,
+    enableEmpty: false
 }
 
 

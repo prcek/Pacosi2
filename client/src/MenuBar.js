@@ -148,12 +148,13 @@ class MenuBar extends React.Component {
                 &nbsp;
                 </Typography>
 
-
-                <Select value={this.props.current_location_id?this.props.current_location_id:""} onChange={(e)=>this.onNewLocation(e.target.value)}>
-                  <MenuItem value={""}>Žádná lokalita</MenuItem>
-                  {this.props.locations.locations && this.renderLocations(this.props.locations.locations) }
-                </Select>
-
+                {!this.props.current_auth_user.location_id && (
+                  <Select value={this.props.current_location_id?this.props.current_location_id:""} onChange={(e)=>this.onNewLocation(e.target.value)}>
+                    <MenuItem value={""}>Žádná lokalita</MenuItem>
+                    {this.props.locations.locations && this.renderLocations(this.props.locations.locations) }
+                  </Select>
+                )}
+       
                 <IconButton
                   aria-owns={openReport ? 'menu-appbar2' : null}
                   aria-haspopup="true"
@@ -234,7 +235,10 @@ MenuBar.propTypes = {
 
 
 function mapStateToProps(state) {
-  return { current_location_id: state.location }
+  return { 
+      current_location_id: state.location,
+      current_auth_user: state.auth ? state.auth.user : null
+  }
 }
 
 const mapDispatchToProps = dispatch => {

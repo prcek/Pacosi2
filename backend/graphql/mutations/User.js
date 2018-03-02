@@ -45,6 +45,10 @@ class UserMutation extends BaseMutation {
                 type: new GraphQLNonNull(StatusType),
                 description: 'Enters users status, by default its set to active. 1: active, 2: disabled',
             },
+            location_id: {
+                type: GraphQLID,
+                description: 'Enter location id',
+            },
         };
     }
     update_args() {
@@ -76,6 +80,10 @@ class UserMutation extends BaseMutation {
             status: {
                 type: StatusType,
                 description: 'Enters users status. 1: active, 2: disabled',
+            },
+            location_id: {
+                type: GraphQLID,
+                description: 'Enter location id',
             },
         };
     }

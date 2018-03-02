@@ -66,10 +66,11 @@ class Login extends React.Component {
     handleLogin = () => {
         let { form } = this.state;
         this.setState({wait:true});
-        doLogin(form.login,form.password).then(ok=>{
+        doLogin(form.login,form.password).then(({ok,cont})=>{
+            console.log("LOGIN RESP",ok,cont)
             this.setState({wait:false});
             if (ok) { 
-                //this.setState({wrong:false,form:form});
+                cont();
             } else {
                 form["password"] = "";
                 this.setState({wrong:true,form:form});

@@ -2,6 +2,7 @@
 
 const mongoose = require('mongoose');
 mongoose.Promise = require('bluebird');
+const Schema = mongoose.Schema;
 
 const bcrypt = require('bcrypt-nodejs');
 
@@ -39,6 +40,12 @@ const UserSchema = mongoose.Schema(
             default: 1,
             required: true
         },
+
+        location_id: {
+            type: Schema.Types.ObjectId,
+            ref: "Location",
+        },
+
     },
     {
         timestamps: { createdAt: 'created_at', updatedAt: 'updated_at' },
