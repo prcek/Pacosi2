@@ -461,7 +461,7 @@ class MassageRoomDay extends React.Component {
             console.log('cleanOpeningTimes - got data', data);
            // console.log("XX",ot)
 
-            if (ot.length>0) {
+           
                 this.props.addOpeningTimes({variables:{
                     massage_room_id: this.props.massageRoomId,
                     openingtimes:ot 
@@ -471,9 +471,7 @@ class MassageRoomDay extends React.Component {
                 }).catch((error) => {
                     console.log('addOpeningTimes - there was an error sending the query', error);
                 });
-            } else {
-                this.setState({end_date:null,rot_done:true,rot_wait:false})
-            }
+          
 
         }).catch((error) => {
             console.log('addOpeningTimes - there was an error sending the query', error);
@@ -811,10 +809,10 @@ export default compose(
     graphql(CleanOpeningTimes,{
         name:"cleanOpeningTimes",
         options: {
-            refetchQueries: [
-                'MassageRoomDayPlan',
-                'MassageRoomDayInfos'
-              ],
+       //     refetchQueries: [
+       //         'MassageRoomDayPlan',
+       //         'MassageRoomDayInfos'
+       //       ],
         }
     }),
     graphql(DeleteOpeningTime,{

@@ -17,6 +17,9 @@ class OpeningTimeController extends BaseController {
     }
 
     create_multi(massage_room_id,openingtimes) {
+        if (openingtimes.length === 0) {
+            return [];
+        }
         return new Promise((resolve, reject) => { 
             console.log("OpeningTimeController create_multi(",massage_room_id,openingtimes,")");
             let Model = this.model;
@@ -49,6 +52,9 @@ class OpeningTimeController extends BaseController {
         };
 
         console.log(filter,days);
+        if (days.length===0) {
+            return [];
+        }
         return new Promise((resolve, reject) => {
             const MM = this.model;
             this.model.aggregate([
