@@ -6,7 +6,7 @@ TAG=pacosi
 REMOTE_TAG=registry.heroku.com/pacosi/web
 echo TAG=$TAG
 echo REMOTE_TAG=$REMOTE_TAG
-echo "{\"log\":\""`git log --pretty=oneline -n 1`"\", \"date\":\"`date`\", \"commit\":\"`git log --pretty=tformat:%h -n 1`\"}" > version.json
+echo "{\"log\":\""`git log --pretty=oneline -n 1`"\", \"date\":\"`date -u '+%Y-%m-%dT%k:%M:%S%z'`\", \"commit\":\"`git log --pretty=tformat:%h -n 1`\"}" > version.json
 VER=`git log --pretty=tformat:%h -n 1`
 echo VER=$VER
 echo version.json
@@ -33,5 +33,6 @@ if [ $? -ne 0 ]; then
   echo docker tag error
   exit -1
 fi
+rm version.json
 echo build done
 exit 0

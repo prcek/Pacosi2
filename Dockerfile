@@ -25,4 +25,5 @@ WORKDIR /usr/src/app
 EXPOSE 4000
 ENV PORT=4000
 ENV DEBUG="backend:*"
+ENV FORCE_SSL="true"
 CMD ["node","bin/www"]
