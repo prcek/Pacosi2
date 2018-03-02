@@ -4,6 +4,7 @@ import { withStyles } from 'material-ui/styles';
 import PropTypes from 'prop-types';
 import Typography from 'material-ui/Typography';
 import { compose } from 'react-apollo'
+import { connect } from 'react-redux'
 import gql from 'graphql-tag';
 import { withApollo } from 'react-apollo';
 import TextField from 'material-ui/TextField';
@@ -49,8 +50,8 @@ const styles = theme => ({
 
 
 const ClientsLookup = gql`
-  query ClientsLookup($text: String!, $limit:  Int) {
-    clientsLookup(text:$text,limit:$limit) {
+  query ClientsLookup($text: String!, $limit:  Int, $location_id: ID) {
+    clientsLookup(text:$text,limit:$limit,location_id:$location_id) {
         id,name,surname,no,phone
     }
   }
@@ -75,7 +76,12 @@ class ClientLookup extends React.Component {
     }
 
     doLookup(srch) {
-        this.props.client.query({query:ClientsLookup,variables:{text:srch,limit:25}}).then(r=>{
+        var variables={text:srch,limit:25};
+        if (!this.props.allLocations && this.props.current_location_id && this.props.current_location_id !== "") {
+            variables.location_id = this.props.current_location_id;
+        }
+
+        this.props.client.query({query:ClientsLookup,variables:variables}).then(r=>{
             this.setState({suggestions: r.data.clientsLookup});
         }).catch(console.error);
     }
@@ -135,9 +141,28 @@ class ClientLookup extends React.Component {
 ClientLookup.propTypes = {
     classes: PropTypes.object.isRequired,
     onSelect: PropTypes.func.isRequired,
+    allLocations: PropTypes.bool
 }
+
+
+ClientLookup.defaultProps = {
+    allLocations: false
+}
+
+function mapStateToProps(state) {
+    return { 
+        current_location_id: state.location,
+    }
+}
+
+const mapDispatchToProps = dispatch => {
+    return {
+     
+    }
+}
+
 
 export default withApollo(compose(
     withStyles(styles),
-    
+    connect(mapStateToProps,mapDispatchToProps),
 )(ClientLookup))
