@@ -21,7 +21,10 @@ var app = express();
 var Raven = require('raven');
 const SentryOn = (config.sentry.DSN && config.sentry.DSN!=='');
 if (SentryOn) {
-  Raven.config('https://168a490cc82a405caf610da4cd224ea5:2951e533dda7444ca2ba941e0d844889@sentry.io/280940').install();
+  console.log("Sentry is ON");
+  Raven.config(config.sentry.DSN).install();
+} else {
+  console.log("Sentry is OFF");
 }
 
 /*
