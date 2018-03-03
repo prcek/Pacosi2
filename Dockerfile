@@ -26,4 +26,6 @@ EXPOSE 4000
 ENV PORT=4000
 ENV DEBUG="backend:*"
 ENV FORCE_SSL="true"
+ENV SENTRY_DSN=""
+
 CMD ["node","bin/www"]
