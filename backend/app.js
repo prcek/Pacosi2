@@ -17,12 +17,35 @@ var status_route = require('./routes/status');
 var force_ssl = require('./heroku_force_ssl');
 var app = express();
 
+
+var Raven = require('raven');
+const SentryOn = (config.sentry.DSN && config.sentry.DSN!=='');
+if (SentryOn) {
+  Raven.config('https://168a490cc82a405caf610da4cd224ea5:2951e533dda7444ca2ba941e0d844889@sentry.io/280940').install();
+}
+
+/*
+try {
+  throw new Error('Broke!');
+} catch (e) {
+  Raven.captureException(e);
+}
+*/
+if (SentryOn) {
+  app.use(Raven.requestHandler());
+  app.use(Raven.errorHandler());
+}
+
+
 // view engine setup
 app.set('views', path.join(__dirname, 'views'));
 app.set('view engine', 'pug');
 
 // uncomment after placing your favicon in /public
 //app.use(favicon(path.join(__dirname, 'public', 'favicon.ico')));
+
+
+
 app.use(logger('dev'));
 app.use(force_ssl);
 //app.use('/', index);
@@ -59,7 +82,14 @@ app.use('/graphql',jwt({
   },
 }));
 app.use('/graphql', bodyParser.json(), 
-  qraphql_se.graphqlExpress(req=>({ schema: GraphQLSchema, context: {auth:req.auth} }))
+  qraphql_se.graphqlExpress(req=>({ 
+    schema: GraphQLSchema, 
+    context: {auth:req.auth},
+    formatError: (error) => { 
+      if (SentryOn) { Raven.captureException(error) }
+      return error;
+    }
+  }))
 );
 
 
@@ -77,12 +107,13 @@ app.use(function(req, res, next) {
 // error handler
 app.use(function(err, req, res, next) {
   // set locals, only providing error in development
+  if (SentryOn) { Raven.captureException(err); }
   res.locals.message = err.message;
   res.locals.error = req.app.get('env') === 'development' ? err : {};
-
   // render the error page
   res.status(err.status || 500);
   res.render('error');
 });
+
 
 module.exports = app;

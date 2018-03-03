@@ -15,6 +15,9 @@ module.exports = {
         HOST: process.env.MONGODB || 'mongodb://admin:45h-JYP-Gtb-2as@ds135946.mlab.com:35946/pacosi',
     },
 
+    sentry: {
+        DSN: process.env.SENTRY_DSN || ''
+    }
 };
 
 
