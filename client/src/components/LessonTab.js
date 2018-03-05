@@ -12,6 +12,7 @@ import IconButton from 'material-ui/IconButton';
 import DeleteIcon from 'material-ui-icons/Delete';
 import PrintIcon from 'material-ui-icons/Print';
 import AddIcon from 'material-ui-icons/PersonAdd';
+import EditIcon from 'material-ui-icons/Edit';
 import DateTimeView from './DateTimeView';
 import PaymentView from './PaymentView';
 import Checkbox from 'material-ui/Checkbox';
@@ -43,7 +44,7 @@ const LessonInfo = gql`
         id,datetime,capacity,members {
             id,presence,comment,payment,client {
               id,name,surname,phone,no
-            } created_at
+            } client_id created_at
         }
         lesson_type {
             name
@@ -72,9 +73,11 @@ const DeleteLessonMember = gql`
     }
 `;
 
+
+
 const UpdateLessonMember = gql`
-    mutation UpdateLessonMember($id: ID!, $presence: Boolean ) {
-        update_doc: updateLessonMember(id:$id,presence:$presence) {
+    mutation UpdateLessonMember($id: ID!, $client_id:ID, $payment: Payment,$comment: String, $presence: Boolean ) {
+        update_doc: updateLessonMember(id:$id,presence:$presence,client_id:$client_id,payment:$payment,comment:$comment) {
             id
         }
     }
@@ -143,6 +146,7 @@ class LessonTab extends React.Component {
         doc_error_msg:null,
         todel: {},
         delAsk:false,
+        editMode:false,
         print:false
     }
     handleAdd = () => {
@@ -160,6 +164,30 @@ class LessonTab extends React.Component {
     handleCancelAdd = () => {
         this.setState({addMode:false});
     }
+    handleCancelEdit = () => {
+        this.setState({editMode:false});
+    }
+
+    handleDoSave = () => {
+
+        this.props.updateDoc({
+            variables: {
+                id: this.state.doc.id,
+                client_id:this.state.doc.client_id,
+                payment:this.state.doc.payment,
+                comment:this.state.doc.comment
+            },
+        }).then(r=>{
+            console.log(r);
+            this.setState({ editMode: false, doc:{} , doc_err:{}});
+        }).catch(e=>{
+            console.error(e);
+            this.setState({ doc_error_msg:"Chyba ukládání: "+e})
+        })
+
+
+    }
+
     handleDoAdd = () => {
 
         this.props.addDoc({
@@ -180,6 +208,7 @@ class LessonTab extends React.Component {
 
     }
 
+
     handleDocChange(name,value){
         let { doc, doc_err } = this.state;
         doc[name]=value;
@@ -189,6 +218,13 @@ class LessonTab extends React.Component {
           doc_err:doc_err
         });
     }
+
+    handleOpenEditDialog = (m) => {
+        let nd = {}
+        Object.assign(nd,m);
+        this.setState({editMode:true,doc:nd});
+    }
+
 
     handleOpenDeleteDialog = (m) => {
         this.setState({delAsk:true,todel:m});
@@ -282,13 +318,56 @@ class LessonTab extends React.Component {
 
                 </form>
 
-                <Button variant="raised" className={classes.button}  disabled={!this.checkDoc(this.state.doc)} onClick={this.handleDoAdd}> Uložit </Button>
+                <Button variant="raised" className={classes.button}  disabled={!this.checkDoc(this.state.doc)} onClick={this.handleDoAdd}> Přihlásit </Button>
                 <Button variant="raised" className={classes.button} onClick={this.handleCancelAdd}> Zrušit </Button>
 
             </div>
 
         )
     }
+
+
+    renderEditPanel() {
+        const { classes } = this.props;
+        return (
+            <div> 
+                <form className={classes.form}  noValidate autoComplete="off">  
+                    <ClientField className={classes.textfield}
+                        error={this.state.doc_err.surname}
+                        margin="dense"
+                        id="client"
+                        label="Klient"
+                        value={this.state.doc.client_id}
+                        onChange={(cid)=>this.handleDocChange("client_id",cid)}
+                    />
+
+                    <TextField className={classes.textfield}
+                        margin="dense"
+                        id="comment"
+                        label="Poznámka"
+                        type="text"
+                        value={TableEditor.null2empty(this.state.doc.comment)}
+                        onChange={(e)=>this.handleDocChange("comment",TableEditor.empty2null(e.target.value))}
+                    />
+
+                    <PaymentField 
+                        margin="dense"
+                        id="payment"
+                        label="Platba"
+                        value={TableEditor.null2empty(this.state.doc.payment)}
+                        onChange={(e)=>this.handleDocChange("payment",TableEditor.empty2null(e.target.value))}
+                    />
+
+                </form>
+
+                <Button variant="raised" className={classes.button}  disabled={!this.checkDoc(this.state.doc)} onClick={this.handleDoSave}> Uložit změny</Button>
+                <Button variant="raised" className={classes.button} onClick={this.handleCancelEdit}> Zrušit </Button>
+
+            </div>
+
+        )
+    }
+
     handleCheckClick = (m) => {
   
         this.props.updateDoc({
@@ -321,6 +400,7 @@ class LessonTab extends React.Component {
                 </TableCell>
                 <TableCell padding={"dense"} classes={{root:classes.cell}}>
                     <Toolbar disableGutters={true} classes={{root:classes.toolbar}} >
+                        <Button variant="raised" style={{minWidth:"38px"}} onClick={()=>this.handleOpenEditDialog(m)}> <EditIcon/>  </Button>
                         <Button variant="raised" style={{minWidth:"38px"}} onClick={()=>this.handleOpenDeleteDialog(m)}> <DeleteIcon/>  </Button>
                     </Toolbar>
                 </TableCell>
@@ -390,7 +470,9 @@ class LessonTab extends React.Component {
         } 
         const lessonInfo = this.props.lessonInfo.lessonInfo;
         const lessonFull = lessonInfo.capacity<=lessonInfo.members.length;
-        const panel = this.state.addMode?this.renderAddPanel():this.renderMembersTable();
+
+
+        const panel = this.state.addMode?this.renderAddPanel():(this.state.editMode?this.renderEditPanel():this.renderMembersTable());
         const delAsk= this.renderDelAskDialog();
         const printDlg = this.renderPrintDialog();
         return (
@@ -399,8 +481,8 @@ class LessonTab extends React.Component {
             {printDlg}
             <Toolbar>
                 <Typography variant="title" className={classes.flex} noWrap> Lekce {lessonInfo.lesson_type.name} - {lessonInfo.lesson_type.location.name}, <DateTimeView date={lessonInfo.datetime} format="LLLL"/> </Typography>
-                <Button variant="raised" disabled={this.state.addMode  || lessonFull} className={classes.button} onClick={this.handleAdd}> <AddIcon/> </Button>
-                <Button variant="raised" disabled={this.state.addMode} className={classes.button} onClick={this.handlePrint} > <PrintIcon/> </Button>
+                <Button variant="raised" disabled={this.state.addMode  || this.state.editMode || lessonFull} className={classes.button} onClick={this.handleAdd}> <AddIcon/> </Button>
+                <Button variant="raised" disabled={this.state.addMode || this.state.editMode } className={classes.button} onClick={this.handlePrint} > <PrintIcon/> </Button>
             </Toolbar>
             <div className={classes.panel}>
             {panel}
