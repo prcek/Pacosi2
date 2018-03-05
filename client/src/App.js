@@ -23,7 +23,7 @@ import OrdersReport from './components/OrdersReport';
 import LessonsReport from './components/LessonsReport';
 import MassagesReport from './components/MassagesReport';
 import Version from './components/Version';
-
+import About from './components/About';
 import TestComponent from './components/TestComponent';
 import Login from "./Login";
 import {isAuth} from './auth';
@@ -115,8 +115,16 @@ const PageLessonsReport = ({ match }) => (
 const PageNoMatch = ({ match }) => (
   <div>
     <Typography> vyber z menu co chces delat </Typography>
+    <About />
   </div>
 )
+
+const PageAbout = ({ match }) => (
+  <div>
+    <About />
+  </div>
+)
+
 
 const PageTest = ({ match }) => (
   <div>
@@ -172,6 +180,7 @@ class App extends Component {
           <Route path="/r/ordersreport" component={PageOrdersReport}/>
           <Route path="/r/massagesreport" component={PageMassagesReport}/>
           <Route path="/r/lessonsreport" component={PageLessonsReport}/>
+          <Route path="/r/about" component={PageAbout}/>
           <Route path="/r/test" component={PageTest}/>
           <Route component={PageNoMatch}/>
         </Switch>

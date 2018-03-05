@@ -10,6 +10,7 @@ import IconButton from 'material-ui/IconButton';
 import SettingsIcon from 'material-ui-icons/Settings';
 import ReceiptIcon from 'material-ui-icons/Receipt';
 import PowerIcon from 'material-ui-icons/PowerSettingsNew';
+import HelpIcon from 'material-ui-icons/Help';
 import Menu, { MenuItem } from 'material-ui/Menu';
 import { Link } from 'react-router-dom';
 import { withRouter } from 'react-router';
@@ -213,6 +214,13 @@ class MenuBar extends React.Component {
                   <MenuItem onClick={()=>this.handleCfgClickTo('/r/locations')}>Lokality</MenuItem>
                   <MenuItem onClick={()=>this.handleCfgClickTo('/r/massagetypes')}>Typy masáží</MenuItem>
                 </Menu>
+
+                <IconButton
+                  onClick={()=>this.handleCfgClickTo('/r/about')}
+                  color="inherit"
+                >
+                  <HelpIcon />
+                </IconButton>
 
                 <IconButton
                   onClick={this.handleLogout}
