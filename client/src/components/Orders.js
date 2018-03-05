@@ -80,7 +80,7 @@ const AddOrder = gql`
 
 const DeleteOrder = gql`
     mutation DeleteOrder($id: ID!) {
-        remove_doc: DeleteOrder(id:$id) {
+        remove_doc: deleteOrder(id:$id) {
             id
         }
     }
