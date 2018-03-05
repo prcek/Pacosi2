@@ -38,14 +38,13 @@ const bugs = [
 const todos = [
 
     "ucty - kazda lokalita svuj jeden login",
-    "ucastnik lekce, umoznit editaci platby a poznamky",
     "umoznit prime pridani do evidence z zahledani masaze a ucastnika lekce",
     "nove masaze umoznit ukladani na vice dnu",
    
 ];
 const changes = [
+    "ucastnik lekce, umoznit editaci platby a poznamky",
     "vsichni klienti vsude z evidence",
-   
     'k masazi dat "Platba" roletku: ["darkovy poukaz","faktura","neplaceno","placeno"] je povinna',  
     'v denim prehledu masazi polozky: Prijmeni, Telefon, Typ masaze, Platba, Poznamka',
     "cas od 7:00 az 20:30",

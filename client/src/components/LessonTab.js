@@ -116,6 +116,9 @@ const styles = theme => ({
     panel: {
         padding: theme.spacing.unit*2
     },
+    desc: {
+        margin: theme.spacing.unit
+    },
     textfield: {
         margin: theme.spacing.unit
     },
@@ -289,6 +292,7 @@ class LessonTab extends React.Component {
         const { classes } = this.props;
         return (
             <div> 
+                <Typography className={classes.desc} variant="subheading">Přihlášení klienta na lekci</Typography>
                 <form className={classes.form}  noValidate autoComplete="off">  
                     <ClientField className={classes.textfield}
                         error={this.state.doc_err.surname}
@@ -331,6 +335,7 @@ class LessonTab extends React.Component {
         const { classes } = this.props;
         return (
             <div> 
+                <Typography className={classes.desc} variant="subheading">Editace klienta lekce</Typography>
                 <form className={classes.form}  noValidate autoComplete="off">  
                     <ClientField className={classes.textfield}
                         error={this.state.doc_err.surname}
@@ -361,7 +366,7 @@ class LessonTab extends React.Component {
                 </form>
 
                 <Button variant="raised" className={classes.button}  disabled={!this.checkDoc(this.state.doc)} onClick={this.handleDoSave}> Uložit změny</Button>
-                <Button variant="raised" className={classes.button} onClick={this.handleCancelEdit}> Zrušit </Button>
+                <Button variant="raised" className={classes.button} onClick={this.handleCancelEdit}> Neukládat </Button>
 
             </div>
 
@@ -389,7 +394,6 @@ class LessonTab extends React.Component {
             <TableRow hover key={m.id} classes={{root:classes.row}}>
                 <TableCell padding={"dense"} classes={{root:classes.cell}}>{i+1}</TableCell>
                 <TableCell padding={"dense"} classes={{root:classes.cell}}><DateTimeView date={m.created_at} format="LLL"/></TableCell>
-                <TableCell padding={"dense"} classes={{root:classes.cell}}>{m.client.no}</TableCell>
                 <TableCell padding={"dense"} classes={{root:classes.cell}}>{m.client.surname}</TableCell>
                 <TableCell padding={"dense"} classes={{root:classes.cell}}>{m.client.name}</TableCell>
                 <TableCell padding={"dense"} classes={{root:classes.cell}}>{m.client.phone}</TableCell>
@@ -417,7 +421,6 @@ class LessonTab extends React.Component {
                     <TableRow classes={{root:classes.row}}>
                         <TableCell padding={"dense"} className={classes.cell}>#</TableCell>
                         <TableCell padding={"dense"} className={classes.cell}>Zapsán</TableCell>
-                        <TableCell padding={"dense"} className={classes.cell}>Číslo</TableCell>
                         <TableCell padding={"dense"} className={classes.cell}>Přijmení</TableCell>
                         <TableCell padding={"dense"} className={classes.cell}>Jméno</TableCell>
                         <TableCell padding={"dense"} className={classes.cell}>Telefon</TableCell>
