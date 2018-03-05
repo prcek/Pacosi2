@@ -32,7 +32,8 @@ const styles = theme => ({
 
 const bugs = [
     "nefunguje mazani prodeje",
-    "po pridani klienta do evidence se neukaze v prehledu, reload nepomaha, zahledani ano"
+    "po pridani klienta do evidence se neukaze v prehledu, reload nepomaha, zahledani ano",
+    "cca po hodine necinnosti dojde k odhlaseni, ktere neni videt a nejde nic menit. staci prenacist stranku",
 ];
 
 const todos = [
@@ -43,6 +44,7 @@ const todos = [
    
 ];
 const changes = [
+    "testovaci lokalita - misto kde si muzu vyzkouset upravy bez ohrozeni zivych dat",
     "ucastnik lekce, umoznit editaci platby a poznamky",
     "vsichni klienti vsude z evidence",
     'k masazi dat "Platba" roletku: ["darkovy poukaz","faktura","neplaceno","placeno"] je povinna',  
