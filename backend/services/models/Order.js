@@ -9,13 +9,15 @@ const OrderSchema = mongoose.Schema(
         order_item_id: {
             type: Schema.Types.ObjectId,
             ref: "OrderItem",
-            required: true
+            required: true,
+            index:true,
         },
 
         user_id: {
             type: Schema.Types.ObjectId,
             ref: "User",
-            required: true
+            required: true,
+            index:true,
         },
 
         total_price: {
@@ -38,7 +40,7 @@ const OrderSchema = mongoose.Schema(
         },
 
         search: {
-            customer_name: String,
+            customer_name: {type:String,index:true}
         }
 
     },

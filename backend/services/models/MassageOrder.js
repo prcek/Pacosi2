@@ -9,7 +9,8 @@ const MassageOrderSchema = mongoose.Schema(
         massage_room_id: {
             type: Schema.Types.ObjectId,
             ref: "MassageRoom",
-            required: true
+            required: true,
+            index: true,
         },
 
         massage_type_id: {
@@ -20,7 +21,8 @@ const MassageOrderSchema = mongoose.Schema(
         
         begin: {
             type: Date,
-            required: true
+            required: true,
+            index: true,
         },
 
         client_id: {

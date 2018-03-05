@@ -11,6 +11,7 @@ const ClientSchema = mongoose.Schema(
             type: Schema.Types.ObjectId,
             ref: "Location",
            // required: true
+            index:true
         },
 
         no: {
@@ -54,8 +55,8 @@ const ClientSchema = mongoose.Schema(
             default: false
         },
         search: {
-            name: String,
-            surname: String
+            name: {type: String, index:true},
+            surname: {type: String, index:true}
         }
     },
     {

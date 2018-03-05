@@ -9,7 +9,8 @@ const LessonSchema = mongoose.Schema(
         lesson_type_id: {
             type: Schema.Types.ObjectId,
             ref: "LessonType",
-            required: true
+            required: true,
+            index: true
         },
 
         capacity: {
@@ -19,7 +20,8 @@ const LessonSchema = mongoose.Schema(
 
         datetime: {
             type: Date,
-            required: true
+            required: true,
+            index:true
         },
 
     },

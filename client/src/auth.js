@@ -79,11 +79,16 @@ const doRelogin = () => {
                     processAuthResp(data);
                 } else {
                     console.log("relogin no auth")
+                    store.dispatch(clearAuth());
+                    Cookies.remove('auth'); 
                 }
             }).catch(err=>{
                 console.log("relogin failed");
             })
         }
+    } else {
+        store.dispatch(clearAuth());
+        Cookies.remove('auth'); 
     }
 }
 

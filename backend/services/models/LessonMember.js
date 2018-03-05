@@ -9,7 +9,8 @@ const LessonMemberSchema = mongoose.Schema(
         lesson_id: {
             type: Schema.Types.ObjectId,
             ref: "Lesson",
-            required: true
+            required: true,
+            index:true
         },
 
         client_id: {

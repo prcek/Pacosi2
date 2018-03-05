@@ -11,6 +11,7 @@ const OpeningTimeSchema = mongoose.Schema(
         massage_room_id: {
             type: Schema.Types.ObjectId,
             ref: "MassageRoom",
+            index: true,
         },
 /*
         surgery_room_id: {
@@ -20,11 +21,13 @@ const OpeningTimeSchema = mongoose.Schema(
 */
         begin: {
             type: Date,
-            required: true
+            required: true,
+            index: true,
         },
         end: {
             type: Date,
-            required: true
+            required: true,
+            index: true,
         }
        
     },
