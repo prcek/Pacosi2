@@ -304,10 +304,10 @@ function importLessonMember(lm,lt2id,loc_prefix) {
         findClient({id:lm.klient_id},loc_prefix).then(c=>{
             console.log("importLessonMember, findClient res",c)
             if (c) {
-                if (!lm.typ) {
-                    resolve("no lesson typ - skip");
-                    return;
-                }
+                //if (lm.typ == ) {
+                //    resolve("no lesson typ - skip");
+                //    return;
+                //}
                 lid = lt2id(lm.typ);
                 if (!lid) {
                     console.log("can't find lessontype")
@@ -815,17 +815,21 @@ function dobrovskeho_getOrderItemID(id) {
     }
 }
 
-function importOrder(client,o) {
+function importOrder(o,typ2otid) {
     return new Promise(function(resolve, reject){
         console.log(o);
+        if (o.type_id === 0) {
+            resolve("missing item_id");
+            return;
+        }
         const doc_id = getDoctorID(o.doctor_id);
         if (!doc_id) {
             resolve("missing doc_id");
             return;
         }
-        const item_id = getOrderItemID(o.type_id);
+        const item_id = typ2otid(o.type_id);
         if (!item_id) {
-            resolve("missing item_id");
+            reject("missing item_id");
             return;
         }
         client.mutate({mutation:AddOrder,variables:{
@@ -1003,7 +1007,7 @@ function task_import_lessons(db,lessontype2id) {
 
 function task_import_lesson_members(db,lessontype2id,loc_prefix) {
     return new Promise(function(resolve, reject){
-        db.query('SELECT z.id, z.klient_id, l.date, z.attend, l.typ FROM `zapis` AS z  LEFT JOIN lekce   AS l ON l.id =z.lekce_id ',  function (error, results, fields) {
+        db.query('SELECT z.id, z.klient_id, l.date, z.attend, l.typ FROM `zapis` AS z  LEFT JOIN lekce   AS l ON l.id =z.lekce_id WHERE l.typ=0',  function (error, results, fields) {
             if (error) throw error;
             console.log('The solution is: ', results);
 
@@ -1018,7 +1022,7 @@ function task_import_lesson_members(db,lessontype2id,loc_prefix) {
 
 function task_import_massage_plan(db,massage_room_id) {
     return new Promise(function(resolve, reject){ 
-        db.query('SELECT * FROM masaze_plan  ', function (error, results, fields) {
+        db.query('SELECT * FROM masaze_plan  WHERE zacatek>"2018-01-01"', function (error, results, fields) {
             if (error) throw error;
             //console.log('The solution is: ', results);
 
@@ -1033,7 +1037,7 @@ function task_import_massage_plan(db,massage_room_id) {
 
 function task_import_massage_member(db,massage_room_id,location_id,typ2mtid) {
     return new Promise(function(resolve, reject){
-        db.query('SELECT * FROM masaze LIMIT 1000 OFFSET 6000', function (error, results, fields) {
+        db.query('SELECT * FROM masaze', function (error, results, fields) {
             if (error) throw error;
             //console.log('The solution is: ', results);
     
@@ -1046,19 +1050,37 @@ function task_import_massage_member(db,massage_room_id,location_id,typ2mtid) {
     });
 }
 
+function task_import_orders(db,typ2oid) {
+    return new Promise(function(resolve, reject){ 
+        db.query('SELECT * FROM permanentky  ', function (error, results, fields) {
+            if (error) throw error;
+            //console.log('The solution is: ', results);
+
+            pMap(results,(ot)=>importOrder(ot,typ2oid),{concurrency:1}).then((x)=>{
+                console.log("import done",x);
+               resolve("ok");
+            })
+            
+        });
+    });
+
+}
+
 const pSeries = require('p-series');
 const tasks = [
 	() => task_connect(),
- //   () => task_import_clients(db_d,dobrovskeko_location_id,"dob"),
+   // () => task_import_clients(db_d,dobrovskeko_location_id,"dob"),
    // () => task_import_clients(db_v,vinicni_location_id,"vin"),
    // () => task_import_lessons(db_d,dob_lessontype2id),
-   // () => task_import_lessons(db_v,vin_lessontype2id),
+  //  () => task_import_lessons(db_v,vin_lessontype2id),
    // () => task_import_lesson_members(db_v,vin_lessontype2id,"vin"),
-   // () => task_import_lesson_members(db_d,dob_lessontype2id,"dob"),
-//    () => task_import_massage_plan(db_v,vinicni_massage_room_id),
-//    () => task_import_massage_plan(db_d,dobrovskeho_massage_room_id),
+//    () => task_import_lesson_members(db_d,dob_lessontype2id,"dob"),
+ //   () => task_import_massage_plan(db_v,vinicni_massage_room_id),
+ //   () => task_import_massage_plan(db_d,dobrovskeho_massage_room_id),
 //    () => task_import_massage_member(db_d,dobrovskeho_massage_room_id,dobrovskeko_location_id,dobrovskeho_getMassageTypeID),
-    () => task_import_massage_member(db_v,vinicni_massage_room_id,vinicni_location_id,vinicni_getMassageTypeID),
+  //  () => task_import_massage_member(db_v,vinicni_massage_room_id,vinicni_location_id,vinicni_getMassageTypeID),
+   // () => task_import_orders(db_v,vinicni_getOrderItemID),
+  //  () => task_import_orders(db_d,dobrovskeho_getOrderItemID),
 	() => task_disconnect(),
 ];
 
