@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import Typography from 'material-ui/Typography';
+//import Typography from 'material-ui/Typography';
 import MenuBar from './MenuBar';
 import { compose } from 'react-apollo'
 import { connect } from 'react-redux'
@@ -114,7 +114,6 @@ const PageLessonsReport = ({ match }) => (
 
 const PageNoMatch = ({ match }) => (
   <div>
-    <Typography> vyber z menu co chces delat </Typography>
     <About />
   </div>
 )
