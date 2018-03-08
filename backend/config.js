@@ -5,6 +5,7 @@ module.exports = {
 
     server: {
         PORT: process.env.PORT || 4001,
+        APOLLO_API_KEY: process.env.APOLLO_API_KEY  
     },
 
     auth: {

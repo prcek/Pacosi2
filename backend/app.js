@@ -91,7 +91,9 @@ app.use('/graphql', bodyParser.json(),
     formatError: (error) => { 
       if (SentryOn) { Raven.captureException(error) }
       return error;
-    }
+    },
+    tracing: true,
+    cacheControl: true
   }))
 );
 
