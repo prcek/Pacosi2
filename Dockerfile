@@ -27,5 +27,6 @@ ENV PORT=4000
 ENV DEBUG="backend:*"
 ENV FORCE_SSL="true"
 ENV SENTRY_DSN=""
+ENV APOLLO_API_KEY=""
 
 CMD ["node","bin/www"]

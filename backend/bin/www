@@ -31,7 +31,7 @@ app.set('port', port);
 
 
 
-if (!config.server.APOLLO_API_KEY) {
+if (config.server.APOLLO_API_KEY==='') {
   console.log("APOLLO_ENGINE is OFF");
   var server = http.createServer(app);
 
