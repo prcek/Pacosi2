@@ -115,7 +115,7 @@ class ClientLookup extends React.Component {
             <MenuList  className={classes.menuList}>
                 {suggestions.map((item,idx) => (
                     <MenuItem dense divider className={classes.menuItem} key={idx} onClick={(e)=>this.onSuggestClick(item)} >
-                       <Typography> {item.surname}&nbsp;{item.name} </Typography>
+                       <Typography> {item.surname}&nbsp;{item.name}&nbsp;{item.phone} </Typography>
                     </MenuItem>
                 ))}
             </MenuList>
