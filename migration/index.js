@@ -327,7 +327,7 @@ function importLessonMember(lm,lt2id,loc_prefix) {
                                     lesson_id: l.id,
                                     client_id:c.id,
                                     presence: lm.attend === 1,
-                                    payment: "NOT_PAID",
+                                    payment: "PAID",
                                 }
                                 console.log("inserting new LessonMember",v);
                                 client.mutate({mutation:AddLessonMember,variables:v}).then(res=>{

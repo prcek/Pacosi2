@@ -64,6 +64,9 @@ const styles = theme => ({
     marginLeft: -12,
     marginRight: 20,
   },
+  loc_root: {
+    color: theme.palette.primary.contrastText
+  },
 });
 
 class MenuBar extends React.Component {
@@ -151,7 +154,9 @@ class MenuBar extends React.Component {
                 </Typography>
 
                 {!this.props.current_auth_user.location_id && (
-                  <Select value={this.props.current_location_id?this.props.current_location_id:""} onChange={(e)=>this.onNewLocation(e.target.value)}>
+                  <Select 
+                      classes={{root:classes.loc_root, icon:classes.loc_root}}
+                      value={this.props.current_location_id?this.props.current_location_id:""} onChange={(e)=>this.onNewLocation(e.target.value)}>
                     <MenuItem value={""}>Žádná lokalita</MenuItem>
                     {this.props.locations.locations && this.renderLocations(this.props.locations.locations) }
                   </Select>
