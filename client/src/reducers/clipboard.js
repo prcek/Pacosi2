@@ -4,7 +4,7 @@ function def_expire(exp) {
   if (exp) { 
     return Moment(exp).toISOString();
   } else {
-    return Moment().add(1,"minutes").toISOString();
+    return Moment().add(3,"minutes").toISOString();
   }
 }
 
