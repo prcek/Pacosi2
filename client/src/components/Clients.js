@@ -130,7 +130,7 @@ class Clients extends TableEditor {
                 label="Přijmení"
                 type="text"
                 value={TableEditor.null2empty(doc.surname)}
-                onChange={(e)=>this.handleDocChange("surname",TableEditor.empty2null(e.target.value))}
+                onChange={(e)=>this.handleDocChange("surname",TableEditor.empty2nullC(e.target.value))}
             />
             <TextField className={classes.textfield}
                 margin="dense"
@@ -138,7 +138,7 @@ class Clients extends TableEditor {
                 label="Jméno"
                 type="text"
                 value={TableEditor.null2empty(doc.name)}
-                onChange={(e)=>this.handleDocChange("name",TableEditor.empty2null(e.target.value))}
+                onChange={(e)=>this.handleDocChange("name",TableEditor.empty2nullC(e.target.value))}
             />
             <TextField className={classes.textfield}
                 margin="dense"

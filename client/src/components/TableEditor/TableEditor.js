@@ -40,6 +40,9 @@ import Dialog, {
 } from 'material-ui/Dialog';
 import DebugInfo from '../DebugInfo';
 
+function capitalizeFirstLetter(string) {
+    return string.charAt(0).toUpperCase() + string.slice(1);
+}
 
 class TableEditor extends React.Component {
 
@@ -53,6 +56,10 @@ class TableEditor extends React.Component {
         doc_error_msg:null
     }
 
+    static empty2nullC(v) {
+        if (v === "") { return null} 
+        return capitalizeFirstLetter(v);
+    }
 
     static null2empty(v) {
         if ((v === null) || (v === undefined)) {return ""}

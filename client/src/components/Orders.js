@@ -165,7 +165,7 @@ class Orders extends TableEditor {
                     label="Jmeno klienta"
                     type="text"
                     value={TableEditor.null2empty(doc.customer_name)}
-                    onChange={(e)=>this.handleDocChange("customer_name",TableEditor.empty2null(e.target.value))}
+                    onChange={(e)=>this.handleDocChange("customer_name",TableEditor.empty2nullC(e.target.value))}
                 />
                 <TextField className={classes.textfield} 
                     margin="dense"
