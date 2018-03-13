@@ -114,7 +114,6 @@ const PageLessonsReport = ({ match }) => (
 
 const PageNoMatch = ({ match }) => (
   <div>
-    <About />
   </div>
 )
 

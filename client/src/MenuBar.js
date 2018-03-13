@@ -134,6 +134,7 @@ class MenuBar extends React.Component {
         const { classes } = this.props;
         const openCfg = Boolean(this.state.anchorEl);
         const openReport = Boolean(this.state.anchorElr);
+        const isAdmin = this.props.current_auth_user.role ==="ADMIN";
         return (
             <div className={classes.root}>
             <AppBar position="static">
@@ -156,6 +157,7 @@ class MenuBar extends React.Component {
                   </Select>
                 )}
        
+                {isAdmin && (
                 <IconButton
                   aria-owns={openReport ? 'menu-appbar2' : null}
                   aria-haspopup="true"
@@ -164,6 +166,7 @@ class MenuBar extends React.Component {
                 >
                   <ReceiptIcon />
                 </IconButton>
+                )}
                 <Menu
                   id="menu-appbar2"
                   anchorEl={this.state.anchorElr}
@@ -184,7 +187,7 @@ class MenuBar extends React.Component {
                 </Menu>
 
 
-
+                {isAdmin && (
                 <IconButton
                   aria-owns={openCfg ? 'menu-appbar' : null}
                   aria-haspopup="true"
@@ -193,6 +196,7 @@ class MenuBar extends React.Component {
                 >
                   <SettingsIcon />
                 </IconButton>
+                )}
                 <Menu
                   id="menu-appbar"
                   anchorEl={this.state.anchorEl}
@@ -214,14 +218,14 @@ class MenuBar extends React.Component {
                   <MenuItem onClick={()=>this.handleCfgClickTo('/r/locations')}>Lokality</MenuItem>
                   <MenuItem onClick={()=>this.handleCfgClickTo('/r/massagetypes')}>Typy masáží</MenuItem>
                 </Menu>
-
+                {isAdmin &&(  
                 <IconButton
                   onClick={()=>this.handleCfgClickTo('/r/about')}
                   color="inherit"
                 >
                   <HelpIcon />
                 </IconButton>
-
+                )}
                 <IconButton
                   onClick={this.handleLogout}
                   color="inherit"
