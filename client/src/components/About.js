@@ -39,13 +39,13 @@ const todos = [
 
    
     "umoznit prime pridani do evidence z zahledani masaze a ucastnika lekce",
-    "velka pismenka v fomularich u jmena a prijmeni",
     "kdo neplati, tak pri prihalseni bude videt ze nekde nezaplatil",
     "report kde byl klient - v preprehledu klientu",
     "prehled cviceni",
     
 ];
 const changes = [
+    "velka pismenka v fomularich u jmena a prijmeni",
     "recepce nevidi about a nastaveni",
     "nove prihlaseni do lekce, umoznit ukladani na vice dni",
     "nove masaze umoznit ukladani na vice dnu",
