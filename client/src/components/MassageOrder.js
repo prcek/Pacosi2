@@ -7,10 +7,10 @@ import MassageTypeField from './MassageTypeField'
 import TimeField from './TimeField';
 import TextField from 'material-ui/TextField';
 import ClientField from './ClientField';
-import Button from 'material-ui/Button';
+//import Button from 'material-ui/Button';
 import PaymentField from './PaymentField';
 import Toolbar from 'material-ui/Toolbar';
-
+import ActionButton from './ActionButton';
 const Moment = require('moment');
 const MomentRange = require('moment-range');
 const moment = MomentRange.extendMoment(Moment);
@@ -116,10 +116,10 @@ class MassageOrder extends React.Component {
 
             </form>
             <Toolbar>
-                <Button className={classes.button} variant="raised" disabled={(!this.props.correct) || (this.props.wait)} onClick={this.props.onSave} >Uložit</Button>
-                <Button className={classes.button} variant="raised" disabled={(!this.props.correct) || (this.props.wait)} onClick={this.props.onSaveAndCopy} >Uložit a zapamatovat</Button>
+                <ActionButton icon={"save"} tooltip={"Uložit"} disabled={(!this.props.correct) || (this.props.wait)} onClick={this.props.onSave}/>
+                <ActionButton icon={"savecopy"} tooltip={"Uložit a kopírovat"} disabled={(!this.props.correct) || (this.props.wait)} onClick={this.props.onSaveAndCopy}/>
                 {this.props.massageOrder.id && 
-                <Button className={classes.button} variant="raised" onClick={this.props.onDelete} >Smazat</Button>
+                <ActionButton icon={"delete"}  tooltip={"Smazat"} onClick={this.props.onDelete} />
                 }
             </Toolbar>
             </div>

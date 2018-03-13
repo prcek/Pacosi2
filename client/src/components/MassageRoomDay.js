@@ -22,7 +22,8 @@ import { connect } from 'react-redux'
 import MassageOrder from './MassageOrder';
 import CloseIcon from 'material-ui-icons/Close';
 import IconButton from 'material-ui/IconButton';
-import PrintIcon from 'material-ui-icons/Print';
+//import PrintIcon from 'material-ui-icons/Print';
+import ActionButton from './ActionButton';
 import Switch from 'material-ui/Switch';
 import { FormGroup, FormControlLabel } from 'material-ui/Form';
 import Dialog, {
@@ -796,8 +797,8 @@ class MassageRoomDay extends React.Component {
                         <Typography color="inherit" className={classes.flex}>&nbsp;</Typography>
 
                         {this.renderSettingsSwitch()}
-                        <Button variant="raised" disabled={!pm} className={classes.button} onClick={this.handlePrint} > <PrintIcon/> </Button>
-
+                        <ActionButton  disabled={!pm} icon={"print"} tooltip={"Tisk"} onClick={this.handlePrint} /> 
+                        
                     </Toolbar>  
                     <Paper>
                         {this.state.planMode?pm:dd}    

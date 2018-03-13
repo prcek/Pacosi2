@@ -10,8 +10,8 @@ import Typography from 'material-ui/Typography';
 import Button from 'material-ui/Button';
 import IconButton from 'material-ui/IconButton';
 import DeleteIcon from 'material-ui-icons/Delete';
-import PrintIcon from 'material-ui-icons/Print';
-import AddIcon from 'material-ui-icons/PersonAdd';
+//import PrintIcon from 'material-ui-icons/Print';
+//import AddIcon from 'material-ui-icons/PersonAdd';
 import EditIcon from 'material-ui-icons/Edit';
 import DateTimeView from './DateTimeView';
 import PaymentView from './PaymentView';
@@ -22,6 +22,7 @@ import PaymentField from './PaymentField';
 import TableEditor from './TableEditor';
 import AppBar from 'material-ui/AppBar';
 import CloseIcon from 'material-ui-icons/Close';
+import ActionButton from './ActionButton';
 import PdfView from './PdfView';
 import { setLessonMemberClipboard, clearLessonMemberClipboard } from './../actions'
 import { connect } from 'react-redux'
@@ -349,9 +350,9 @@ class LessonTab extends React.Component {
 
                 </form>
 
-                <Button variant="raised" className={classes.button}  disabled={!docOk} onClick={this.handleDoAdd}> Přihlásit </Button>
-                <Button variant="raised" className={classes.button}  disabled={!docOk} onClick={this.handleDoAddAndCopy}> Přihlásit a zapamatovat </Button>
-                <Button variant="raised" className={classes.button} onClick={this.handleCancelAdd}> Zrušit </Button>
+                <ActionButton icon={"save"} tooltip={"Uložit"}  disabled={!docOk} onClick={this.handleDoAdd}/> 
+                <ActionButton icon={"savecopy"} tooltip={"Uložit a kopírovat"}   disabled={!docOk} onClick={this.handleDoAddAndCopy}/>
+                <ActionButton tooltip={"Neukládat"} icon={"cancel"}  onClick={this.handleCancelAdd}/> 
 
             </div>
 
@@ -512,8 +513,8 @@ class LessonTab extends React.Component {
             {printDlg}
             <Toolbar>
                 <Typography variant="title" className={classes.flex} noWrap> Lekce {lessonInfo.lesson_type.name} - {lessonInfo.lesson_type.location.name}, <DateTimeView date={lessonInfo.datetime} format="LLLL"/> </Typography>
-                <Button variant="raised" disabled={this.state.addMode  || this.state.editMode || lessonFull} className={classes.button} onClick={this.handleAdd}> <AddIcon/> </Button>
-                <Button variant="raised" disabled={this.state.addMode || this.state.editMode } className={classes.button} onClick={this.handlePrint} > <PrintIcon/> </Button>
+                <ActionButton icon={"enroll"} tooltip={"Přihlásit na lekci"} disabled={this.state.addMode  || this.state.editMode || lessonFull}  onClick={this.handleAdd} /> 
+                <ActionButton icon={"print"} tooltip={"Tisk"} disabled={this.state.addMode || this.state.editMode }  onClick={this.handlePrint} /> 
             </Toolbar>
             <div className={classes.panel}>
             {panel}
