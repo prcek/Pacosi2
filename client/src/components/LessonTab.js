@@ -394,8 +394,8 @@ class LessonTab extends React.Component {
 
                 </form>
 
-                <Button variant="raised" className={classes.button}  disabled={!this.checkDoc(this.state.doc)} onClick={this.handleDoSave}> Uložit změny</Button>
-                <Button variant="raised" className={classes.button} onClick={this.handleCancelEdit}> Neukládat </Button>
+                <ActionButton icon={"save"} tooltip={"Uložit"}  disabled={!this.checkDoc(this.state.doc)} onClick={this.handleDoSave}/> 
+                <ActionButton icon={"cancel"} tooltip={"neukládat"} onClick={this.handleCancelEdit}/> 
 
             </div>
 
@@ -433,8 +433,8 @@ class LessonTab extends React.Component {
                 </TableCell>
                 <TableCell padding={"dense"} classes={{root:classes.cell}}>
                     <Toolbar disableGutters={true} classes={{root:classes.toolbar}} >
-                        <Button variant="raised" style={{minWidth:"38px"}} onClick={()=>this.handleOpenEditDialog(m)}> <EditIcon/>  </Button>
-                        <Button variant="raised" style={{minWidth:"38px"}} onClick={()=>this.handleOpenDeleteDialog(m)}> <DeleteIcon/>  </Button>
+                        <ActionButton icon={"edit"} tooltip={"Editovat"} onClick={()=>this.handleOpenEditDialog(m)}/> 
+                        <ActionButton icon={"delete"}  tooltip={"Odhlásit"} onClick={()=>this.handleOpenDeleteDialog(m)}/> 
                     </Toolbar>
                 </TableCell>
             </TableRow>

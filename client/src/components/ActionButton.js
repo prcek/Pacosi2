@@ -16,7 +16,8 @@ import Button from 'material-ui/Button';
 
 const styles = theme => ({
   button: {
-    margin: theme.spacing.unit,
+    marginLeft: theme.spacing.unit,
+    marginRight: theme.spacing.unit,
   },
   icon: {
    // marginLeft: theme.spacing.unit,
