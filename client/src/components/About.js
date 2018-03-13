@@ -37,12 +37,19 @@ const bugs = [
 
 const todos = [
 
-    "ucty - kazda lokalita svuj jeden login",
-    "umoznit prime pridani do evidence z zahledani masaze a ucastnika lekce",
-    "nove masaze umoznit ukladani na vice dnu",
    
+    "umoznit prime pridani do evidence z zahledani masaze a ucastnika lekce",
+    "velka pismenka v fomularich u jmena a prijmeni",
+    "kdo neplati, tak pri prihalseni bude videt ze nekde nezaplatil",
+    "report kde byl klient - v preprehledu klientu",
+    "prehled cviceni",
+    
 ];
 const changes = [
+    "recepce nevidi about a nastaveni",
+    "nove prihlaseni do lekce, umoznit ukladani na vice dni",
+    "nove masaze umoznit ukladani na vice dnu",
+    "ucty - kazda lokalita svuj jeden login",
     "oprava, nefunguje mazani prodeje",
     "testovaci lokalita - misto kde si muzu vyzkouset upravy bez ohrozeni zivych dat",
     "ucastnik lekce, umoznit editaci platby a poznamky",
