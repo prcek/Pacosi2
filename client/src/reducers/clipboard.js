@@ -25,7 +25,7 @@ const clipboard = (state={massage_order:null,lesson_member:null,massage_expire:n
       case 'SET_CLIPBOARD_LESSON_MEMBER':
         console.log("SET_CLIPBOARD_LESSON_MEMBER",action)
         return  Object.assign({}, state, {
-          lesson_member: action.lesson_expire,
+          lesson_member: action.lesson_member,
           lesson_expire: def_expire(action.expire)
         })
       case 'CLEAR_CLIPBOARD_LESSON_MEMBER':

@@ -755,7 +755,7 @@ class MassageRoomDay extends React.Component {
             return (
                 <div>
                     <Toolbar classes={{root:classes.toolbar}}>
-                    <Typography variant="title">{"Zapamatovana masaz"}</Typography>
+                    <Typography variant="title">{"Zapamatovaná masáž"}</Typography>
                     <Typography color="inherit" className={classes.flex}>&nbsp;</Typography>
                
                     <IconButton color="primary" onClick={this.handleCancelClipboard} aria-label="Close">

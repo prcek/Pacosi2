@@ -23,6 +23,9 @@ import TableEditor from './TableEditor';
 import AppBar from 'material-ui/AppBar';
 import CloseIcon from 'material-ui-icons/Close';
 import PdfView from './PdfView';
+import { setLessonMemberClipboard, clearLessonMemberClipboard } from './../actions'
+import { connect } from 'react-redux'
+
 
 import Dialog, {
     DialogActions,
@@ -153,7 +156,16 @@ class LessonTab extends React.Component {
         print:false
     }
     handleAdd = () => {
-        this.setState({addMode:true});
+
+        if (this.props.clipboard_lesson_member) {
+            this.setState({addMode:true,doc:{
+                client_id:this.props.clipboard_lesson_member.client_id,
+                payment:this.props.clipboard_lesson_member.payment,
+                comment:this.props.clipboard_lesson_member.comment
+            }});
+        } else {
+            this.setState({addMode:true,doc:{}});
+        }
     }
 
     handlePrint = () => {
@@ -191,7 +203,21 @@ class LessonTab extends React.Component {
 
     }
 
+    handleCancelClipboard = () => {
+        this.props.onClearLessonMemberClipboard();
+    }
+
     handleDoAdd = () => {
+        this.props.onClearLessonMemberClipboard();
+        this.doAdd();
+    }
+    handleDoAddAndCopy = () => {
+        this.props.onSetLessonMemberClipboard(this.state.doc);
+        this.doAdd();
+    }
+
+
+    doAdd = () => {
 
         this.props.addDoc({
             variables: {
@@ -290,6 +316,7 @@ class LessonTab extends React.Component {
 
     renderAddPanel() {
         const { classes } = this.props;
+        const docOk = this.checkDoc(this.state.doc);
         return (
             <div> 
                 <Typography className={classes.desc} variant="subheading">Přihlášení klienta na lekci</Typography>
@@ -322,7 +349,8 @@ class LessonTab extends React.Component {
 
                 </form>
 
-                <Button variant="raised" className={classes.button}  disabled={!this.checkDoc(this.state.doc)} onClick={this.handleDoAdd}> Přihlásit </Button>
+                <Button variant="raised" className={classes.button}  disabled={!docOk} onClick={this.handleDoAdd}> Přihlásit </Button>
+                <Button variant="raised" className={classes.button}  disabled={!docOk} onClick={this.handleDoAddAndCopy}> Přihlásit a zapamatovat </Button>
                 <Button variant="raised" className={classes.button} onClick={this.handleCancelAdd}> Zrušit </Button>
 
             </div>
@@ -503,8 +531,27 @@ LessonTab.propTypes = {
 };
   
 
+function mapStateToProps(state) {
+    return { 
+        clipboard_lesson_member: state.clipboard.lesson_member,
+    }
+}
+
+const mapDispatchToProps = dispatch => {
+    return {
+      onSetLessonMemberClipboard: (lm,expire) => {
+        dispatch(setLessonMemberClipboard(lm,expire))
+      },
+      onClearLessonMemberClipboard: () => {
+        dispatch(clearLessonMemberClipboard())
+      },
+    }
+}
+
+
 export default compose(
     withStyles(styles),
+    connect(mapStateToProps,mapDispatchToProps),
     graphql(LessonInfo,{
         name: "lessonInfo",
         options: ({lessonId})=>({variables:{lesson_id:lessonId}})
