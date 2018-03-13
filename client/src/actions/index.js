@@ -38,6 +38,25 @@ const clearAuth = () => ({
     
 })
 
+const setMassageOrderClipboard = (massage_order,expire) => ({
+    type: 'SET_CLIPBOARD_MASSAGE_ORDER',
+    massage_order, expire
+})
+
+const setLessonMemberClipboard = (lesson_member,expire) => ({
+    type: 'SET_CLIPBOARD_LESSON_MEMBER',
+    lesson_member, expire
+})
+
+const clearMassageOrderClipboard = () =>({
+    type: 'CLEAR_CLIPBOARD_MASSAGE_ORDER',
+})
+
+
+const clearLessonMemberClipboard = () =>({
+    type: 'CLEAR_CLIPBOARD_LESSON_MEMBER',
+})
+
 export {
     setLocation,
     setClientPageNo,
@@ -47,5 +66,9 @@ export {
     setOrderPageLength,
     setOrderFilter,
     setAuth,
-    clearAuth
+    clearAuth,
+    setMassageOrderClipboard,
+    setLessonMemberClipboard,
+    clearMassageOrderClipboard,
+    clearLessonMemberClipboard
 }

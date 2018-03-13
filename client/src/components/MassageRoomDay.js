@@ -17,7 +17,8 @@ import DateTimeView from './DateTimeView';
 import TimeField from './TimeField';
 import DateField from './DateField';
 import TableEditor from './TableEditor';
-
+import { setMassageOrderClipboard, clearMassageOrderClipboard } from './../actions'
+import { connect } from 'react-redux'
 import MassageOrder from './MassageOrder';
 import CloseIcon from 'material-ui-icons/Close';
 import IconButton from 'material-ui/IconButton';
@@ -289,11 +290,24 @@ class MassageRoomDay extends React.Component {
             const c = this.checkOrder(mo);
             this.setState({massageOrder:mo,moCorrect:c})
         } else {
-            const mo = {
-                massage_room_id: this.props.massageRoomId,
-                begin:d
+            if (this.props.clipboard_massage_order) {
+                const mo = {
+                    massage_room_id: this.props.massageRoomId,
+                    begin:d,
+                    massage_type_id: this.props.clipboard_massage_order.massage_type_id,
+                    client_id: this.props.clipboard_massage_order.client_id,
+                    comment: this.props.clipboard_massage_order.comment,
+                    payment: this.props.clipboard_massage_order.payment,
+                }
+                const c = this.checkOrder(mo);
+                this.setState({massageOrder:mo,moCorrect:c})
+            } else {
+                const mo = {
+                    massage_room_id: this.props.massageRoomId,
+                    begin:d
+                }
+                this.setState({massageOrder:mo,moCorrect:false})
             }
-            this.setState({massageOrder:mo,moCorrect:false})
         }
     }
 
@@ -301,11 +315,21 @@ class MassageRoomDay extends React.Component {
         this.setState({massageOrder:null})
     }
 
+    handleCancelClipboard = () => {
+        this.props.onClearMassageOrderClipboard();
+    }
 
+    handleSaveAndCopyOrder = () => {
+        this.props.onSetMassageOrderClipboard(this.state.massageOrder);
+        this.saveOrder();
+    }
     handleSaveOrder = () => {
-        console.log("handleSaveOrder",this.state.massageOrder)
+        this.props.onClearMassageOrderClipboard();
+        this.saveOrder();
+    }
+    saveOrder = () => {
+        console.log("saveOrder",this.state.massageOrder)
         this.setState({moWait:true})
-
         if (this.state.massageOrder.id) {
             this.props.updateMassageOrder({variables:{
                 id: this.state.massageOrder.id,
@@ -634,6 +658,7 @@ class MassageRoomDay extends React.Component {
                         wait={this.state.moWait} 
                         onMassageOrderChange={this.handleMassageOrderChange} 
                         onSave={this.handleSaveOrder}
+                        onSaveAndCopy={this.handleSaveAndCopyOrder}
                         onDelete={this.handleDeleteOrder}
                     />
                 </Paper>
@@ -724,8 +749,29 @@ class MassageRoomDay extends React.Component {
         )
     }
 
+    renderClipboard() {
+        const { classes } = this.props;
+        if (this.props.clipboard_massage_order) {
+            return (
+                <div>
+                    <Toolbar classes={{root:classes.toolbar}}>
+                    <Typography variant="title">{"Zapamatovana masaz"}</Typography>
+                    <Typography color="inherit" className={classes.flex}>&nbsp;</Typography>
+               
+                    <IconButton color="primary" onClick={this.handleCancelClipboard} aria-label="Close">
+                        <CloseIcon />
+                    </IconButton>
+                </Toolbar>  
+            
+                </div>
 
 
+            )
+        } else {
+            return null;
+        }   
+    }
+ 
     render() {
         const { classes } = this.props;
 
@@ -736,7 +782,7 @@ class MassageRoomDay extends React.Component {
         }
 
         const pm = this.props.massageRoomDayPlan.massageRoomDayPlan?this.renderDayPlan():null;
-        const mo = this.state.massageOrder?this.renderOrder():null;
+        const mo = this.state.massageOrder?this.renderOrder():this.renderClipboard();
         const mod_dialog = this.renderMODeleteDialog();
         const printDlg = this.renderPrintDialog();
         return (
@@ -776,9 +822,28 @@ MassageRoomDay.propTypes = {
     onEdit: PropTypes.func
 };
   
+function mapStateToProps(state) {
+    return { 
+        clipboard_massage_order: state.clipboard.massage_order,
+    }
+}
+
+const mapDispatchToProps = dispatch => {
+    return {
+      onSetMassageOrderClipboard: (mo,expire) => {
+        dispatch(setMassageOrderClipboard(mo,expire))
+      },
+      onClearMassageOrderClipboard: () => {
+        dispatch(clearMassageOrderClipboard())
+      },
+    }
+}
+
+
 
 export default compose(
     withStyles(styles),
+    connect(mapStateToProps,mapDispatchToProps),
     graphql(MassageRoomDayPlan,{
         name: "massageRoomDayPlan",
         options: ({massageRoomId,day})=>({

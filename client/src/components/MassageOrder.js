@@ -117,6 +117,7 @@ class MassageOrder extends React.Component {
             </form>
             <Toolbar>
                 <Button className={classes.button} variant="raised" disabled={(!this.props.correct) || (this.props.wait)} onClick={this.props.onSave} >Uložit</Button>
+                <Button className={classes.button} variant="raised" disabled={(!this.props.correct) || (this.props.wait)} onClick={this.props.onSaveAndCopy} >Uložit a zapamatovat</Button>
                 {this.props.massageOrder.id && 
                 <Button className={classes.button} variant="raised" onClick={this.props.onDelete} >Smazat</Button>
                 }
@@ -134,6 +135,7 @@ MassageOrder.propTypes = {
     wait: PropTypes.bool,
     onMassageOrderChange: PropTypes.func.isRequired,
     onSave: PropTypes.func.isRequired,
+    onSaveAndCopy: PropTypes.func.isRequired,
     onDelete: PropTypes.func.isRequired
 }  
 
