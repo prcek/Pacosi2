@@ -81,7 +81,7 @@ class ClientLookup extends React.Component {
             variables.location_id = this.props.current_location_id;
         }
 
-        this.props.client.query({query:ClientsLookup,variables:variables,fetchPolicy:"cache-and-network"}).then(r=>{
+        this.props.client.query({query:ClientsLookup,variables:variables,fetchPolicy:"network-only"}).then(r=>{
             this.setState({suggestions: r.data.clientsLookup});
         }).catch(console.error);
     }
