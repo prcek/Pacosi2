@@ -310,7 +310,10 @@ export default compose(
     connect(mapStateToProps,mapDispatchToProps),
     graphql(CurrentOrders,{
         name: "docs",
-        options: ({current_page_no,current_page_length,current_filter})=>({variables:{pageNo:current_page_no,pageLength:current_page_length,filter:current_filter}})
+        options: ({current_page_no,current_page_length,current_filter})=>({
+            variables:{pageNo:current_page_no,pageLength:current_page_length,filter:current_filter},
+            fetchPolicy:"cache-and-network"
+        })
     }),
     graphql(UpdateOrder,{
         name:"updateDoc",

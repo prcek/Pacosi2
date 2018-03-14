@@ -272,7 +272,11 @@ export default compose(
     connect(mapStateToProps,mapDispatchToProps),
     graphql(CurrentClients,{
         name: "docs",
-        options: ({current_page_no,current_page_length,current_filter,current_location_id})=>({variables:{pageNo:current_page_no,pageLength:current_page_length,filter:current_filter,location_id:current_location_id}})
+        options: ({current_page_no,current_page_length,current_filter,current_location_id})=>({
+            variables:{pageNo:current_page_no,pageLength:current_page_length,filter:current_filter,location_id:current_location_id},
+            fetchPolicy:"cache-and-network"
+        }),
+        
     }),
     graphql(UpdateClient,{
         name:"updateDoc",

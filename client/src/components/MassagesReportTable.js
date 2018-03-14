@@ -96,11 +96,14 @@ export default compose(
     withStyles(styles),
     graphql(CurrentMassageOrderReport,{
         name: "report",
-        options: ({massage_room_id,month})=>({variables:{
-            massage_room_id:massage_room_id,
-            begin_date:Moment(month).startOf('month').format("YYYY-MM-DD"),
-            end_date:Moment(month).startOf('month').add(1,'month').format("YYYY-MM-DD")
-        }})
+        options: ({massage_room_id,month})=>({
+            variables:{
+                massage_room_id:massage_room_id,
+                begin_date:Moment(month).startOf('month').format("YYYY-MM-DD"),
+                end_date:Moment(month).startOf('month').add(1,'month').format("YYYY-MM-DD")
+            },
+            fetchPolicy:"cache-and-network"
+        })
     }),
 
 )(MassagesReportTable)

@@ -82,7 +82,7 @@ class ClientField extends React.Component {
         const { classes } = this.props;
         let val = null;
         if (this.props.client && this.props.client.client) {
-            val = this.props.client.client.surname+" "+this.props.client.client.name;
+            val = this.props.client.client.surname+" "+(this.props.client.client.name?this.props.client.client.name:"");
         }
         return (
             <FormControl className={classes.textfield} margin={this.props.margin}

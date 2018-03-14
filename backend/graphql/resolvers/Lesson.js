@@ -7,6 +7,7 @@ class LessonController extends BaseController {
 
     constructor() {
         super(Lesson);
+        this.defaultSort = {datetime:1}
     }
 
     multi_create(args) {

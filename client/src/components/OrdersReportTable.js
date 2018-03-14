@@ -96,11 +96,14 @@ export default compose(
     withStyles(styles),
     graphql(CurrentOrdersReport,{
         name: "report",
-        options: ({user_id,month})=>({variables:{
-            user_id:user_id,
-            begin_date:Moment(month).startOf('month').format("YYYY-MM-DD"),
-            end_date:Moment(month).startOf('month').add(1,'month').format("YYYY-MM-DD")
-        }})
+        options: ({user_id,month})=>({
+            variables:{
+                user_id:user_id,
+                begin_date:Moment(month).startOf('month').format("YYYY-MM-DD"),
+                end_date:Moment(month).startOf('month').add(1,'month').format("YYYY-MM-DD")
+            },
+            fetchPolicy:"cache-and-network"
+        })
     }),
 
 )(OrdersReportTable)

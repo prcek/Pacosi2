@@ -178,7 +178,7 @@ class LessonTabAdd extends React.Component {
                     value={this.state.timestr}
                     onChange={(e)=>this.handleChange("timestr",e.target.value)}
                     margin="dense"
-                    helperText="čas začátku lekce, např. 16:30"
+                    helperText="čas začátku lekce, např. 16:30 nebo 09:15"
                 />
 
  

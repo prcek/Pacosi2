@@ -119,7 +119,10 @@ export default compose(
     graphql(LessonsInfo,{
         name: "lessonsInfo",
         skip: (ownProps) =>  !ownProps.lessonDate, 
-        options: ({lessonTypeId,lessonDate})=>({variables:{lesson_type_id:lessonTypeId,lesson_date:moment(lessonDate).format('YYYY-MM-DD')}})
+        options: ({lessonTypeId,lessonDate})=>({
+            variables:{lesson_type_id:lessonTypeId,lesson_date:moment(lessonDate).format('YYYY-MM-DD')},
+            fetchPolicy:"cache-and-network"
+        })
     }),
 
 )(LessonTabs)

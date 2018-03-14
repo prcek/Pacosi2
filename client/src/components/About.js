@@ -31,24 +31,27 @@ const styles = theme => ({
 });
 
 const bugs = [
-    "po pridani klienta do evidence se neukaze v prehledu, reload nepomaha, zahledani ano",
+ //   "po pridani klienta do evidence se neukaze v prehledu, reload nepomaha, zahledani ano",
 //    "cca po hodine necinnosti dojde k odhlaseni, ktere neni videt a nejde nic menit. staci prenacist stranku",
-    "po pridani klienta se ho nedari najit v naseptavaci pri prihlasovani na lekci nebo masaz",
-    "kdyz neni u klienta vyplnene krestni jmeno, pak se v naseptavaci pri prihlaseni ukazuje 'null'",
+ //   "po pridani klienta se ho nedari najit v naseptavaci pri prihlasovani na lekci nebo masaz",
+ //   "kdyz neni u klienta vyplnene krestni jmeno, pak se v naseptavaci pri prihlaseni ukazuje 'null'",
 ];
 
 const todos = [
 
    
     "umoznit prime pridani do evidence z zahledani masaze a ucastnika lekce",
-    "kdo neplati, tak pri prihalseni bude videt ze nekde nezaplatil",
+    "kdo neplati, tak pri prihlaseni bude videt ze nekde nezaplatil",
     "report kde byl klient - v preprehledu klientu",
     "prehled cviceni",
-    "tab lekci pro zvoleny den je potreba setridit podle casu",
     "razeni - typy masazi, uzivatele v prodeji, polozky prodeje"
     
 ];
 const changes = [
+    "tab lekci pro zvoleny den je potreba setridit podle casu",
+    "oprava chyby - po pridani klienta do evidence se neukaze v prehledu, reload nepomaha, zahledani ano",
+    "oprava chyby - po pridani klienta se ho nedari najit v naseptavaci",
+    "oprava chyby - kdyz neni u klienta vyplnene krestni jmeno, pak se v naseptavaci pri prihlaseni ukazuje 'null'",
     "velka pismenka v fomularich u jmena a prijmeni",
     "recepce nevidi about a nastaveni",
     "nove prihlaseni do lekce, umoznit ukladani na vice dni",
@@ -112,9 +115,9 @@ class AboutComponent extends React.Component {
             <div className={classes.root}>
                 <Typography className={classes.title} variant="title">Přehled úprav systému evidence</Typography>
 
-                <Typography>Zatím neopravené chyby</Typography>
+                {bugs.length!==0 &&(<Typography>Zatím neopravené chyby</Typography>)}
                 {this.renderItems(bugs)}
-                <Typography>Věci k dodělání</Typography>
+                {todos.length!==0 &&(<Typography>Věci k dodělání</Typography>)}
                 {this.renderItems(todos)}
                 <Typography>Hotové opravy a úpravy</Typography>
                 {this.renderItems(changes)}
