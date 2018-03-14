@@ -33,7 +33,8 @@ const styles = theme => ({
 const bugs = [
     "po pridani klienta do evidence se neukaze v prehledu, reload nepomaha, zahledani ano",
 //    "cca po hodine necinnosti dojde k odhlaseni, ktere neni videt a nejde nic menit. staci prenacist stranku",
-    "po pridani klienta se ho nedari najit v naseptavaci pri prihlasovani na lekci nebo masaz"
+    "po pridani klienta se ho nedari najit v naseptavaci pri prihlasovani na lekci nebo masaz",
+    "kdyz neni u klienta vyplnene krestni jmeno, pak se v naseptavaci pri prihlaseni ukazuje 'null'",
 ];
 
 const todos = [
