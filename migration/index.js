@@ -1007,7 +1007,7 @@ function task_import_lessons(db,lessontype2id) {
 
 function task_import_lesson_members(db,lessontype2id,loc_prefix) {
     return new Promise(function(resolve, reject){
-        db.query('SELECT z.id, z.klient_id, l.date, z.attend, l.typ FROM `zapis` AS z  LEFT JOIN lekce   AS l ON l.id =z.lekce_id WHERE l.typ=0',  function (error, results, fields) {
+        db.query('SELECT z.id, z.klient_id, l.date, z.attend, l.typ FROM `zapis` AS z  LEFT JOIN lekce   AS l ON l.id =z.lekce_id WHERE l.typ=3',  function (error, results, fields) {
             if (error) throw error;
             console.log('The solution is: ', results);
 
@@ -1070,17 +1070,17 @@ const pSeries = require('p-series');
 const tasks = [
 	() => task_connect(),
    // () => task_import_clients(db_d,dobrovskeko_location_id,"dob"),
-   // () => task_import_clients(db_v,vinicni_location_id,"vin"),
-   // () => task_import_lessons(db_d,dob_lessontype2id),
+  //  () => task_import_clients(db_v,vinicni_location_id,"vin"),
+  //  () => task_import_lessons(db_d,dob_lessontype2id),
   //  () => task_import_lessons(db_v,vin_lessontype2id),
    // () => task_import_lesson_members(db_v,vin_lessontype2id,"vin"),
-//    () => task_import_lesson_members(db_d,dob_lessontype2id,"dob"),
+   // () => task_import_lesson_members(db_d,dob_lessontype2id,"dob"),
  //   () => task_import_massage_plan(db_v,vinicni_massage_room_id),
  //   () => task_import_massage_plan(db_d,dobrovskeho_massage_room_id),
 //    () => task_import_massage_member(db_d,dobrovskeho_massage_room_id,dobrovskeko_location_id,dobrovskeho_getMassageTypeID),
   //  () => task_import_massage_member(db_v,vinicni_massage_room_id,vinicni_location_id,vinicni_getMassageTypeID),
-   // () => task_import_orders(db_v,vinicni_getOrderItemID),
-  //  () => task_import_orders(db_d,dobrovskeho_getOrderItemID),
+ //   () => task_import_orders(db_v,vinicni_getOrderItemID),
+ //   () => task_import_orders(db_d,dobrovskeho_getOrderItemID),
 	() => task_disconnect(),
 ];
 

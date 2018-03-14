@@ -32,7 +32,8 @@ const styles = theme => ({
 
 const bugs = [
     "po pridani klienta do evidence se neukaze v prehledu, reload nepomaha, zahledani ano",
-    "cca po hodine necinnosti dojde k odhlaseni, ktere neni videt a nejde nic menit. staci prenacist stranku",
+//    "cca po hodine necinnosti dojde k odhlaseni, ktere neni videt a nejde nic menit. staci prenacist stranku",
+    "po pridani klienta se ho nedari najit v naseptavaci pri prihlasovani na lekci nebo masaz"
 ];
 
 const todos = [
@@ -42,6 +43,8 @@ const todos = [
     "kdo neplati, tak pri prihalseni bude videt ze nekde nezaplatil",
     "report kde byl klient - v preprehledu klientu",
     "prehled cviceni",
+    "tab lekci pro zvoleny den je potreba setridit podle casu",
+    "razeni - typy masazi, uzivatele v prodeji, polozky prodeje"
     
 ];
 const changes = [
