@@ -43,11 +43,11 @@ const todos = [
     "umoznit prime pridani do evidence z zahledani masaze a ucastnika lekce",
     "kdo neplati, tak pri prihlaseni bude videt ze nekde nezaplatil",
     "report kde byl klient - v preprehledu klientu",
-    "prehled cviceni",
     "razeni - typy masazi, uzivatele v prodeji, polozky prodeje"
     
 ];
 const changes = [
+    "prehled cviceni",
     "tab lekci pro zvoleny den je potreba setridit podle casu",
     "oprava chyby - po pridani klienta do evidence se neukaze v prehledu, reload nepomaha, zahledani ano",
     "oprava chyby - po pridani klienta se ho nedari najit v naseptavaci",
