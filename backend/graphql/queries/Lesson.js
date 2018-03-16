@@ -5,6 +5,7 @@ const {
     GraphQLList,
     GraphQLID,
     GraphQLNonNull,
+    GraphQLInt
 } = GraphQL;
 
 const GraphQLIsoDate = require('graphql-iso-date');
@@ -18,12 +19,45 @@ const {
 // import the user type we created
 const LessonType = require('../types/Lesson');
 const LessonInfoType = require('../types/LessonInfo');
+const LessonTypeType = require('../types/LessonType');
+const LessonTypeResolver = require('../resolvers/LessonType');
 
 // import the user resolver we created
 const LessonResolver = require('../resolvers/Lesson');
 
+const LocationType = require('../types/Location');
+const LocationResolver = require('../resolvers/Location');
 
 const BaseQuery = require('./BaseQuery');
+
+const LessonReportType = new GraphQL.GraphQLObjectType({
+    name: 'LessonReport',
+   
+
+    fields: () => ({
+
+        lesson_type_id: {
+            type: GraphQLID,
+            description: 'lesson type id',
+        },
+
+
+        lesson_type: {
+            type: LessonTypeType,
+            description: 'lesson type',
+            resolve(parent, args, context, info) {
+                return LessonTypeResolver.single({ id: parent.lesson_type_id });
+            }
+        },
+
+
+        count: {
+            type: GraphQLInt,
+        },
+    })
+
+});
+
 
 class LessonQuery extends BaseQuery {
 
@@ -73,6 +107,28 @@ class LessonQuery extends BaseQuery {
         }
     }
 
+    report() {
+        return {
+            type: new GraphQLList(LessonReportType),
+            args: {
+                location_id: {
+                    type: GraphQLID,
+                },
+                begin_date: {
+                    type: new GraphQLNonNull(GraphQLDate),
+                    description: 'Please enter begin date',
+                },
+                end_date: {
+                    type: new GraphQLNonNull(GraphQLDate),
+                    description: 'Please enter end date',
+                }
+            },
+            resolve(parent, args, context, info) {
+                return LessonResolver.report(args)
+            }
+
+        }
+    }
 
 
 };

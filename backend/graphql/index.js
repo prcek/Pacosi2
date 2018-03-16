@@ -68,6 +68,7 @@ const RootQuery = new GraphQLObjectType({
         massageOrderReport: MassageOrderQuery.report(),
         lessons: LessonQuery.index(),
         lesson: LessonQuery.single(),
+        lessonReport: LessonQuery.report(),
         lessonsInfo: LessonQuery.infos(),
         lessonInfo: LessonQuery.info(),
         lessonMembers: LessonMemberQuery.index(),

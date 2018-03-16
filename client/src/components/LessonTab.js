@@ -555,8 +555,10 @@ export default compose(
     connect(mapStateToProps,mapDispatchToProps),
     graphql(LessonInfo,{
         name: "lessonInfo",
-        options: ({lessonId})=>({variables:{lesson_id:lessonId}}),
-        fetchPolicy:"cache-and-network"
+        options: ({lessonId})=>({
+            variables:{lesson_id:lessonId},
+            fetchPolicy:"cache-and-network"
+        }),
     }),
     graphql(AddLessonMember,{
         name:"addDoc",
