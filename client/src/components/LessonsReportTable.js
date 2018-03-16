@@ -69,7 +69,7 @@ class LessonsReportTable extends React.Component {
                     <TableRow>
                         <TableCell padding={"dense"}>Lokalita</TableCell>
                         <TableCell padding={"dense"}>Lekce</TableCell>
-                        <TableCell padding={"dense"}>Počet</TableCell>
+                        <TableCell padding={"dense"}>Počet klientů</TableCell>
                     </TableRow>
                 </TableHead>
                 <TableBody>
