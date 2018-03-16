@@ -161,6 +161,9 @@ class MenuBar extends React.Component {
                     {this.props.locations.locations && this.renderLocations(this.props.locations.locations) }
                   </Select>
                 )}
+                {this.props.current_auth_user.location_id && (
+                  <Typography variant="subheading" color="inherit">{this.props.locationInfo.locationInfo?this.props.locationInfo.locationInfo.name:""}</Typography>
+                )}
        
                 {isAdmin && (
                 <IconButton
