@@ -80,23 +80,15 @@ class LessonController extends BaseController {
                 { $lookup: {from: "lessontypes", localField:"lesson_type_id", foreignField:"_id", as:"lesson_type"}},
                 { $unwind: {path: "$lesson_type"}},
                 { $match: loc_filter},
-              //  { $match: { "lesson_type.location_id": mongoose.Types.ObjectId(args.location_id)}},
                 { $lookup: {from:"lessonmembers", localField:"_id",foreignField:"lesson_id",as:"members"}},
                 { $project: { _id:1, lesson_type_id:1, location_id:"$lesson_type.location_id", count:{$size: "$members" } }},
                 { $group: {_id: "$lesson_type_id",  count: {$sum: "$count"}, location_id:{$first:"$location_id"}}},
                 { $project: { _id:0, lesson_type_id:"$_id", location_id:1, count:1}}
-               // { $unwind : { path:"$massage_room_id" , preserveNullAndEmptyArrays:true}},
-               // { $lookup: {from: "massagerooms", localField:"massage_room_id", foreignField: "_id", as:"massage_room"}},
-               // { $lookup: {from: "massagetypes", localField:"_id", foreignField: "_id", as:"massage_type"}},
-               // { $unwind : { path:"$massage_room" , preserveNullAndEmptyArrays:true}},
-               // { $unwind : { path:"$massage_type" , preserveNullAndEmptyArrays:true}},
-               // { $project: { _id:0, massage_room_id:1 , massage_room: {id:"$massage_room._id", name:"$massage_room.name", location_id:"$massage_room.location_id"}, massage_type:{id:"$massage_type._id",name:"$massage_type.name"}, massage_type_id:"$_id", count:1 }},
             ]).then(res=>{
                 console.log(res);
                 resolve(res);
             }).catch(reject)
 
-            //resolve([{price:10,count:42}]);
         });
     }
 
