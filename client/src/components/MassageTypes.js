@@ -34,6 +34,9 @@ const LocalStyles = (theme) => ({
         paddingLeft:2,
         paddingRight:2,
       },
+    row: {
+        height:24,
+      }
     
 });
    
@@ -222,7 +225,7 @@ class MassageTypes extends TableEditor {
                 activeDrag={this.state.activeDrag} 
                 id={doc.id} 
                 key={doc.id} 
-                massageType={doc} 
+                doc={doc} 
                 toolbar={toolbar}
                 onDrag={(active)=>this.onDrag(active)} 
             />

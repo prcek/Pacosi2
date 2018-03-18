@@ -8,6 +8,7 @@ import classNames from 'classnames';
 import DragHandle from './DragHandle';
 import { darken, fade, lighten } from 'material-ui/styles/colorManipulator';
 import StatusView from './StatusView';
+import RoleView from './RoleView';
 
 const styles = theme => ({
   button: {
@@ -49,7 +50,7 @@ const styles = theme => ({
 });
 
 
-class MassageTypesRow extends React.Component {
+class OrderItemsRow extends React.Component {
   
   constructor(props) {
     super(props);
@@ -79,9 +80,10 @@ class MassageTypesRow extends React.Component {
             <div><DragHandle/></div>
             ))} </TableCell>
           <TableCell className={classes.cell}> {connectDragPreview(<div>{doc.name}</div>)} </TableCell>
-
           <TableCell className={classes.cell}><StatusView status={doc.status}/></TableCell>
-          <TableCell className={classes.cell}> {doc.length} </TableCell>
+          <TableCell className={classes.cell}><RoleView role={doc.role}/></TableCell>
+          <TableCell className={classes.cell}>{doc.login}</TableCell>
+          <TableCell className={classes.cell}>{doc.location?doc.location.name:""}</TableCell>
           <TableCell className={classes.cell}>  
             {toolbar}
           </TableCell>
@@ -91,7 +93,7 @@ class MassageTypesRow extends React.Component {
   }
 }
 
-MassageTypesRow.propTypes = {
+OrderItemsRow.propTypes = {
   classes: PropTypes.object.isRequired,
   id: PropTypes.string.isRequired,
   doc: PropTypes.object.isRequired,
@@ -107,7 +109,7 @@ MassageTypesRow.propTypes = {
   save: PropTypes.func.isRequired,
 };
 
-MassageTypesRow.defaultProps = {
+OrderItemsRow.defaultProps = {
  
 };
 
@@ -172,4 +174,4 @@ export default compose(
   DropTarget('row', rowTarget, dnd_trg),
   DragSource('row', rowSource, dnd_src)
   
-)(MassageTypesRow)
+)(OrderItemsRow)

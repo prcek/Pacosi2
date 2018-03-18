@@ -6,8 +6,8 @@ import gql from 'graphql-tag';
 import PasswordIcon from 'material-ui-icons/Https';
 import Button from 'material-ui/Button';
 import TextField from 'material-ui/TextField';
-import StatusView from './StatusView';
-import RoleView from './RoleView';
+//import StatusView from './StatusView';
+//import RoleView from './RoleView';
 import StatusField from './StatusField';
 import RoleField from './RoleField';
 import LocationField from './LocationField';
@@ -26,6 +26,11 @@ import Dialog, {
 } from 'material-ui/Dialog';
 import Typography from 'material-ui/Typography/Typography';
 
+import HTML5Backend from 'react-dnd-html5-backend';
+import { DragDropContext } from 'react-dnd';
+//import Lodash from 'lodash';
+import UsersRow from './UsersRow';
+
 
 var taiPasswordStrength = require("tai-password-strength")
 var strengthTester = new taiPasswordStrength.PasswordStrength();
@@ -37,7 +42,18 @@ const LocalStyles = (theme) => ({
         borderStyle: 'solid',
         borderColor: 'green',
         borderWidth: 'thin',
-    }
+    },
+    cell: {
+        height:30,
+        paddingTop:1,
+        paddingBottom:1,
+        paddingLeft:2,
+        paddingRight:2,
+      },
+    row: {
+        height:24,
+      }
+
 });
    
 
@@ -93,6 +109,12 @@ const UpdatePwdUser = gql`
         update_pwd: updateUser(id:$id,login:$login,password:$password) {
             id
         }
+    }
+`;
+
+const SaveOrdering = gql`
+    mutation UsersOrdering($ids: [ID]!) {
+        usersOrdering(ids:$ids) 
     }
 `;
 
@@ -219,14 +241,16 @@ class Users extends TableEditor {
    
 
     renderTableHeadRow() {
+        const { classes } = this.props;
         return (
-            <TableRow>
-                <TableCell padding={"dense"} style={{width:"0px"}}>Stav</TableCell>
-                <TableCell padding={"dense"}>Jméno</TableCell>
-                <TableCell padding={"dense"}>Role</TableCell>
-                <TableCell padding={"dense"}>Login</TableCell>
-                <TableCell padding={"dense"}>Lokalita</TableCell>
-                <TableCell padding={"dense"}></TableCell>
+            <TableRow className={classes.row}>
+                <TableCell className={classes.cell}>Řazení</TableCell>
+                <TableCell className={classes.cell}>Jméno</TableCell>
+                <TableCell className={classes.cell} style={{width:"0px"}}>Stav</TableCell>
+                <TableCell className={classes.cell}>Role</TableCell>
+                <TableCell className={classes.cell}>Login</TableCell>
+                <TableCell className={classes.cell}>Lokalita</TableCell>
+                <TableCell className={classes.cell}></TableCell>
             </TableRow>
         )
     }
@@ -236,13 +260,38 @@ class Users extends TableEditor {
             <Button variant="raised" key="rt_password" style={{minWidth:"38px"}} onClick={()=>this.onOpenPasswordDialog(doc)}> <PasswordIcon/>  </Button>
         )
     }
+    saveOrder() {
+        
+        console.log("saveOrder");
+        this.props.saveOrdering({
+        variables: {
+            ids:this.state.order,
+        }
+        }).then(res=>{
+        console.log("order save ok",res);
+        }).catch(err=>{
+        console.error(err);
+        })
+        
+    }
 
 
     renderTableBodyRow(doc,idx) {
-        const { classes } = this.props;
+       // const { classes } = this.props;
         const toolbar = this.renderTableBodyRowToolbar(doc,idx);
         return (
-
+            <UsersRow 
+                save={()=>this.saveOrder()} 
+                moveRow={(k,at)=>this.moveRow(k,at)} 
+                findRow={(k)=>this.findRow(k)} 
+                activeDrag={this.state.activeDrag} 
+                id={doc.id} 
+                key={doc.id} 
+                doc={doc} 
+                toolbar={toolbar}
+                onDrag={(active)=>this.onDrag(active)} 
+            />
+/*
             <TableRow hover key={doc.id}>
             <TableCell padding={"dense"} style={{width:"0px"}}><StatusView status={doc.status}/></TableCell>
             <TableCell padding={"dense"}>{doc.name}</TableCell>
@@ -253,7 +302,7 @@ class Users extends TableEditor {
                 {toolbar}
             </TableCell>
             </TableRow>
-
+*/
          
         )
     }
@@ -453,5 +502,13 @@ export default compose(
               ],
         }
     }),
-
+    graphql(SaveOrdering,{
+        name: "saveOrdering",
+        options: {
+            refetchQueries: [
+                'Users',
+              ],
+        }
+    }),
+    DragDropContext(HTML5Backend)
 )(Users)

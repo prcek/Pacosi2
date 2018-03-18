@@ -5,7 +5,7 @@ import { graphql } from 'react-apollo';
 import gql from 'graphql-tag';
 import TextField from 'material-ui/TextField';
 import StatusField from './StatusField';
-import StatusView from './StatusView';
+//import StatusView from './StatusView';
 
 import TableEditor, { TableEditorStyles, JoinStyles } from './TableEditor';
 import  {
@@ -13,6 +13,10 @@ import  {
     TableRow,
 } from 'material-ui/Table'
 
+import HTML5Backend from 'react-dnd-html5-backend';
+import { DragDropContext } from 'react-dnd';
+//import Lodash from 'lodash';
+import OrderItemsRow from './OrderItemsRow';
 
 
 const LocalStyles = (theme) => ({
@@ -22,7 +26,18 @@ const LocalStyles = (theme) => ({
         borderStyle: 'solid',
         borderColor: 'green',
         borderWidth: 'thin',
-    }
+    },
+    cell: {
+        height:30,
+        paddingTop:1,
+        paddingBottom:1,
+        paddingLeft:2,
+        paddingRight:2,
+      },
+    row: {
+        height:24,
+      }
+    
 });
    
 
@@ -66,6 +81,11 @@ const HideOrderItem = gql`
     }
 `;
 
+const SaveOrdering = gql`
+    mutation OrderItemsOrdering($ids: [ID]!) {
+        orderItemsOrdering(ids:$ids) 
+    }
+`;
 
 
 
@@ -151,20 +171,53 @@ class OrderItems extends TableEditor {
     }
 
     renderTableHeadRow() {
+        const { classes } = this.props;
         return (
-            <TableRow>
-                <TableCell padding={"dense"} style={{width:"0px"}}>Stav</TableCell>
-                <TableCell padding={"dense"}>Název</TableCell>
-                <TableCell padding={"dense"}></TableCell>
+            <TableRow className={classes.row}>
+                <TableCell className={classes.cell}>Řazení</TableCell>
+                <TableCell className={classes.cell}>Název</TableCell>
+                <TableCell className={classes.cell} style={{width:"0px"}}>Stav</TableCell>
+                <TableCell className={classes.cell}></TableCell>
             </TableRow>
         )
     }
 
+    saveOrder() {
+        
+        console.log("saveOrder");
+        this.props.saveOrdering({
+        variables: {
+            ids:this.state.order,
+        }
+        }).then(res=>{
+        console.log("order save ok",res);
+        }).catch(err=>{
+        console.error(err);
+        })
+        
+    }
+
     renderTableBodyRow(doc,idx) {
-        const { classes } = this.props;
+   //     const { classes } = this.props;
         const toolbar = this.renderTableBodyRowToolbar(doc,idx);
         return (
+            <OrderItemsRow 
+                save={()=>this.saveOrder()} 
+                moveRow={(k,at)=>this.moveRow(k,at)} 
+                findRow={(k)=>this.findRow(k)} 
+                activeDrag={this.state.activeDrag} 
+                id={doc.id} 
+                key={doc.id} 
+                doc={doc} 
+                toolbar={toolbar}
+                onDrag={(active)=>this.onDrag(active)} 
+            />
+        )
+/*
+        return (
 
+
+            
             <TableRow hover key={doc.id}>
             <TableCell padding={"dense"} style={{width:"0px"}}><StatusView status={doc.status}/></TableCell>
             <TableCell padding={"dense"}>{doc.name}</TableCell>
@@ -175,6 +228,7 @@ class OrderItems extends TableEditor {
 
          
         )
+        */
     }
 
     renderTableBodyLoadingRow() {
@@ -223,5 +277,13 @@ export default compose(
               ],
         }
     }),
-
+    graphql(SaveOrdering,{
+        name: "saveOrdering",
+        options: {
+            refetchQueries: [
+                'OrderItems',
+              ],
+        }
+    }),
+    DragDropContext(HTML5Backend)
 )(OrderItems)
