@@ -44,13 +44,13 @@ class OrderController extends BaseController {
             console.log("srch",srch)
             this.model.aggregate([
                 { $match: srch },
-                { $group: {_id: "$order_item_id", user_id: {$addToSet: "$user_id"}, count: {$sum: "$count"}, price: {$sum: "$total_price"}}},
+                { $group: { _id: {order_item_id:"$order_item_id", count:"$count", total_price:"$total_price"}, user_id: {$addToSet: "$user_id"}, orders: {$sum: 1}}},
                 { $unwind : { path:"$user_id" , preserveNullAndEmptyArrays:true}},
                 { $lookup: {from: "users", localField:"user_id", foreignField: "_id", as:"user"}},
-                { $lookup: {from: "orderitems", localField:"_id", foreignField: "_id", as:"order_item"}},
+                { $lookup: {from: "orderitems", localField:"_id.order_item_id", foreignField: "_id", as:"order_item"}},
                 { $unwind : { path:"$user" , preserveNullAndEmptyArrays:true}},
                 { $unwind : { path:"$order_item" , preserveNullAndEmptyArrays:true}},
-                { $project: { _id:0, user_id:1 , user: {id:"$user._id", name:"$user.name", role:"$user.role", status:"$user.status"}, order_item:{id:"$order_item._id",name:"$order_item.name", status:"$order_item.status"}, order_item_id:"$_id", count:1, price:1 }},
+                { $project: { _id:0, user_id:1 , user: {id:"$user._id", name:"$user.name", role:"$user.role", status:"$user.status"}, order_item:{id:"$order_item._id",name:"$order_item.name", status:"$order_item.status"}, order_item_id:"$_id.order_item_id", count:"$_id.count", total_price:"$_id.total_price", orders:1 }},
             ]).then(res=>{
 //                console.log(res);
                 resolve(res);

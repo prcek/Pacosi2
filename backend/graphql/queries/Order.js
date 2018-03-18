@@ -43,7 +43,10 @@ const OrderReportType = new GraphQL.GraphQLObjectType({
         count: {
             type: GraphQLInt,
         },
-        price: {
+        total_price: {
+            type: GraphQLInt,
+        },
+        orders: {
             type: GraphQLInt,
         },
     })

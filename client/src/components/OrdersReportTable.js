@@ -36,7 +36,7 @@ const styles = theme => ({
 const CurrentOrdersReport = gql`
   query OrderReport($user_id: ID!, $begin_date: Date!, $end_date: Date!) {
     orderReport(user_id:$user_id,begin_date:$begin_date,end_date:$end_date) {
-        user { name id role status} user_id order_item {name id status} order_item_id count price
+        user { name id role status} user_id order_item {name id status} order_item_id count total_price orders
     }
   }
 `;
@@ -52,7 +52,8 @@ class OrdersReportTable extends React.Component {
              <TableCell padding={"dense"}>{doc.user.name}</TableCell>
              <TableCell padding={"dense"}>{doc.order_item.name}</TableCell>
              <TableCell padding={"dense"}>{doc.count}</TableCell>
-             <TableCell padding={"dense"}>{doc.price}</TableCell>
+             <TableCell padding={"dense"}>{doc.total_price}</TableCell>
+             <TableCell padding={"dense"}>{doc.orders}</TableCell>
           </TableRow>
         ));
     }
@@ -70,8 +71,9 @@ class OrdersReportTable extends React.Component {
                     <TableRow>
                         <TableCell padding={"dense"}>Doktor</TableCell>
                         <TableCell padding={"dense"}>Položka</TableCell>
-                        <TableCell padding={"dense"}>Počet</TableCell>
+                        <TableCell padding={"dense"}>Kolik</TableCell>
                         <TableCell padding={"dense"}>Cena celkem</TableCell>
+                        <TableCell padding={"dense"}>Počet prodejů</TableCell>
                     </TableRow>
                 </TableHead>
                 <TableBody>
