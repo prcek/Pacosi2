@@ -108,6 +108,7 @@ const RootMutation = new GraphQLObjectType({
         addMassageType: MassageTypeMutation.create(),
         updateMassageType: MassageTypeMutation.update(),
         hideMassageType: MassageTypeMutation.hide(),
+        massageTypesOrdering: MassageTypeMutation.save_ordering(),
         addMassageRoom: MassageRoomMutation.create(),
         updateMassageRoom: MassageRoomMutation.update(),
         hideMassageRoom: MassageRoomMutation.hide(),

@@ -4,7 +4,7 @@ import { compose } from 'react-apollo'
 import { graphql } from 'react-apollo';
 import gql from 'graphql-tag';
 import TextField from 'material-ui/TextField';
-import StatusView from './StatusView';
+//import StatusView from './StatusView';
 import MassageLengthField from './MassageLengthField';
 import StatusField from './StatusField';
 
@@ -14,7 +14,10 @@ import  {
     TableRow,
 } from 'material-ui/Table'
 
-
+import HTML5Backend from 'react-dnd-html5-backend';
+import { DragDropContext } from 'react-dnd';
+//import Lodash from 'lodash';
+import MassageTypesRow from './MassageTypesRow';
 
 const LocalStyles = (theme) => ({
     xbase: {
@@ -23,7 +26,15 @@ const LocalStyles = (theme) => ({
         borderStyle: 'solid',
         borderColor: 'green',
         borderWidth: 'thin',
-    }
+    },
+    cell: {
+        height:30,
+        paddingTop:1,
+        paddingBottom:1,
+        paddingLeft:2,
+        paddingRight:2,
+      },
+    
 });
    
 
@@ -68,6 +79,12 @@ const HideMassageType = gql`
     }
 `;
 
+
+const SaveOrdering = gql`
+    mutation MassageTypesOrdering($ids: [ID]!) {
+        massageTypesOrdering(ids:$ids) 
+    }
+`;
 
 
 class MassageTypes extends TableEditor {
@@ -163,31 +180,52 @@ class MassageTypes extends TableEditor {
    
 
     renderTableHeadRow() {
+        const { classes } = this.props;
         return (
-            <TableRow>
-                <TableCell padding={"dense"} style={{width:"0px"}}>Stav</TableCell>
-                <TableCell padding={"dense"}>Název</TableCell>
-                <TableCell padding={"dense"}>Délka</TableCell>
-                <TableCell padding={"dense"}></TableCell>
+            <TableRow className={classes.row}>
+                <TableCell className={classes.cell}>Řazení</TableCell>
+                <TableCell className={classes.cell}>Název</TableCell>
+                <TableCell className={classes.cell} style={{width:"0px"}}>Stav</TableCell>
+                <TableCell className={classes.cell}>Délka</TableCell>
+                <TableCell className={classes.cell}></TableCell>
             </TableRow>
         )
     }
 
+//    return  this.reorder(items).map((i,idx)=>{
+//        return  (<CoursesRow save={()=>this.saveOrder()} moveRow={(k,at)=>this.moveRow(k,at)} findRow={(k)=>this.findRow(k)}activeDrag={this.state.activeDrag} id={i.key} key={i.key} course={i} onDrag={(active)=>this.onDrag(active)} />)
+//  });
+    saveOrder() {
+        
+        console.log("saveOrder");
+        this.props.saveOrdering({
+        variables: {
+            ids:this.state.order,
+        }
+        }).then(res=>{
+        console.log("order save ok",res);
+        }).catch(err=>{
+        console.error(err);
+        })
+        
+    }
+
+
     renderTableBodyRow(doc,idx) {
-        const { classes } = this.props;
+   //     const { classes } = this.props;
         const toolbar = this.renderTableBodyRowToolbar(doc,idx);
         return (
-
-            <TableRow hover key={doc.id}>
-            <TableCell padding={"dense"} style={{width:"0px"}}><StatusView status={doc.status}/></TableCell>
-            <TableCell padding={"dense"}>{doc.name}</TableCell>
-            <TableCell padding={"dense"}>{doc.length}</TableCell>
-            <TableCell padding={"dense"} classes={{root:classes.cell}}>
-                {toolbar}
-            </TableCell>
-            </TableRow>
-
-         
+            <MassageTypesRow 
+                save={()=>this.saveOrder()} 
+                moveRow={(k,at)=>this.moveRow(k,at)} 
+                findRow={(k)=>this.findRow(k)} 
+                activeDrag={this.state.activeDrag} 
+                id={doc.id} 
+                key={doc.id} 
+                massageType={doc} 
+                toolbar={toolbar}
+                onDrag={(active)=>this.onDrag(active)} 
+            />
         )
     }
 
@@ -237,5 +275,13 @@ export default compose(
               ],
         }
     }),
-
+    graphql(SaveOrdering,{
+        name: "saveOrdering",
+        options: {
+            refetchQueries: [
+                'MassageTypes',
+              ],
+        }
+    }),
+    DragDropContext(HTML5Backend)
 )(MassageTypes)

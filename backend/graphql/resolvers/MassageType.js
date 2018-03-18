@@ -3,6 +3,7 @@
 const MassageType = require('../../services/models/MassageType');
 
 const BaseController = require('./BaseController');
+const pAll = require('p-all');
 
 class MassageTypeController extends BaseController {
 
@@ -16,8 +17,21 @@ class MassageTypeController extends BaseController {
     }
 
     index(filter={}) { 
+        console.log("MassageTypeController index",filter)
         const f = {...filter,...this.hiddenFilter}
-        return super.index(f);
+        const items = ()=>super.index(f);
+        const order = ()=>this.fetchOrdering("massageTypes");
+        const me=this;
+        return new Promise(function(resolve,reject){
+            pAll([items,order]).then(r=>{
+              //  console.log(r[0]);
+                resolve(me.applyOrder(r[0],r[1]));
+            })
+
+
+        });
+       
+
     }
 
     all() { 
@@ -27,6 +41,10 @@ class MassageTypeController extends BaseController {
     count(filter={}) { 
         const f = {...filter,...this.hiddenFilter}
         return super.count(f);
+    }
+
+    save_ordering(args) {
+        return super.saveOrdering("massageTypes",args.ids);
     }
 
 };

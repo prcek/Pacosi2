@@ -1,5 +1,8 @@
 'use strict';
 
+const Ordering = require('../../services/models/Ordering');
+
+var Lodash = require('lodash');
 
 class BaseController {
     constructor(model) {
@@ -9,7 +12,43 @@ class BaseController {
         this.hiddenFilter = {}
     }
 
+    applyOrder(items,keys) {
+        if (keys === null) {
+            return items;
+        }
+        var oi = keys.ids.map((k)=>{return Lodash.find(items,{_id:k})}).filter((i)=>i!==undefined);
+        if (oi.length===items.length) {
+            return oi;
+        } else {
+            var rest = items.filter(i=>{return oi.indexOf(i)===-1;})
+            return oi.concat(rest);
+        }
+    }
     
+
+    saveOrdering(id,ids) {
+        return new Promise(function(resolve,reject){
+            Ordering.findOneAndUpdate({_id:id},{ $set: { _id: id, ids:ids }}, {upsert:true,new:true}, (err,res)=>{
+                if (err) {
+                    reject(err);
+                } else {
+                    console.log(res);
+                    resolve("ok")
+                }
+            });
+        });
+    }
+    
+    fetchOrdering(id) {
+        return new Promise(function(resolve,reject){
+            Ordering.findOne({_id:id}).then(r=>{
+                console.log(r);
+                resolve(r);
+            }).catch(reject);
+        });
+    }
+    
+
 
     index(filter={}) {
         console.log("BaseController index",this.model.modelName+"(",filter,")")

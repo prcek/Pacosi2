@@ -5,6 +5,7 @@ const {
     GraphQLList,
     GraphQLID,
     GraphQLNonNull,
+    GraphQLString,
 } = GraphQL;
 
 const GraphQLIsoDate = require('graphql-iso-date');
@@ -74,6 +75,19 @@ class BaseMutation {
             },
             resolve: (parent, args, context, info)=>{
                 return this.resolver.hide(args);
+            }
+        }
+    }
+    save_ordering() {
+        return {
+            type: GraphQLString,
+            args: {
+                ids: {
+                    type: new GraphQLNonNull(new GraphQLList(GraphQLID)),
+                },
+            },
+            resolve: (parent, fields) => {
+                return this.resolver.save_ordering(fields);
             }
         }
     }

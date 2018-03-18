@@ -19,7 +19,7 @@ import LastPageIcon from 'material-ui-icons/LastPage';
 import Input from 'material-ui/Input';
 import { MenuItem } from 'material-ui/Menu';
 import Select from 'material-ui/Select';
-
+import Lodash from 'lodash';
 
 
 
@@ -53,8 +53,52 @@ class TableEditor extends React.Component {
         delAsk: false,
         doc: {},
         doc_err: {},
-        doc_error_msg:null
+        doc_error_msg:null,
+        order:[],
+        activeDrag:false
+   }
+
+   onDrag(active) {
+    this.setState({activeDrag:active})
+  }  
+
+  reorder(items) {
+      const { order } = this.state;
+      if (order.length !== items.length) {
+        console.log("missing order")
+        return items;
+      }
+      console.log("reodering");
+      return order.map((k)=>{return Lodash.find(items,{id:k}) });
+  }
+
+  findRow(id) {
+      const items = this.reorder(this.props.docs.docs);
+      const item = items.filter(c => c.id === id)[0]
+      const index = items.indexOf(item);
+      const r =  {
+        doc:item,
+        index: index,
+      };
+      console.log("findRow",id,r)
+      return r;
+  }
+
+  moveRow(id, atIndex) {
+    console.log("moveRow",id,atIndex);
+    const { index } = this.findRow(id)
+    let order = []
+    if (this.state.order.length !== this.props.docs.docs.length) {
+       order = this.props.docs.docs.map(i=>{return i.id});
+    } else {
+       order = this.state.order.slice();
     }
+
+    order.splice(index,1);
+    order.splice(atIndex,0,id);
+    this.setState({order:order});
+  }
+
 
     static empty2nullC(v) {
         if (v === "") { return null} 
@@ -283,11 +327,10 @@ class TableEditor extends React.Component {
     }
 
     renderTableBodyRows() {
-
         if (this.props.docs.docs_pages) {
             return this.props.docs.docs_pages.items.map((doc,idx)=>{return this.renderTableBodyRow(doc,idx)});
         } else if (this.props.docs.docs) { 
-            return this.props.docs.docs.map((doc,idx)=>{return this.renderTableBodyRow(doc,idx)});
+            return this.reorder(this.props.docs.docs).map((doc,idx)=>{return this.renderTableBodyRow(doc,idx)});
         } else {
             return this.renderTableBodyLoadingRow();
         }
