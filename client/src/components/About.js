@@ -47,6 +47,7 @@ const todos = [
     
 ];
 const changes = [
+    "report prodeje - pocty prodeju",
     "razeni -  uzivatele v prodeji, polozky prodeje",
     "razeni - typy masazi",
     "prehled cviceni",
