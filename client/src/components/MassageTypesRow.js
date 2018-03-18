@@ -169,7 +169,7 @@ function dnd_trg(connect) {
 
 export default compose(
   withStyles(styles),
-  DropTarget('row', rowTarget, dnd_trg),
-  DragSource('row', rowSource, dnd_src)
+  DropTarget('massagetype_row', rowTarget, dnd_trg),
+  DragSource('massagetype_row', rowSource, dnd_src)
   
 )(MassageTypesRow)

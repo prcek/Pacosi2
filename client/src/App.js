@@ -28,6 +28,8 @@ import TestComponent from './components/TestComponent';
 import Login from "./Login";
 import {isAuth} from './auth';
 
+import HTML5Backend from 'react-dnd-html5-backend';
+import { DragDropContext } from 'react-dnd';
 
 const styles = theme => ({
   root: {
@@ -196,4 +198,5 @@ function mapStateToProps(state) {
 export default withRouter(compose(
   withStyles(styles),
   connect(mapStateToProps),
+  DragDropContext(HTML5Backend)
 )(App));

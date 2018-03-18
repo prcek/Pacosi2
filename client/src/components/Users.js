@@ -26,8 +26,6 @@ import Dialog, {
 } from 'material-ui/Dialog';
 import Typography from 'material-ui/Typography/Typography';
 
-import HTML5Backend from 'react-dnd-html5-backend';
-import { DragDropContext } from 'react-dnd';
 //import Lodash from 'lodash';
 import UsersRow from './UsersRow';
 
@@ -510,5 +508,5 @@ export default compose(
               ],
         }
     }),
-    DragDropContext(HTML5Backend)
+   
 )(Users)

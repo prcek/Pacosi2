@@ -13,8 +13,8 @@ import  {
     TableRow,
 } from 'material-ui/Table'
 
-import HTML5Backend from 'react-dnd-html5-backend';
-import { DragDropContext } from 'react-dnd';
+//import HTML5Backend from 'react-dnd-html5-backend';
+//import { DragDropContext } from 'react-dnd';
 //import Lodash from 'lodash';
 import OrderItemsRow from './OrderItemsRow';
 
@@ -285,5 +285,5 @@ export default compose(
               ],
         }
     }),
-    DragDropContext(HTML5Backend)
+  //  DragDropContext(HTML5Backend)
 )(OrderItems)

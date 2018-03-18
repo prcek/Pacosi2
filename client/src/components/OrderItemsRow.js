@@ -168,7 +168,7 @@ function dnd_trg(connect) {
 
 export default compose(
   withStyles(styles),
-  DropTarget('row', rowTarget, dnd_trg),
-  DragSource('row', rowSource, dnd_src)
+  DropTarget('orderitem_row', rowTarget, dnd_trg),
+  DragSource('orderitem_row', rowSource, dnd_src)
   
 )(OrderItemsRow)
