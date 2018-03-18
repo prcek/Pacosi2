@@ -18,8 +18,8 @@ class StatusView extends React.Component {
     render() {
         var s = "";
         switch (this.props.status) {
-            case "ACTIVE": s = "aktivni"; break;
-            case "DISABLED": s ="neaktivni"; break;
+            case "ACTIVE": s = "aktivní"; break;
+            case "DISABLED": s ="neaktivní"; break;
             default: s="?"
         }
         return (
