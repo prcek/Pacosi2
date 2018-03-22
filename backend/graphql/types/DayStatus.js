@@ -22,7 +22,8 @@ const DayStatusType =  new GraphQL.GraphQLEnumType({
     values: {
         OFF:{value:0},
         FREE:{value:1},
-        BUSY:{value:2}
+        BUSY:{value:2},
+        PROBLEM:{value:3}
     }
 });
 

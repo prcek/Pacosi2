@@ -108,6 +108,9 @@ const styles = theme => ({
     colorClass2: {
         backgroundColor: colors['red'][500]
     },
+    colorClass3: {
+        backgroundColor: colors['orange'][500]
+    },
 
     disabled: {
         color: theme.palette.action.disabled,
@@ -144,7 +147,7 @@ class Calendar extends React.Component {
         const { classes } = this.props;
         const colorIndex = this.getDayColorIndex(x);
         const selected = this.isSelectedDay(x);
-        const colorClasses = [classes.colorClass0,classes.colorClass1,classes.colorClass2]
+        const colorClasses = [classes.colorClass0,classes.colorClass1,classes.colorClass2,classes.colorClass3]
         const colorClass = colorIndex?colorClasses[colorIndex]:classes.colorClassNone;
       //  console.log(colorIndex)
         const className = classNames([

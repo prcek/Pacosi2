@@ -11,6 +11,23 @@ class MassageOrderController extends BaseController {
         super(MassageOrder);
     }
 
+    day(filter) {
+        return new Promise((resolve, reject) => {
+            this.model.aggregate([
+               {$match: filter},
+               {$lookup: {from:"massagetypes", localField:"massage_type_id",foreignField:"_id",as:"mt"}},
+               {$unwind: "$mt"},
+               { $addFields: { len:"$mt.length" } },
+               {$project: { mt:0}},
+               {$sort: {begin:1}},
+            ]).then(res=>{
+                resolve(res);
+            }).catch(err=>{
+                reject(err);
+            })
+        });
+    }
+
     days(filter) {
         return new Promise((resolve, reject) => {
             this.model.aggregate([
@@ -20,7 +37,7 @@ class MassageOrderController extends BaseController {
                {$unwind: "$mt"},
                {$project: { day:1,begin:1,len:"$mt.length"}},
                {$sort: {begin:1}},
-               {$group: { _id:"$day", mos:{ $push: {begin:"$begin",len:"$len"}}}},
+               {$group: { _id:"$day", mos:{ $push: {begin:"$begin",len:"$len",_id:"$_id"}}}},
                {$sort: {_id:1}}
             ]).then(res=>{
                 //console.log(res[0]);

@@ -80,6 +80,7 @@ class MassageRoomCal extends React.Component {
                 case 'OFF': st=0; break;
                 case 'FREE': st=1; break;
                 case 'BUSY': st=2; break;
+                case 'PROBLEM': st=3; break;
                 default:
             }
             return {day:moment(di.date),colorIndex:st}

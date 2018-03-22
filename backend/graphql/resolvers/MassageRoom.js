@@ -176,18 +176,21 @@ function range2slots(b,e) {
 function calc_new_status(ots,mos) {
 
     //console.log("calc_new_status",mos);
-
+  //  OFF:{value:0},
+ //   FREE:{value:1},
+  //  BUSY:{value:2},
+ //   PROBLEM:{value:3}
 
     
     if (ots && mos == null) {
-        return true;
+        return 1;  //FREE
     }
     if (mos && ots == null) {
-        return false;
+        return 2; // BUSY
     }
 
     if (mos == null && ots == null) {
-        return undefined; //WARN!
+        return 0; //OFF
     }
     const otslots = Lodash.uniq(Lodash.flatten(Lodash.map(ots,function(ot){
         return range2slots(ot.begin,ot.end);
@@ -196,13 +199,34 @@ function calc_new_status(ots,mos) {
         const end = moment(mo.begin).add(mo.len,"minutes");
         return range2slots(mo.begin,end);
     })));
+    console.log(mos);
+    const moslotsX = Lodash.flatten(Lodash.map(mos,function(mo){
+        const end = moment(mo.begin).add(mo.len,"minutes");
+        return range2slots(mo.begin,end).map(s=>{return {date:s,id:mo._id}})
+    }));
+
+    //console.log(moslotsX);
+    const moslotsG =Lodash.toPairs(Lodash.groupBy(moslotsX,'date')).map(s=>{ 
+        const ids = s[1].map(i=>{return i.id});
+        return {date:s[0],ids:ids,dupl:ids.length>1}
+    })
+    //console.log(moslotsG);
+
+    const moslotsB = Lodash.filter(moslotsG,{dupl:true});
+    console.log(moslotsB);
 
     const freeslots = Lodash.without(otslots,...moslots);
 
-    //console.log("calc M",moslots);
-    //console.log("calc O",otslots);
-    //console.log("calc F",freeslots);
-    return freeslots.length>0;
+    if (moslotsB.length>0) {
+        return 3; //PROBLEM
+    }
+
+    if (freeslots.length >0) {
+        return 1; //FREE
+    }
+
+   
+    return 2; //BUSY
 }
 
 
@@ -249,13 +273,7 @@ class MassageRoomController extends BaseController {
                 const sdays = Lodash.map(xdays,function(day){
                     const cot = Lodash.find(ot_days,{_id:day});
                     const cmo = Lodash.find(mo_days,{_id:day});
-                    const st = calc_new_status(cot?cot.ots:null,cmo?cmo.mos:null);
-                    let sts;
-                    switch(st) {
-                        case true: sts=1; break;
-                        case false: sts=2; break;
-                        default: sts=0;
-                    }
+                    const sts = calc_new_status(cot?cot.ots:null,cmo?cmo.mos:null);
                     return {date:day,status:sts};
                 })
                 resolve(sdays);
@@ -276,18 +294,21 @@ class MassageRoomController extends BaseController {
             if (args.date ) {
                 srch.begin={"$gte":args.date,"$lt":moment(args.date).add(1,'day').toDate()}
             }
-            pAll([()=>OpeningTimeResolver.index(srch),()=>MassageOrderResolver.index(srch),()=>MassageTypeResolver.all()]).then(res=>{
+            pAll([()=>OpeningTimeResolver.index(srch),()=>MassageOrderResolver.day(srch),()=>MassageTypeResolver.all()]).then(res=>{
                 const ots = res[0]
                 const mos = res[1]
                 const mts = Lodash.keyBy(res[2], 'id') 
                 //console.log(mts);
 
+
+                const status = calc_new_status(ots,mos);
+
                 const mdc = new MDController(args.date,ots,mos,mts);
                 const slots =mdc.getSlots();
-                const status = mdc.getStatus();
+               // const status = mdc.getStatus();
                 //console.log("SLOTS",slots)
                   
-                const plan = {date:args.date,status:ots.length?1:0,opening_times:ots,massage_orders:mos,slots:slots,status:status}
+                const plan = {date:args.date,opening_times:ots,massage_orders:mos,slots:slots,status:status}
                 resolve(plan);
             }).catch(reject)
     
