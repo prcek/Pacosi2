@@ -18,6 +18,7 @@ class MassageOrderController extends BaseController {
                {$lookup: {from:"massagetypes", localField:"massage_type_id",foreignField:"_id",as:"mt"}},
                {$unwind: "$mt"},
                { $addFields: { len:"$mt.length" } },
+               { $addFields: { id:"$_id" } },
                {$project: { mt:0}},
                {$sort: {begin:1}},
             ]).then(res=>{
