@@ -11,6 +11,7 @@ const redux_state_version = 4;
 const psconfig = {
     key: 'root',
     storage,
+    blacklist: ['notify'], 
     version:redux_state_version,
     migrate: (state) => {
         if (state===undefined) return Promise.resolve({});

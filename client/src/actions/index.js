@@ -57,6 +57,26 @@ const clearLessonMemberClipboard = () =>({
     type: 'CLEAR_CLIPBOARD_LESSON_MEMBER',
 })
 
+
+const setErrorMessage = (message,expire) => ({
+    type: 'SET_ERROR_MESSAGE',
+    message,expire
+})
+
+const clearErrorMessage = () => ({
+    type: 'CLEAR_ERROR_MESSAGE',
+})
+
+const setInfoMessage = (message,expire) => ({
+    type: 'SET_INFO_MESSAGE',
+    message,expire
+})
+
+const clearInfoMessage = () => ({
+    type: 'CLEAR_INFO_MESSAGE',
+})
+
+
 export {
     setLocation,
     setClientPageNo,
@@ -70,5 +90,9 @@ export {
     setMassageOrderClipboard,
     setLessonMemberClipboard,
     clearMassageOrderClipboard,
-    clearLessonMemberClipboard
+    clearLessonMemberClipboard,
+    setErrorMessage,
+    clearErrorMessage,
+    setInfoMessage,
+    clearInfoMessage
 }

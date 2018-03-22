@@ -1,7 +1,7 @@
 import { doRelogin } from './auth';
 import {store} from './store';
 import Moment from 'moment';
-import { clearLessonMemberClipboard, clearMassageOrderClipboard } from './actions'
+import { clearLessonMemberClipboard, clearMassageOrderClipboard, clearInfoMessage, clearErrorMessage } from './actions'
 
 
 function expireClipboard() {
@@ -19,11 +19,28 @@ function expireClipboard() {
     }
 }
 
+function expireNofity() {
+    const notify = store.getState().notify;
+  //  console.log("expireClipboard",clipboard);
+    if (notify.error && notify.error_expire) {
+        if (Moment(notify.error_expire).isBefore()) {
+            store.dispatch(clearErrorMessage());
+        }
+    }
+    if (notify.info && notify.info_expire) {
+        if (Moment(notify.info_expire).isBefore()) {
+            store.dispatch(clearInfoMessage());
+        }
+    }
+}
+
+
 function onTick(){
 //    console.log("onTick");
 
     doRelogin();
     expireClipboard();
+    expireNofity();
 
 }
 var timerId;

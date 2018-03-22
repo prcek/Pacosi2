@@ -4,11 +4,12 @@ import MenuBar from './MenuBar';
 import { compose } from 'react-apollo'
 import { connect } from 'react-redux'
 import { Route, Switch } from 'react-router-dom';
-import { SnackbarContent } from 'material-ui/Snackbar';
+import Snackbar, { SnackbarContent} from 'material-ui/Snackbar';
 import Reboot from 'material-ui/Reboot';
 import { withRouter } from 'react-router'
 import { withStyles } from 'material-ui/styles';
-
+import CloseIcon from 'material-ui-icons/Close'
+import IconButton from 'material-ui/IconButton';
 import MassageRoom from './components/MassageRoom';
 import LessonType from './components/LessonType';
 import Users from './components/Users';
@@ -30,11 +31,17 @@ import {isAuth} from './auth';
 
 import HTML5Backend from 'react-dnd-html5-backend';
 import { DragDropContext } from 'react-dnd';
+import Typography from 'material-ui/Typography';
+import { clearErrorMessage, clearInfoMessage } from './actions';
 
 const styles = theme => ({
   root: {
     marginTop: theme.spacing.unit * 3,
     width: '100%',
+  },
+  close: {
+    width: theme.spacing.unit * 4,
+    height: theme.spacing.unit * 4,
   },
 });
 
@@ -154,8 +161,75 @@ class App extends Component {
       )
     }
   }
+  handleCloseError = (event, reason) => {
+   // console.log("handleCloseError",reason)
+    this.props.onClearError();
+  }
+  renderSnackError() {
+    const { classes } = this.props;
+    return (
+      <Snackbar 
+        anchorOrigin={{
+          vertical: 'top',
+          horizontal: 'center',
+        }}
+        key="error"
+        open={this.props.error_message!==null}
+    //    autoHideDuration={6000}
+        onClose={this.handleCloseError}
+        message={(<Typography color="error">{this.props.error_message}</Typography>)}
+        action={(
+          <IconButton
+            key="close"
+            aria-label="Close"
+            color="inherit"
+            className={classes.close}
+            onClick={this.handleCloseError}
+          >
+            <CloseIcon />
+          </IconButton>
+         )}
+
+      />
+    )
+  }
+
+  handleCloseInfo = (event, reason) => {
+     this.props.onClearInfo();
+   }
+   renderSnackInfo() {
+     const { classes } = this.props;
+     return (
+       <Snackbar 
+         anchorOrigin={{
+           vertical: 'bottom',
+           horizontal: 'center',
+         }}
+         key="info"
+         open={this.props.info_message!==null}
+     //    autoHideDuration={6000}
+         onClose={this.handleCloseInfo}
+         message={(<Typography color="inherit">{this.props.info_message}</Typography>)}
+         action={(
+          <IconButton
+            key="close"
+            aria-label="Close"
+            color="inherit"
+            className={classes.close}
+            onClick={this.handleCloseInfo}
+          >
+            <CloseIcon />
+          </IconButton>
+         )}
+       />
+     )
+   }
+ 
   renderApp() {
    // const { classes } = this.props
+    const errorSnack = this.renderSnackError();
+    const infoSnack = this.renderSnackInfo();
+    
     return (
       <div className="App">
         <Reboot />
@@ -163,9 +237,9 @@ class App extends Component {
           <Version />
           <MenuBar />
         </header>
-
+        {errorSnack}
+        {infoSnack}
         {! this.props.current_location_id && <SnackbarContent message="není zvolena lokalita"/>}
-
         <Switch>
           <Route path="/r/lessons/:id" component={PageLessons}/>
           <Route path="/r/massages/:id" component={PageMassages}/>
@@ -190,13 +264,25 @@ class App extends Component {
   }
 }
 
+
+const mapDispatchToProps = dispatch => {
+  return {
+    onClearError: () => {
+      dispatch(clearErrorMessage())
+    },
+    onClearInfo: () => {
+      dispatch(clearInfoMessage())
+    },
+  }
+}
+
 function mapStateToProps(state) {
-  return { current_location_id: state.location, auth:state.auth }
+  return { current_location_id: state.location, auth:state.auth, error_message:state.notify.error, info_message:state.notify.info }
 }
 
 
 export default withRouter(compose(
   withStyles(styles),
-  connect(mapStateToProps),
+  connect(mapStateToProps,mapDispatchToProps),
   DragDropContext(HTML5Backend)
 )(App));
