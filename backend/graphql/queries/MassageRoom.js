@@ -61,10 +61,10 @@ const MassageRoomDaySlot = new GraphQL.GraphQLObjectType({
         free: {
             type: GraphQLBoolean
         },
-        len: {
-            type: GraphQLInt
+        warn: {
+            type: GraphQLBoolean
         },
-        clen: {
+        len: {
             type: GraphQLInt
         },
         order: {

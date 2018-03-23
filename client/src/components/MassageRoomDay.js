@@ -58,7 +58,7 @@ const MassageRoomDayPlan = gql`
       }
       status 
       slots {
-          date break free order {id massage_type {name length} massage_type_id begin client_id client {id, name,surname,phone, no} comment payment} len clen
+          date break warn free order {id massage_type {name length} massage_type_id begin client_id client {id, name,surname,phone, no} comment payment} len 
       }
       massage_types {
         id name length hidden
@@ -216,7 +216,7 @@ class MassageRoomDay extends React.Component {
 
         const mds = slots.map((s,idx)=>{
             return (
-                <MassageDaySlot key={idx} break={s.break} time={moment(s.date).toDate()} order={s.order} length={s.len} clen={s.clen} onClick={this.handleSlotClick} /> 
+                <MassageDaySlot key={idx} warn={s.warn} break={s.break} time={moment(s.date).toDate()} order={s.order} length={s.len} onClick={this.handleSlotClick} /> 
             )
         });
         

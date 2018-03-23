@@ -55,6 +55,9 @@ const styles = theme => ({
     bgRed: {
         backgroundColor: colors['red'][500]
     },
+    bgOrange: {
+        backgroundColor: colors['orange'][500]
+    },
     break: {
         width:"100%",
         textAlign: 'center',
@@ -76,10 +79,10 @@ class MassageDaySlot extends React.Component {
     }
 
 
-    renderTime(free) {
+    renderTime(free,warn) {
         const { classes } = this.props;
         return (
-            <div className={classNames(classes.time,free?classes.bgGreen:classes.bgRed)}>
+            <div className={classNames(classes.time,warn?(classes.bgOrange):(free?classes.bgGreen:classes.bgRed))}>
                 <DateTimeView date={this.props.time} format={"HH:mm"} />
             </div>
         );
@@ -97,7 +100,7 @@ class MassageDaySlot extends React.Component {
 
     renderSlot() {
         const { classes } = this.props;
-        const time=this.renderTime(false);
+        const time=this.renderTime(false,this.props.warn);
         const clientname = this.props.order.client?this.props.order.client.surname+" "+(this.props.order.client.name||""):"";
         const phone = this.props.order.client? this.props.order.client.phone:"";
         const comment = this.props.order.comment;
@@ -137,15 +140,16 @@ class MassageDaySlot extends React.Component {
 MassageDaySlot.propTypes = {
     classes: PropTypes.object.isRequired,
     brake: PropTypes.bool,
+    warn: PropTypes.bool,
     time: PropTypes.objectOf(Date).isRequired,
     length: PropTypes.number.isRequired,
-    clen: PropTypes.number,
     order: PropTypes.object,
     onClick: PropTypes.func
 }
  
 MassageDaySlot.defaultProps = {
-    break: false
+    break: false,
+    warn: false
 }
 
 export default compose(

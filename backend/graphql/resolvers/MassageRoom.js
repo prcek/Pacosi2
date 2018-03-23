@@ -172,61 +172,84 @@ function range2slots(b,e) {
     return Lodash.map(slots,function(s){return s.toISOString()});
 }
 
+function range2len(b,e) {
+    const range = moment.range(b,e);
+    const slots = Array.from(range.by('minutes',{exclusive: true,step:30}));
+    return slots.length;
+}
+
 
 function calc_new_status(ots,mos) {
 
-    //console.log("calc_new_status",mos);
-  //  OFF:{value:0},
- //   FREE:{value:1},
-  //  BUSY:{value:2},
- //   PROBLEM:{value:3}
-
-    
-    if (ots && mos == null) {
-        return 1;  //FREE
-    }
-    if (mos && ots == null) {
-        return 2; // BUSY
-    }
-
     if (mos == null && ots == null) {
-        return 0; //OFF
+      return { status:0, slots:[] } //OFF
     }
-    const otslots = Lodash.uniq(Lodash.flatten(Lodash.map(ots,function(ot){
-        return range2slots(ot.begin,ot.end);
-    })));
-    const moslots = Lodash.uniq(Lodash.flatten(Lodash.map(mos,function(mo){
+
+    const otslotsX = ots?Lodash.flatten(Lodash.map(ots,function(ot){
+        return range2slots(ot.begin,ot.end).map(s=>{return{date:s,free:true}})
+    })):[];
+
+    const moslotsX = mos?Lodash.flatten(Lodash.map(mos,function(mo){
         const end = moment(mo.begin).add(mo.len,"minutes");
-        return range2slots(mo.begin,end);
-    })));
-    console.log(mos);
-    const moslotsX = Lodash.flatten(Lodash.map(mos,function(mo){
-        const end = moment(mo.begin).add(mo.len,"minutes");
-        return range2slots(mo.begin,end).map(s=>{return {date:s,id:mo._id}})
-    }));
-
-    //console.log(moslotsX);
-    const moslotsG =Lodash.toPairs(Lodash.groupBy(moslotsX,'date')).map(s=>{ 
-        const ids = s[1].map(i=>{return i.id});
-        return {date:s[0],ids:ids,dupl:ids.length>1}
-    })
-    //console.log(moslotsG);
-
-    const moslotsB = Lodash.filter(moslotsG,{dupl:true});
-    console.log(moslotsB);
-
-    const freeslots = Lodash.without(otslots,...moslots);
-
-    if (moslotsB.length>0) {
-        return 3; //PROBLEM
-    }
-
-    if (freeslots.length >0) {
-        return 1; //FREE
-    }
+        return range2slots(mo.begin,end).map((s,idx)=>{return {date:s,busy:true,id:mo._id,len:mo.len,first:idx===0}})
+    })):[];
 
    
-    return 2; //BUSY
+    const slotsG = Lodash.groupBy(moslotsX.concat(otslotsX),'date');
+
+    const allSlots = Lodash.sortBy(Lodash.toPairs(slotsG).map(s=>{
+        const free = Lodash.filter(s[1],{'free':true});
+        const busy = Lodash.filter(s[1],{'busy':true});
+        if (busy.length>0) {
+            return {date:s[0],orders:busy.map(b=>{return {id:b.id,first:b.first,len:Math.floor(b.len/30)}})};
+        } else {
+            return {date:s[0],order:null,len:1,free:true,break:false};
+        } 
+    }),function(o){return o.date});
+
+
+    const dates = allSlots.map(s=>{return s.date});
+    const gaps = Lodash.compact(Lodash.zip(Lodash.slice(dates,0,dates.length-1),Lodash.slice(dates,1)).map(p=>{
+        const r = range2len(p[0],p[1]);
+        if (r>1) {
+            const d = moment(p[0]).add(30,"minutes").toISOString(); 
+            return {date:d,break:true,free:false,len:r-1};
+        } else {
+            return null;
+        }
+    }));
+
+    const allSlotsWithGaps = Lodash.sortBy(allSlots.concat(gaps),function(s){return s.date});
+
+    const finalSlots = Lodash.compact(Lodash.flatten(allSlotsWithGaps.map(s=>{
+        if (s.orders) {
+            const cont_orders = Lodash.filter(s.orders,{'first':false});
+            const beg_orders = Lodash.filter(s.orders,{'first':true});
+            if (beg_orders.length===0) {
+                return null;
+            } else {
+                const warn = (beg_orders.length>1) || cont_orders.length>0;
+                return beg_orders.map((o,idx)=>{
+                    const order = Lodash.find(mos,{'id':o.id});
+                    return {date:s.date,free:false,break:false,order:order,order_id:o.id,len:o.len,warn:warn};
+                })
+            }
+        } else {
+            return s;
+        }
+    })));
+
+   
+
+    if (Lodash.find(finalSlots,{'warn':true})) {
+        return  { status:3, slots:finalSlots }; //PROBLEM
+    }
+
+    if (Lodash.find(finalSlots,{'free':true})) {
+        return  { status:1, slots:finalSlots }; //FREE
+    }
+   
+    return  { status:2, slots:finalSlots }; //BUSY
 }
 
 
@@ -274,7 +297,7 @@ class MassageRoomController extends BaseController {
                     const cot = Lodash.find(ot_days,{_id:day});
                     const cmo = Lodash.find(mo_days,{_id:day});
                     const sts = calc_new_status(cot?cot.ots:null,cmo?cmo.mos:null);
-                    return {date:day,status:sts};
+                    return {date:day,status:sts.status};
                 })
                 resolve(sdays);
             }).catch(reject)
@@ -301,14 +324,15 @@ class MassageRoomController extends BaseController {
                 //console.log(mts);
 
 
-                const status = calc_new_status(ots,mos);
+                const sts = calc_new_status(ots,mos);
 
-                const mdc = new MDController(args.date,ots,mos,mts);
-                const slots =mdc.getSlots();
+                //const mdc = new MDController(args.date,ots,mos,mts);
+                //const slots =mdc.getSlots();
                // const status = mdc.getStatus();
-                //console.log("SLOTS",slots)
+                //console.log("SLOTS",slots);
+                //console.log("NEW SLOTS",sts.slots);
                   
-                const plan = {date:args.date,opening_times:ots,massage_orders:mos,slots:slots,status:status}
+                const plan = {date:args.date,opening_times:ots,massage_orders:mos,slots:sts.slots,status:sts.status}
                 resolve(plan);
             }).catch(reject)
     
