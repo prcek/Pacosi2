@@ -47,6 +47,7 @@ const todos = [
     
 ];
 const changes = [
+    "duplicitni casovky masazi jsou orazovou barvou",
     "report prodeje - pocty prodeju",
     "razeni -  uzivatele v prodeji, polozky prodeje",
     "razeni - typy masazi",

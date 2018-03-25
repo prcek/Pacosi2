@@ -37,6 +37,7 @@ import Lodash from 'lodash';
 import AppBar from 'material-ui/AppBar';
 import PdfView from './PdfView';
 import DebugInfo from './DebugInfo';
+import { LinearProgress } from 'material-ui/Progress';
 
 const Moment = require('moment');
 const MomentRange = require('moment-range');
@@ -210,7 +211,7 @@ class MassageRoomDay extends React.Component {
 
         if (slots.length === 0) {
             return (
-                <Typography>v tento den není otvírací doba</Typography>
+                <Typography>v tento den není otevřeno</Typography>
             )
         }
 
@@ -221,9 +222,9 @@ class MassageRoomDay extends React.Component {
         });
         
         return (
-            <div>
+            <Paper>
                 {mds}
-            </div>
+            </Paper>
         )
     }
 
@@ -561,7 +562,7 @@ class MassageRoomDay extends React.Component {
                     <Typography className={classes.typop} variant="body2">provozní doba byla nakopírována</Typography>
                 )}
                 <div>&nbsp;</div>
-
+                
             </div>
         )
     }
@@ -607,7 +608,7 @@ class MassageRoomDay extends React.Component {
         const rot = this.renderDayPlanROt();
         
         return (
-            <div>
+            <Paper>
                 <Toolbar > 
                         <Typography variant="title"> Nastavení provozní doby </Typography>
                 </Toolbar>
@@ -622,7 +623,7 @@ class MassageRoomDay extends React.Component {
                 <Divider/>
                 <Typography className={classes.typop} variant="subheading">Kopírování provozní doby na následující dny:</Typography>
                 {rot}
-            </div>
+            </Paper>
         )
     }
 
@@ -777,11 +778,14 @@ class MassageRoomDay extends React.Component {
         const { classes } = this.props;
 
         let dd = null;
-        if (this.props.massageRoomDayPlan.massageRoomDayPlan) {
-            const {slots}  = this.props.massageRoomDayPlan.massageRoomDayPlan;
-            dd = this.renderDayDetail(slots);   
-        }
-
+        if (this.props.massageRoomDayPlan.loading) {
+            dd= (<LinearProgress />)
+        } else {
+            if (this.props.massageRoomDayPlan.massageRoomDayPlan) {
+                const {slots}  = this.props.massageRoomDayPlan.massageRoomDayPlan;
+                dd = this.renderDayDetail(slots);   
+            }
+        }   
         const pm = this.props.massageRoomDayPlan.massageRoomDayPlan?this.renderDayPlan():null;
         const mo = this.state.massageOrder?this.renderOrder():this.renderClipboard();
         const mod_dialog = this.renderMODeleteDialog();
@@ -800,9 +804,9 @@ class MassageRoomDay extends React.Component {
                         <ActionButton  disabled={!pm} icon={"print"} tooltip={"Tisk"} onClick={this.handlePrint} /> 
                         
                     </Toolbar>  
-                    <Paper>
-                        {this.state.planMode?pm:dd}    
-                    </Paper>
+                   
+                    {this.state.planMode?pm:dd}    
+                    
                 </Grid>
                 <Grid item xs={12} sm={12} md={12} lg={5}> 
                     {mo}
