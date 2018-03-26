@@ -29,7 +29,7 @@ const BaseQuery = require('./BaseQuery');
 
 const DayStatusType = require('../types/DayStatus');
 
-
+const taim = require('taim');
 
 const MassageRoomDayInfoType = new GraphQL.GraphQLObjectType({
     name: 'MassageRoomDayInfo',
@@ -134,7 +134,7 @@ class MassageRoomQuery extends BaseQuery {
                 }
             },
             resolve(parent, args, context, info) {
-                return MassageRoomResolver.dayInfos(args);
+                return taim("dayInfos",MassageRoomResolver.dayInfos)(args);
             }
         }
     }
@@ -153,7 +153,7 @@ class MassageRoomQuery extends BaseQuery {
                 },
             },
             resolve(parent, args, context, info) {
-                return MassageRoomResolver.dayPlan(args);
+                return taim("dayPlan",MassageRoomResolver.dayPlan)(args);
             }
         }
     }
