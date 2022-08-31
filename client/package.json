@@ -18,7 +18,7 @@
     "material-ui-icons": "^1.0.0-beta.17",
     "moment": "^2.20.1",
     "moment-range": "^3.1.0",
-    "moment-timezone": "^0.5.14",
+    "moment-timezone": "^0.5.35",
     "pdfmake": "^0.1.35",
     "prop-types": "^15.6.0",
     "raven": "^2.4.0",
